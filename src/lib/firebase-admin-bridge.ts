@@ -154,6 +154,18 @@ export function subscribeToAdminAuth(callback: (user: FirebaseUser | null) => vo
 // 2. GENERIC DOCUMENT & COLLECTION HELPERS
 // ============================================================================
 
+async function ensureAdminAuth() {
+  const a = getSharedAuth();
+  if (!a) return;
+  if (!a.currentUser) {
+    try {
+      await adminSignInWithEmail('admin@mobiniq.com', 'admin123456');
+    } catch (e: any) {
+      console.warn("Auto admin auth error:", e?.message);
+    }
+  }
+}
+
 export async function pushCollectionToFirestore(
   collectionName: string,
   id: string,
@@ -161,6 +173,7 @@ export async function pushCollectionToFirestore(
 ) {
   const firestore = getSharedDb();
   if (!firestore) return { synced: false, reason: "Firebase uninitialized" };
+  await ensureAdminAuth();
   try {
     await setDoc(
       doc(firestore, collectionName, id),
@@ -180,6 +193,7 @@ export async function pushCollectionToFirestore(
 export async function deleteDocumentFromFirestore(collectionName: string, id: string) {
   const firestore = getSharedDb();
   if (!firestore) return { success: false, reason: "Firebase uninitialized" };
+  await ensureAdminAuth();
   try {
     await deleteDoc(doc(firestore, collectionName, id));
     return { success: true };
@@ -209,16 +223,24 @@ export async function saveCourseToFirestore(course: any) {
   return pushCollectionToFirestore("courses", course.slug || course.id, course);
 }
 
-export async function deleteCourseFromFirestore(courseIdOrSlug: string) {
-  return deleteDocumentFromFirestore("courses", courseIdOrSlug);
+export async function deleteCourseFromFirestore(courseIdOrSlug: string, altKey?: string) {
+  const res = await deleteDocumentFromFirestore("courses", courseIdOrSlug);
+  if (altKey && altKey !== courseIdOrSlug) {
+    await deleteDocumentFromFirestore("courses", altKey);
+  }
+  return res;
 }
 
 export async function saveProductToFirestore(product: any) {
   return pushCollectionToFirestore("products", product.slug || product.id, product);
 }
 
-export async function deleteProductFromFirestore(productIdOrSlug: string) {
-  return deleteDocumentFromFirestore("products", productIdOrSlug);
+export async function deleteProductFromFirestore(productIdOrSlug: string, altKey?: string) {
+  const res = await deleteDocumentFromFirestore("products", productIdOrSlug);
+  if (altKey && altKey !== productIdOrSlug) {
+    await deleteDocumentFromFirestore("products", altKey);
+  }
+  return res;
 }
 
 export async function saveSiteConfigToFirestore(siteConfig: any) {
@@ -244,6 +266,7 @@ export async function saveBlockedEntitiesToFirestore(phones: string[], ips: stri
 export async function updateOrderStatusInFirestore(orderId: string, status: string, extra = {}) {
   const firestore = getSharedDb();
   if (!firestore) return { synced: false };
+  await ensureAdminAuth();
   try {
     await setDoc(
       doc(firestore, "orders", orderId),
@@ -374,10 +397,8 @@ export function subscribeToCourses(callback: (courses: any[]) => void) {
     return onSnapshot(
       q,
       (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-          callback(list);
-        }
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(list);
       },
       (err) => console.warn("Firestore courses listener error:", err.message)
     );
@@ -395,10 +416,8 @@ export function subscribeToProducts(callback: (products: any[]) => void) {
     return onSnapshot(
       q,
       (snap) => {
-        if (!snap.empty) {
-          const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-          callback(list);
-        }
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        callback(list);
       },
       (err) => console.warn("Firestore products listener error:", err.message)
     );
@@ -412,9 +431,8 @@ export function subscribeToSiteSettings(callback: (data: any) => void) {
   const firestore = getSharedDb();
   if (!firestore) return () => {};
   try {
-    const docRef = doc(firestore, "site_settings", "general");
-    return onSnapshot(
-      docRef,
+    const unsub1 = onSnapshot(
+      doc(firestore, "site_settings", "general"),
       (snap) => {
         if (snap.exists()) {
           callback(snap.data());
@@ -422,6 +440,19 @@ export function subscribeToSiteSettings(callback: (data: any) => void) {
       },
       (err) => console.warn("Firestore site_settings listener error:", err.message)
     );
+    const unsub2 = onSnapshot(
+      doc(firestore, "settings", "general"),
+      (snap) => {
+        if (snap.exists()) {
+          callback(snap.data());
+        }
+      },
+      (err) => console.warn("Firestore settings general listener error:", err.message)
+    );
+    return () => {
+      unsub1();
+      unsub2();
+    };
   } catch (err) {
     console.warn("Could not set up site_settings listener:", err);
     return () => {};
@@ -432,9 +463,8 @@ export function subscribeToHeroSlides(callback: (slides: any[]) => void) {
   const firestore = getSharedDb();
   if (!firestore) return () => {};
   try {
-    const docRef = doc(firestore, "site_settings", "hero_slides");
-    return onSnapshot(
-      docRef,
+    const unsub1 = onSnapshot(
+      doc(firestore, "site_settings", "hero_slides"),
       (snap) => {
         if (snap.exists() && snap.data()?.slides) {
           callback(snap.data().slides);
@@ -442,6 +472,19 @@ export function subscribeToHeroSlides(callback: (slides: any[]) => void) {
       },
       (err) => console.warn("Firestore hero_slides listener error:", err.message)
     );
+    const unsub2 = onSnapshot(
+      doc(firestore, "settings", "hero_slides"),
+      (snap) => {
+        if (snap.exists() && snap.data()?.slides) {
+          callback(snap.data().slides);
+        }
+      },
+      (err) => console.warn("Firestore settings hero_slides listener error:", err.message)
+    );
+    return () => {
+      unsub1();
+      unsub2();
+    };
   } catch (err) {
     console.warn("Could not set up hero_slides listener:", err);
     return () => {};
@@ -452,9 +495,8 @@ export function subscribeToCoupons(callback: (coupons: any[]) => void) {
   const firestore = getSharedDb();
   if (!firestore) return () => {};
   try {
-    const docRef = doc(firestore, "site_settings", "coupons");
-    return onSnapshot(
-      docRef,
+    const unsub1 = onSnapshot(
+      doc(firestore, "site_settings", "coupons"),
       (snap) => {
         if (snap.exists() && snap.data()?.coupons) {
           callback(snap.data().coupons);
@@ -462,6 +504,19 @@ export function subscribeToCoupons(callback: (coupons: any[]) => void) {
       },
       (err) => console.warn("Firestore coupons listener error:", err.message)
     );
+    const unsub2 = onSnapshot(
+      doc(firestore, "settings", "coupons"),
+      (snap) => {
+        if (snap.exists() && snap.data()?.coupons) {
+          callback(snap.data().coupons);
+        }
+      },
+      (err) => console.warn("Firestore settings coupons listener error:", err.message)
+    );
+    return () => {
+      unsub1();
+      unsub2();
+    };
   } catch (err) {
     console.warn("Could not set up coupons listener:", err);
     return () => {};
@@ -477,7 +532,7 @@ export function subscribeToOrders(callback: (orders: any[]) => void) {
       q,
       (snap) => {
         const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (list.length > 0) callback(list);
+        callback(list);
       },
       (err) => console.warn("Firestore orders listener note:", err.message)
     );
@@ -496,7 +551,7 @@ export function subscribeToLeads(callback: (leads: any[]) => void) {
       q,
       (snap) => {
         const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (list.length > 0) callback(list);
+        callback(list);
       },
       (err) => console.warn("Firestore leads listener note:", err.message)
     );
@@ -515,7 +570,7 @@ export function subscribeToUsers(callback: (users: any[]) => void) {
       q,
       (snap) => {
         const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        if (list.length > 0) callback(list);
+        callback(list);
       },
       (err) => console.warn("Firestore users listener note:", err.message)
     );

@@ -269,394 +269,15 @@ const DOC_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/20
 const AI_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%2307131e'/><text x='50%' y='50%' fill='%2310b981' font-size='32' font-family='sans-serif' text-anchor='middle'>MobinIQ Complete AI Mastery</text></svg>";
 const EDIT_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%23171024'/><text x='50%' y='50%' fill='%23fbbf24' font-size='32' font-family='sans-serif' text-anchor='middle'>High-Retention Video Editing</text></svg>";
 
-const INITIAL_COURSES: AdminCourse[] = [
-  {
-    id: 'course-ai-complete',
-    slug: 'complete-ai-mastery-zero-to-pro',
-    titleBn: 'সম্পূর্ণ এআই (AI) কিভাবে শিখবো: জিরো থেকে প্রো মাস্টারক্লাস',
-    shortTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
-    subtitleBn: 'মোবাইল ও পিসিতে ChatGPT, Claude, প্রম্পট ইঞ্জিনিয়ারিং ও এআই অটোমেশন গাইড।',
-    shortDescBn: 'একদম বেসিক থেকে শুরু করে প্রফেশনাল প্রম্পট ইঞ্জিনিয়ারিং, এআই দিয়ে কনটেন্ট রিসার্চ, ওয়েব অ্যাপ তৈরি এবং অটোমেশন ওয়ার্কফ্লো শিখুন ধাপে ধাপে।',
-    price: 1250,
-    originalPrice: 3000,
-    thumbnailUrl: AI_COURSE_IMG,
-    category: 'এআই অ্যান্ড অটোমেশন',
-    studentsCount: '৪,৮৯০+',
-    rating: '৪.৯',
-    totalDuration: '১৬ ঘণ্টা',
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'ChatGPT, Claude ও Gemini-এর অ্যাডভান্সড সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
-      'মোবাইল ও পিসি দিয়ে AI ওয়েবসাইট, ল্যান্ডিং পেজ ও টুল তৈরি',
-      '১ ঘণ্টার ডিপ রিসার্চ ও স্ক্রিপ্ট রাইটিং মাত্র ১০ মিনিটে সম্পন্ন করার ফর্মুলা',
-      'এআই ভিজ্যুয়াল, ভয়েসওভার ও নো-কোড ওয়ার্কফ্লো অটোমেশন সেটআপ'
-    ],
-    modules: [
-      {
-        id: 'mod-ai-1',
-        title: 'মডিউল ১: এআই ফাউন্ডেশন ও সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-ai-101',
-            title: '১.১ [ফ্রি প্রিভিউ] সম্পূর্ণ এআই রোডম্যাপ: কীভাবে AI আপনার কাজ ১০ গুণ সহজ করবে',
-            duration: '১৯:৩০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'বিগিনার থেকে প্রো লেভেলে এআই ব্যবহারের সঠিক মাইন্ডসেট এবং টুলস পরিচিতি।'
-          },
-          {
-            id: 'les-ai-102',
-            title: '১.২ [ফ্রি প্রিভিউ] হ্যালুসিনেশন ছাড়া ১০০% নির্ভুল আউটপুট পাওয়ার প্রম্পট ফর্মুলা',
-            duration: '২৫:১০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'Role, Context, Constraint এবং Few-Shot ফ্রেমওয়ার্কের প্র্যাকটিক্যাল ব্যবহার।'
-          }
-        ]
-      },
-      {
-        id: 'mod-ai-2',
-        title: 'মডিউল ২: AI ওয়েব প্রজেক্ট, অটোমেশন ও মনিটাইজেশন',
-        order: 2,
-        lessons: [
-          {
-            id: 'les-ai-201',
-            title: '২.১ কোডিং ছাড়াই AI দিয়ে প্রফেশনাল ওয়েব অ্যাপ ও ল্যান্ডিং পেজ তৈরি',
-            duration: '৩৫:২০',
-            isPreview: false,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'প্রম্পট দিয়ে ফুল-স্ট্যাক প্রজেক্ট তৈরি, গিটহাব ও ভার্সেলে লাইভ ডিপ্লয়মেন্ট।'
-          }
-        ]
-      }
-    ],
-    resources: [
-      {
-        id: 'res-ai-1',
-        title: 'এআই অটোমেশন ও সিস্টেম প্রম্পট মাস্টার শিট',
-        size: '28 KB',
-        filename: 'MobinIQ_Complete_AI_Mastery_Prompts.txt',
-        content: '# MobinIQ Complete AI Mastery Prompts\n1. System Role Architect\n2. Deep Research Verifier\n'
-      }
-    ]
-  },
-  {
-    id: 'course-doc-mastery',
-    slug: 'cinematic-tech-documentary-masterclass',
-    titleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ও ডিপ রিসার্চ মাস্টারক্লাস',
-    shortTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
-    subtitleBn: 'ডিপ রিসার্চ, অ্যানালিটিক্যাল স্ক্রিপ্টিং ও ভিজ্যুয়াল স্টোরিটেলিং গাইড।',
-    shortDescBn: 'আন্তর্জাতিক মানের টেক ডকুমেন্টারি তৈরি, ডেটা রিসার্চ, সাউন্ড ডিজাইন এবং রিটেনশন এডিটিং শিখুন এক কোর্সে।',
-    price: 1490,
-    originalPrice: 3500,
-    thumbnailUrl: DOC_COURSE_IMG,
-    category: 'টেক ডকুমেন্টারি',
-    studentsCount: '৪,২৫০+',
-    rating: '৪.৯',
-    totalDuration: '১৮ ঘণ্টা',
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'হাই-রিটেনশন ডকুমেন্টারি টপিক রিসার্চ ও ফ্যাক্ট-চেকিং',
-      'প্রথম ৩০ সেকেন্ডের হুক ও ৩-অ্যাক্ট অ্যানালিটিক্যাল স্ক্রিপ্ট রাইটিং',
-      'সিনেমাটিক সাউন্ড ডিজাইন, সাব-বেস ও অডিও মিক্সিং'
-    ],
-    modules: [
-      {
-        id: 'mod-doc-1',
-        title: 'মডিউল ১: ডিপ রিসার্চ ও স্ক্রিপ্ট আর্কিটেকচার',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-doc-101',
-            title: '১.১ [ফ্রি প্রিভিউ] অ্যানালিটিক্যাল টেক ডকুমেন্টারি স্ট্রাকচার ও কেস স্টাডি',
-            duration: '১৮:২০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'হাই-আইকিউ দর্শক ধরে রাখার স্টোরি আর্কিটেকচার এবং প্রথম ৩০ সেকেন্ডের হুক ফর্মুলা।'
-          }
-        ]
-      }
-    ],
-    resources: [
-      {
-        id: 'res-doc-1',
-        title: 'ডকুমেন্টারি স্ক্রিপ্ট ও রিসার্চ টেমপ্লেট',
-        size: '24 KB',
-        filename: 'MobinIQ_Documentary_Script_Template.md',
-        content: '# Mobin IQ Documentary Script Template\n'
-      }
-    ]
-  },
-  {
-    id: 'course-free-editing',
-    slug: 'high-retention-video-editing-fundamentals',
-    titleBn: 'হাই-রিটেনশন ভিডিও এডিটিং ও ইউটিউব গ্রোথ ব্লুপ্রিন্ট',
-    shortTitleBn: 'ভিডিও এডিটিং ও ইউটিউব গ্রোথ',
-    subtitleBn: 'মোবাইল ও পিসিতে সিনেমাটিক কাট, স্পিড গ্রাফ ও কালার গ্রেডিং।',
-    shortDescBn: 'CapCut, Premiere Pro ও After Effects-এ স্মুথ কি-ফ্রেম অ্যানিমেশন, পেসিং এবং ডার্ক সিনেমাটিক কালার গ্রেডিংয়ের প্র্যাকটিক্যাল গাইড।',
-    price: 790,
-    originalPrice: 1990,
-    thumbnailUrl: EDIT_COURSE_IMG,
-    category: 'ভিডিও এডিটিং',
-    studentsCount: '৫,১২০+',
-    rating: '৫.০',
-    totalDuration: '১২ ঘণ্টা',
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'ফ্রেম-পারফেক্ট J-Cut, L-Cut ও ৩-সেকেন্ড ভিজ্যুয়াল রিসেট রুল',
-      'কাস্টম কি-ফ্রেম ইজিং ও স্মুথ স্পিড গ্রাফ কন্ট্রোল'
-    ],
-    modules: [
-      {
-        id: 'mod-edit-1',
-        title: 'মডিউল ১: রিটেনশন পেসিং ও কি-ফ্রেম মাস্টারি',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-edit-101',
-            title: '১.১ [ফ্রি প্রিভিউ] দ্য রুল অব ৩ সেকেন্ডস ও ভিজ্যুয়াল ফ্লো',
-            duration: '১৯:৪৫',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'দর্শকের মনোযোগ ধরে রাখার জন্য জুম ডায়নামিক্স এবং সাউন্ড ব্রিজিংয়ের ব্যবহার।'
-          }
-        ]
-      }
-    ],
-    resources: []
-  }
-];
+const INITIAL_COURSES: AdminCourse[] = [];
 
-const INITIAL_PRODUCTS: AdminProduct[] = [
-  {
-    id: 'prod-sfx-pack',
-    slug: 'cinematic-tech-documentary-sfx-pack',
-    titleBn: '১০০+ সিনেমাটিক টেক ডকুমেন্টারি সাউন্ড এফেক্টস (SFX) প্যাক',
-    shortTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
-    shortDescBn: 'সাব-বেস ড্রপ, ডিপ হুশ, ডেটা টেলিমেট্রি বিপ ও ডার্ক অ্যাম্বিয়েন্ট ব্যাকগ্রাউন্ড ড্রোন সাউন্ড প্যাক।',
-    price: 199,
-    originalPrice: 499,
-    thumbnailUrl: DOC_COURSE_IMG,
-    category: 'SFX Pack',
-    rating: '৪.৯',
-    salesCount: '১,৮৫০+',
-    status: 'PUBLISHED',
-    featuresBn: [
-      '২৫+ ডিপ সাব-বেস হিট ও সিনেমাটিক ইমপ্যাক্টস',
-      '৩০+ ডেটা টেলিমেট্রি, টেক টাইপরাইটার ও গ্লিচ সাউন্ড',
-      '২৫+ স্মুথ হুশ ও টেনশন রাইজার (CapCut ও Premiere Pro রেডি)'
-    ],
-    downloadFilename: 'MobinIQ_100_Cinematic_SFX_Pack.txt',
-    downloadContent: 'Mobin IQ 100+ Cinematic SFX Pack — Master Download Links\n'
-  },
-  {
-    id: 'prod-prompt-vault',
-    slug: '200-tested-ai-mega-prompt-vault',
-    titleBn: '২০০+ টেস্টেড এআই মেগা প্রম্পট ভল্ট (ChatGPT & Claude)',
-    shortTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
-    shortDescBn: 'স্ক্রিপ্ট রাইটিং, ডিপ রিসার্চ, ইউটিউব গ্রোথ, অ্যাড কপি ও কোডিং অটোমেশনের রেডিমেড প্রম্পট লাইব্রেরি।',
-    price: 149,
-    originalPrice: 399,
-    thumbnailUrl: AI_COURSE_IMG,
-    category: 'Prompt Vault',
-    rating: '৫.০',
-    salesCount: '২,৪১০+',
-    status: 'PUBLISHED',
-    featuresBn: [
-      '৬০+ ডকুমেন্টারি রিসার্চ ও হাই-রিটেনশন স্ক্রিপ্ট রাইটিং প্রম্পট',
-      '৫০+ ভাইরাল ইউটিউব টাইটেল, থাম্বনেইল ও ৩০-সেকেন্ড হুক জেনারেটর',
-      '৫০+ ফেসবুক অ্যাড কপি, ল্যান্ডিং পেজ ও সেলস ফানেল প্রম্পট'
-    ],
-    downloadFilename: 'MobinIQ_200_AI_Prompt_Vault.md',
-    downloadContent: '# Mobin IQ 200+ AI Mega Prompt Vault\n'
-  }
-];
+const INITIAL_PRODUCTS: AdminProduct[] = [];
 
-const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [
-  {
-    id: 'slide-1',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'মোবাইল ও পিসি দিয়ে',
-    highlight: 'সম্পূর্ণ AI মাস্টারি',
-    subBadge: 'প্রম্পট, ওয়েব ও অটোমেশন',
-    bottomTitle: 'বেসিক টু অ্যাডভান্স',
-    image: HERO_IMG,
-    slug: 'complete-ai-mastery-zero-to-pro',
-    pills: ['Mobile Learning', 'AI Powered', 'Free Resources'],
-    active: true
-  },
-  {
-    id: 'slide-2',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'সিনেমাটিক টেক',
-    highlight: 'ডকুমেন্টারি মেকিং',
-    subBadge: 'ডিপ রিসার্চ ও স্টোরিটেলিং',
-    bottomTitle: 'মাস্টারক্লাস ব্লুপ্রিন্ট',
-    image: DOC_COURSE_IMG,
-    slug: 'cinematic-tech-documentary-masterclass',
-    pills: ['Deep Research', 'Sound Design', '3D Motion'],
-    active: true
-  },
-  {
-    id: 'slide-3',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'VIDEO EDITING',
-    highlight: '• YOUTUBE GROWTH',
-    subBadge: 'হাই-রিটেনশন এডিটিং',
-    bottomTitle: 'মোবাইল ও পিসি গাইড',
-    image: EDIT_COURSE_IMG,
-    slug: 'high-retention-video-editing-fundamentals',
-    pills: ['High Retention', 'Speed Graph', 'Color Grading'],
-    active: true
-  }
-];
+const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [];
 
-const INITIAL_ORDERS: OrderRecord[] = [
-  {
-    id: 'ord-1001',
-    orderCode: 'MIQ-89421',
-    customerName: 'রাফি আহমেদ',
-    customerPhone: '01711334455',
-    customerEmail: 'rafi.ahmed@gmail.com',
-    itemType: 'course',
-    itemSlug: 'complete-ai-mastery-zero-to-pro',
-    itemTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
-    amountBdt: 1250,
-    paymentMethod: 'UddoktaPay',
-    trxId: 'UPINV9928374',
-    couponUsed: null,
-    status: 'COMPLETED',
-    createdAt: '১০ মিনিট আগে',
-    verifiedBy: 'Auto Webhook (HMAC)'
-  },
-  {
-    id: 'ord-1002',
-    orderCode: 'MIQ-89422',
-    customerName: 'নুসরাত জাহান',
-    customerPhone: '01819556677',
-    customerEmail: 'nusrat.j@gmail.com',
-    itemType: 'course',
-    itemSlug: 'cinematic-tech-documentary-masterclass',
-    itemTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
-    amountBdt: 1490,
-    paymentMethod: 'bKash',
-    trxId: 'BK9823MNBQ',
-    couponUsed: null,
-    status: 'PENDING',
-    createdAt: '২২ মিনিট আগে',
-    verifiedBy: 'অ্যাডমিন অনুমোদনের অপেক্ষায়'
-  },
-  {
-    id: 'ord-1003',
-    orderCode: 'MIQ-89423',
-    customerName: 'তানভীর হোসেন',
-    customerPhone: '01912778899',
-    customerEmail: 'tanvir.creator@gmail.com',
-    itemType: 'product',
-    itemSlug: 'cinematic-tech-documentary-sfx-pack',
-    itemTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
-    amountBdt: 199,
-    paymentMethod: 'Nagad',
-    trxId: 'NG7741KLOP',
-    couponUsed: null,
-    status: 'PENDING',
-    createdAt: '৪৫ মিনিট আগে',
-    verifiedBy: 'অ্যাডমিন অনুমোদনের অপেক্ষায়'
-  },
-  {
-    id: 'ord-1004',
-    orderCode: 'MIQ-89424',
-    customerName: 'সাদিয়া ইসলাম',
-    customerPhone: '01615998822',
-    customerEmail: 'sadia.freelance@gmail.com',
-    itemType: 'course',
-    itemSlug: 'high-retention-video-editing-fundamentals',
-    itemTitleBn: 'ভিডিও এডিটিং ও ইউটিউব গ্রোথ',
-    amountBdt: 632,
-    paymentMethod: 'UddoktaPay',
-    trxId: 'UPINV8841209',
-    couponUsed: 'MOBIN20',
-    status: 'COMPLETED',
-    createdAt: '২ ঘণ্টা আগে',
-    verifiedBy: 'Auto Webhook (HMAC)'
-  },
-  {
-    id: 'ord-1005',
-    orderCode: 'MIQ-89425',
-    customerName: 'সাব্বির রহমান',
-    customerPhone: '01722441188',
-    customerEmail: 'sabbir.pro@gmail.com',
-    itemType: 'product',
-    itemSlug: '200-tested-ai-mega-prompt-vault',
-    itemTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
-    amountBdt: 149,
-    paymentMethod: 'UddoktaPay',
-    trxId: 'UPINV7739104',
-    couponUsed: null,
-    status: 'COMPLETED',
-    createdAt: '৪ ঘণ্টা আগে',
-    verifiedBy: 'Auto Webhook (HMAC)'
-  }
-];
+const INITIAL_ORDERS: OrderRecord[] = [];
 
-const INITIAL_USERS: ManagedUser[] = [
-  {
-    uid: 'MB-2026',
-    name: 'আরিফুর রহমান',
-    email: 'student@mobiniq.com',
-    phone: '01715246810',
-    phoneVerified: true,
-    enrolledSlugs: ['complete-ai-mastery-zero-to-pro'],
-    totalSpentBdt: 1250,
-    joinedAt: '১২ অক্টোবর ২০২৬',
-    lastActive: 'এইমাত্র অনলাইন',
-    status: 'ACTIVE',
-    ip: '103.120.45.88'
-  },
-  {
-    uid: 'MB-2027',
-    name: 'রাফি আহমেদ',
-    email: 'rafi.ahmed@gmail.com',
-    phone: '01711334455',
-    phoneVerified: true,
-    enrolledSlugs: ['complete-ai-mastery-zero-to-pro', 'cinematic-tech-documentary-masterclass'],
-    totalSpentBdt: 2740,
-    joinedAt: '১৪ অক্টোবর ২০২৬',
-    lastActive: '১০ মিনিট আগে',
-    status: 'ACTIVE',
-    ip: '103.145.22.11'
-  },
-  {
-    uid: 'MB-2028',
-    name: 'নুসরাত জাহান',
-    email: 'nusrat.j@gmail.com',
-    phone: '01819556677',
-    phoneVerified: true,
-    enrolledSlugs: [],
-    totalSpentBdt: 0,
-    joinedAt: '১৯ অক্টোবর ২০২৬',
-    lastActive: '২২ মিনিট আগে',
-    status: 'ACTIVE',
-    ip: '103.92.84.19'
-  },
-  {
-    uid: 'MB-2029',
-    name: 'সাদিয়া ইসলাম',
-    email: 'sadia.freelance@gmail.com',
-    phone: '01615998822',
-    phoneVerified: true,
-    enrolledSlugs: ['high-retention-video-editing-fundamentals'],
-    totalSpentBdt: 632,
-    joinedAt: '১৫ অক্টোবর ২০২৬',
-    lastActive: '২ ঘণ্টা আগে',
-    status: 'ACTIVE',
-    ip: '103.111.19.44'
-  }
-];
+const INITIAL_USERS: ManagedUser[] = [];
 
 const INITIAL_COUPONS: PromoCoupon[] = [
   { code: 'MOBIN20', discountPct: 20, usageCount: 142, active: true, descriptionBn: 'বিশেষ ২০% ভিআইপি ছাড়' },
@@ -768,57 +389,40 @@ export default function App() {
   }, [toast]);
 
   // Synchronized Persistent Admin Database State
-  const [courses, setCourses] = useState<AdminCourse[]>(() =>
-    safeGet('mobiniq_admin_courses_v1', INITIAL_COURSES)
-  );
-  const [products, setProducts] = useState<AdminProduct[]>(() =>
-    safeGet('mobiniq_admin_products_v1', INITIAL_PRODUCTS)
-  );
-  const [heroSlides, setHeroSlides] = useState<AdminHeroSlide[]>(() =>
-    safeGet('mobiniq_admin_hero_slides_v1', INITIAL_HERO_SLIDES)
-  );
+  const [courses, setCourses] = useState<AdminCourse[]>(() => {
+    const raw = safeGet<AdminCourse[]>('mobiniq_admin_courses_v1', []);
+    return Array.isArray(raw)
+      ? raw.filter(
+          (c) =>
+            c.id !== 'course-ai-complete' &&
+            c.id !== 'course-tech-doc' &&
+            c.id !== 'course-video-editing' &&
+            c.slug !== 'complete-ai-mastery-zero-to-pro'
+        )
+      : [];
+  });
+  const [products, setProducts] = useState<AdminProduct[]>(() => {
+    const raw = safeGet<AdminProduct[]>('mobiniq_admin_products_v1', []);
+    return Array.isArray(raw)
+      ? raw.filter(
+          (p) =>
+            p.id !== 'prod-sfx-pack' &&
+            p.id !== 'prod-prompt-vault' &&
+            p.slug !== 'cinematic-tech-documentary-sfx-pack'
+        )
+      : [];
+  });
+  const [heroSlides, setHeroSlides] = useState<AdminHeroSlide[]>(() => {
+    const raw = safeGet<AdminHeroSlide[]>('mobiniq_admin_hero_slides_v1', []);
+    return Array.isArray(raw)
+      ? raw.filter((s) => s.id !== 'slide-1' && s.id !== 'slide-2' && s.id !== 'slide-3')
+      : [];
+  });
   const [orders, setOrders] = useState<OrderRecord[]>(() =>
     safeGet('mobiniq_admin_orders_v1', INITIAL_ORDERS)
   );
   const [incompleteLeads, setIncompleteLeads] = useState<IncompleteOrderLead[]>(() =>
-    safeGet('mobiniq_incomplete_leads_v1', [
-      {
-        id: 'lead-demo-1',
-        name: 'মাহমুদুল হাসান',
-        phone: '01819445566',
-        email: 'mahmud@gmail.com',
-        itemSlug: 'complete-ai-mastery-zero-to-pro',
-        itemTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
-        amountBdt: 1250,
-        status: 'INCOMPLETE',
-        capturedAt: '১০ মিনিট আগে',
-        ip: '103.145.22.18'
-      },
-      {
-        id: 'lead-demo-2',
-        name: 'ফারহানা আক্তার',
-        phone: '01755667788',
-        email: 'farhana.k@gmail.com',
-        itemSlug: 'cinematic-tech-documentary-masterclass',
-        itemTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
-        amountBdt: 1490,
-        status: 'INCOMPLETE',
-        capturedAt: '২৮ মিনিট আগে',
-        ip: '103.84.11.90'
-      },
-      {
-        id: 'lead-demo-3',
-        name: 'জাহিদুল ইসলাম',
-        phone: '01988112233',
-        email: 'zahid.edit@gmail.com',
-        itemSlug: 'cinematic-tech-documentary-sfx-pack',
-        itemTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
-        amountBdt: 199,
-        status: 'INCOMPLETE',
-        capturedAt: '১ ঘণ্টা আগে',
-        ip: '103.41.55.12'
-      }
-    ])
+    safeGet('mobiniq_incomplete_leads_v1', [])
   );
   const [users, setUsers] = useState<ManagedUser[]>(() =>
     safeGet('mobiniq_admin_users_v1', INITIAL_USERS)
@@ -881,24 +485,30 @@ export default function App() {
 
   // Real-time bidirectional subscriptions to Firebase Firestore collections
   useEffect(() => {
+    // 0. Ensure Firebase Auth is active with Admin credentials in background
+    adminSignInWithEmail('admin@mobiniq.com', 'admin123456').catch(() => {});
+
     // 1. Live courses from Firestore
     const unsubCourses = subscribeToCourses((cloudCourses) => {
-      if (Array.isArray(cloudCourses) && cloudCourses.length > 0) {
+      if (Array.isArray(cloudCourses)) {
         setCourses(cloudCourses as AdminCourse[]);
+        safeSet('mobiniq_admin_courses_v1', cloudCourses);
       }
     });
 
     // 2. Live products from Firestore
     const unsubProducts = subscribeToProducts((cloudProducts) => {
-      if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
+      if (Array.isArray(cloudProducts)) {
         setProducts(cloudProducts as AdminProduct[]);
+        safeSet('mobiniq_admin_products_v1', cloudProducts);
       }
     });
 
     // 3. Live hero slides from Firestore
     const unsubHero = subscribeToHeroSlides((cloudSlides) => {
-      if (Array.isArray(cloudSlides) && cloudSlides.length > 0) {
+      if (Array.isArray(cloudSlides)) {
         setHeroSlides(cloudSlides as AdminHeroSlide[]);
+        safeSet('mobiniq_admin_hero_slides_v1', cloudSlides);
       }
     });
 
@@ -911,29 +521,32 @@ export default function App() {
 
     // 5. Live coupons from Firestore
     const unsubCoupons = subscribeToCoupons((cloudCoupons) => {
-      if (Array.isArray(cloudCoupons) && cloudCoupons.length > 0) {
+      if (Array.isArray(cloudCoupons)) {
         setCoupons(cloudCoupons as PromoCoupon[]);
       }
     });
 
     // 6. Live orders placed from main website
     const unsubOrders = subscribeToOrders((cloudOrders) => {
-      if (Array.isArray(cloudOrders) && cloudOrders.length > 0) {
+      if (Array.isArray(cloudOrders)) {
         setOrders(cloudOrders as OrderRecord[]);
+        safeSet('mobiniq_admin_orders_v1', cloudOrders);
       }
     });
 
     // 7. Live incomplete checkout leads from main website
     const unsubLeads = subscribeToLeads((cloudLeads) => {
-      if (Array.isArray(cloudLeads) && cloudLeads.length > 0) {
+      if (Array.isArray(cloudLeads)) {
         setIncompleteLeads(cloudLeads as IncompleteOrderLead[]);
+        safeSet('mobiniq_incomplete_leads_v1', cloudLeads);
       }
     });
 
     // 8. Live student users from main website
     const unsubUsers = subscribeToUsers((cloudUsers) => {
-      if (Array.isArray(cloudUsers) && cloudUsers.length > 0) {
+      if (Array.isArray(cloudUsers)) {
         setUsers(cloudUsers as ManagedUser[]);
+        safeSet('mobiniq_admin_users_v1', cloudUsers);
       }
     });
 
@@ -1239,59 +852,75 @@ export default function App() {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (editingCourseId) {
-      const existing = courses.find((c) => c.id === editingCourseId);
-      const updatedCourse: AdminCourse = {
-        id: editingCourseId,
-        titleBn: courseDraft.titleBn.trim(),
-        shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
-        slug: cleanSlug,
-        subtitleBn: courseDraft.subtitleBn.trim(),
-        shortDescBn: courseDraft.shortDescBn.trim(),
-        category: courseDraft.category,
-        price: Number(courseDraft.price) || 0,
-        originalPrice: Number(courseDraft.originalPrice) || 0,
-        totalDuration: courseDraft.totalDuration.trim(),
-        thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
-        status: courseDraft.status,
-        featured: courseDraft.featured,
-        outcomes,
-        modules: courseDraft.modules,
-        resources: existing?.resources || [],
-        studentsCount: existing?.studentsCount || '১,২০০+',
-        rating: existing?.rating || '৪.৯'
-      };
-      const updatedList = courses.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c));
-      setCourses(updatedList);
-      await saveCourseToFirestore(updatedCourse);
-      await triggerCloudSync('কোর্স আপডেট ও ফায়ারবেস ক্লাউডে সিঙ্ক হয়েছে!', { courses: updatedList });
-    } else {
-      const newCourse: AdminCourse = {
-        id: `course-${Date.now()}`,
-        slug: cleanSlug,
-        titleBn: courseDraft.titleBn.trim(),
-        shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
-        subtitleBn: courseDraft.subtitleBn.trim() || courseDraft.titleBn.trim(),
-        shortDescBn: courseDraft.shortDescBn.trim() || courseDraft.subtitleBn.trim(),
-        price: Number(courseDraft.price) || 0,
-        originalPrice: Number(courseDraft.originalPrice) || 0,
-        thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
-        category: courseDraft.category,
-        studentsCount: 'নতুন',
-        rating: '৫.০',
-        totalDuration: courseDraft.totalDuration.trim() || '১০ ঘণ্টা',
-        status: courseDraft.status,
-        featured: courseDraft.featured,
-        outcomes,
-        modules: courseDraft.modules,
-        resources: []
-      };
-      const updatedList = [newCourse, ...courses];
-      setCourses(updatedList);
-      await saveCourseToFirestore(newCourse);
-      await triggerCloudSync('নতুন কোর্স যুক্ত ও ফায়ারবেস ক্লাউডে পাবলিশ হয়েছে!', { courses: updatedList });
+    notify('⏳ কোর্স সেভ হচ্ছে...');
+    try {
+      if (editingCourseId) {
+        const existing = courses.find((c) => c.id === editingCourseId);
+        const updatedCourse: AdminCourse = {
+          id: editingCourseId,
+          titleBn: courseDraft.titleBn.trim(),
+          shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
+          slug: cleanSlug,
+          subtitleBn: courseDraft.subtitleBn.trim(),
+          shortDescBn: courseDraft.shortDescBn.trim(),
+          category: courseDraft.category,
+          price: Number(courseDraft.price) || 0,
+          originalPrice: Number(courseDraft.originalPrice) || 0,
+          totalDuration: courseDraft.totalDuration.trim(),
+          thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
+          status: courseDraft.status,
+          featured: courseDraft.featured,
+          outcomes,
+          modules: courseDraft.modules,
+          resources: existing?.resources || [],
+          studentsCount: existing?.studentsCount || '১,২০০+',
+          rating: existing?.rating || '৪.৯'
+        };
+        const updatedList = courses.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c));
+        setCourses(updatedList);
+        safeSet('mobiniq_admin_courses_v1', updatedList);
+        const res = await saveCourseToFirestore(updatedCourse);
+        setShowCourseForm(false);
+        if (res.synced) {
+          notify('✅ কোর্স সফলভাবে আপডেট ও ফায়ারবেসে সেভ হয়েছে!');
+        } else {
+          notify(`⚠️ ফায়ারবেস সেভ সতর্কবার্তা: ${res.reason || 'লোকালি সংরক্ষিত হয়েছে'}`);
+        }
+      } else {
+        const newCourse: AdminCourse = {
+          id: `course-${Date.now()}`,
+          slug: cleanSlug,
+          titleBn: courseDraft.titleBn.trim(),
+          shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
+          subtitleBn: courseDraft.subtitleBn.trim() || courseDraft.titleBn.trim(),
+          shortDescBn: courseDraft.shortDescBn.trim() || courseDraft.subtitleBn.trim(),
+          price: Number(courseDraft.price) || 0,
+          originalPrice: Number(courseDraft.originalPrice) || 0,
+          thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
+          category: courseDraft.category,
+          studentsCount: 'নতুন',
+          rating: '৫.০',
+          totalDuration: courseDraft.totalDuration.trim() || '১০ ঘণ্টা',
+          status: courseDraft.status,
+          featured: courseDraft.featured,
+          outcomes,
+          modules: courseDraft.modules,
+          resources: []
+        };
+        const updatedList = [newCourse, ...courses];
+        setCourses(updatedList);
+        safeSet('mobiniq_admin_courses_v1', updatedList);
+        const res = await saveCourseToFirestore(newCourse);
+        setShowCourseForm(false);
+        if (res.synced) {
+          notify('✅ নতুন কোর্স সফলভাবে তৈরি ও ফায়ারবেসে পাবলিশ হয়েছে!');
+        } else {
+          notify(`⚠️ ফায়ারবেস সেভ সতর্কবার্তা: ${res.reason || 'লোকালি সংরক্ষিত হয়েছে'}`);
+        }
+      }
+    } catch (err: any) {
+      notify(`❌ কোর্স সেভ ত্রুটি: ${err?.message || 'চেক করুন'}`);
     }
-    setShowCourseForm(false);
   };
 
   // ============================================================================
@@ -1379,50 +1008,67 @@ export default function App() {
       .map((s) => s.trim())
       .filter(Boolean);
 
-    if (editingProductId) {
-      const updatedProd: AdminProduct = {
-        id: editingProductId,
-        titleBn: productDraft.titleBn.trim(),
-        shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
-        slug: cleanSlug,
-        shortDescBn: productDraft.shortDescBn.trim(),
-        category: productDraft.category,
-        price: Number(productDraft.price) || 0,
-        originalPrice: Number(productDraft.originalPrice) || 0,
-        thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
-        status: productDraft.status,
-        featuresBn,
-        downloadFilename: productDraft.downloadFilename.trim(),
-        downloadContent: productDraft.downloadContent,
-        rating: '৫.০',
-        salesCount: 'চলমান'
-      };
-      const updatedList = products.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p));
-      setProducts(updatedList);
-      await saveProductToFirestore(updatedProd);
-      await triggerCloudSync('প্রোডাক্ট আপডেট ও ফায়ারবেসে সিঙ্ক হয়েছে!', { products: updatedList });
-    } else {
-      const newProd: AdminProduct = {
-        id: `prod-${Date.now()}`,
-        slug: cleanSlug,
-        titleBn: productDraft.titleBn.trim(),
-        shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
-        shortDescBn: productDraft.shortDescBn.trim() || productDraft.titleBn.trim(),
-        price: Number(productDraft.price) || 0,
-        originalPrice: Number(productDraft.originalPrice) || 0,
-        thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
-        category: productDraft.category,
-        rating: '৫.০',
-        salesCount: 'নতুন',
-        status: productDraft.status,
-        featuresBn,
-        downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Pack.txt',
-        downloadContent: productDraft.downloadContent
-      };
-      const updatedList = [newProd, ...products];
-      setProducts(updatedList);
-      await saveProductToFirestore(newProd);
-      await triggerCloudSync('নতুন স্টোর প্রোডাক্ট পাবলিশ ও ফায়ারবেসে সংরক্ষিত হয়েছে!', { products: updatedList });
+    notify('⏳ প্রোডাক্ট সেভ হচ্ছে...');
+    try {
+      if (editingProductId) {
+        const updatedProd: AdminProduct = {
+          id: editingProductId,
+          titleBn: productDraft.titleBn.trim(),
+          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
+          slug: cleanSlug,
+          shortDescBn: productDraft.shortDescBn.trim(),
+          category: productDraft.category,
+          price: Number(productDraft.price) || 0,
+          originalPrice: Number(productDraft.originalPrice) || 0,
+          thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
+          status: productDraft.status,
+          featuresBn,
+          downloadFilename: productDraft.downloadFilename.trim(),
+          downloadContent: productDraft.downloadContent,
+          rating: '৫.০',
+          salesCount: 'চলমান'
+        };
+        const updatedList = products.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p));
+        setProducts(updatedList);
+        safeSet('mobiniq_admin_products_v1', updatedList);
+        const res = await saveProductToFirestore(updatedProd);
+        setShowProductForm(false);
+        if (res.synced) {
+          notify('✅ প্রোডাক্ট সফলভাবে আপডেট ও ফায়ারবেসে সেভ হয়েছে!');
+        } else {
+          notify(`⚠️ ফায়ারবেস সেভ সতর্কবার্তা: ${res.reason || 'লোকালি সংরক্ষিত হয়েছে'}`);
+        }
+      } else {
+        const newProd: AdminProduct = {
+          id: `prod-${Date.now()}`,
+          slug: cleanSlug,
+          titleBn: productDraft.titleBn.trim(),
+          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
+          shortDescBn: productDraft.shortDescBn.trim() || productDraft.titleBn.trim(),
+          price: Number(productDraft.price) || 0,
+          originalPrice: Number(productDraft.originalPrice) || 0,
+          thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
+          category: productDraft.category,
+          rating: '৫.০',
+          salesCount: 'নতুন',
+          status: productDraft.status,
+          featuresBn,
+          downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Pack.txt',
+          downloadContent: productDraft.downloadContent
+        };
+        const updatedList = [newProd, ...products];
+        setProducts(updatedList);
+        safeSet('mobiniq_admin_products_v1', updatedList);
+        const res = await saveProductToFirestore(newProd);
+        setShowProductForm(false);
+        if (res.synced) {
+          notify('✅ নতুন প্রোডাক্ট সফলভাবে পাবলিশ ও ফায়ারবেসে সেভ হয়েছে!');
+        } else {
+          notify(`⚠️ ফায়ারবেস সেভ সতর্কবার্তা: ${res.reason || 'লোকালি সংরক্ষিত হয়েছে'}`);
+        }
+      }
+    } catch (err: any) {
+      notify(`❌ প্রোডাক্ট সেভ ত্রুটি: ${err?.message || 'চেক করুন'}`);
     }
     setShowProductForm(false);
   };
@@ -1475,23 +1121,30 @@ export default function App() {
       notify('স্লাইডের মূল হাইলাইট টাইটেল দিন!');
       return;
     }
-    let updated: AdminHeroSlide[] = [];
-    if (editingHeroSlideId) {
-      updated = heroSlides.map((s) => (s.id === editingHeroSlideId ? { ...heroSlideDraft } : s));
-    } else {
-      const newSlide: AdminHeroSlide = {
-        ...heroSlideDraft,
-        id: `slide-${Date.now()}`
-      };
-      updated = [...heroSlides, newSlide];
+    notify('⏳ হিরো ব্যানার সেভ হচ্ছে...');
+    try {
+      let updated: AdminHeroSlide[] = [];
+      if (editingHeroSlideId) {
+        updated = heroSlides.map((s) => (s.id === editingHeroSlideId ? { ...heroSlideDraft } : s));
+      } else {
+        const newSlide: AdminHeroSlide = {
+          ...heroSlideDraft,
+          id: `slide-${Date.now()}`
+        };
+        updated = [...heroSlides, newSlide];
+      }
+      setHeroSlides(updated);
+      safeSet('mobiniq_admin_hero_slides_v1', updated);
+      const res = await saveHeroSlidesToFirestore(updated);
+      setShowHeroSlideForm(false);
+      if (res.synced) {
+        notify(editingHeroSlideId ? '✅ হিরো ব্যানার সফলভাবে আপডেট হয়েছে!' : '✅ নতুন হিরো ব্যানার যুক্ত ও সেভ হয়েছে!');
+      } else {
+        notify(`⚠️ ব্যানার সেভ সতর্কবার্তা: ${res.reason || 'লোকালি সংরক্ষিত হয়েছে'}`);
+      }
+    } catch (err: any) {
+      notify(`❌ ব্যানার সেভ ত্রুটি: ${err?.message || 'চেক করুন'}`);
     }
-    setHeroSlides(updated);
-    await saveHeroSlidesToFirestore(updated);
-    await triggerCloudSync(
-      editingHeroSlideId ? 'হিরো স্লাইডার ব্যানার আপডেট হয়েছে!' : 'নতুন হিরো ব্যানার স্লাইডারে যুক্ত হয়েছে!',
-      { heroSlides: updated }
-    );
-    setShowHeroSlideForm(false);
   };
 
   // ============================================================================
@@ -1504,7 +1157,7 @@ export default function App() {
     customerName: '',
     customerPhone: '',
     customerEmail: '',
-    itemSlug: INITIAL_COURSES[0].slug,
+    itemSlug: courses[0]?.slug || '',
     paymentMethod: 'bKash' as OrderRecord['paymentMethod'],
     trxId: ''
   });
@@ -1604,7 +1257,7 @@ export default function App() {
       customerName: '',
       customerPhone: '',
       customerEmail: '',
-      itemSlug: courses[0]?.slug || INITIAL_COURSES[0].slug,
+      itemSlug: courses[0]?.slug || '',
       paymentMethod: 'bKash',
       trxId: ''
     });
@@ -1731,34 +1384,27 @@ export default function App() {
   );
 
   const rangeMetrics = useMemo(() => {
-    const mult =
-      analyticsRange === 'today'
-        ? 0.08
-        : analyticsRange === '7d'
-        ? 0.35
-        : analyticsRange === '30d'
-        ? 1
-        : 2.6;
-    const baseRev = Math.round(480000 * mult) + liveOrdersRevenue;
-    const visitors = Math.round(38420 * mult);
-    const adClicks = Math.round(14290 * mult);
-    const convRate = ((completedOrders.length / Math.max(1, visitors)) * 100 + 4.2).toFixed(1);
+    const rev = liveOrdersRevenue;
+    const totalCount = orders.length;
+    const completedCount = completedOrders.length;
+    const convRate = totalCount > 0 ? ((completedCount / totalCount) * 100).toFixed(1) : '০.০';
+    const visitors = incompleteLeads.length + completedCount;
     return {
-      revenueBdt: baseRev,
+      revenueBdt: rev,
       visitors,
-      adClicks,
+      adClicks: totalCount,
       convRate,
       dailyBars: [
-        { day: 'শনি', rev: Math.round(48000 * mult), vis: Math.round(4200 * mult) },
-        { day: 'রবি', rev: Math.round(62000 * mult), vis: Math.round(5100 * mult) },
-        { day: 'সোম', rev: Math.round(54000 * mult), vis: Math.round(4800 * mult) },
-        { day: 'মঙ্গল', rev: Math.round(79000 * mult), vis: Math.round(6300 * mult) },
-        { day: 'বুধ', rev: Math.round(71000 * mult), vis: Math.round(5900 * mult) },
-        { day: 'বৃহঃ', rev: Math.round(88000 * mult), vis: Math.round(7100 * mult) },
-        { day: 'শুক্র', rev: Math.round(94000 * mult), vis: Math.round(7800 * mult) }
+        { day: 'শনি', rev: Math.round(rev * 0.12), vis: Math.round(visitors * 0.12) },
+        { day: 'রবি', rev: Math.round(rev * 0.15), vis: Math.round(visitors * 0.15) },
+        { day: 'সোম', rev: Math.round(rev * 0.14), vis: Math.round(visitors * 0.14) },
+        { day: 'মঙ্গল', rev: Math.round(rev * 0.18), vis: Math.round(visitors * 0.18) },
+        { day: 'বুধ', rev: Math.round(rev * 0.16), vis: Math.round(visitors * 0.16) },
+        { day: 'বৃহঃ', rev: Math.round(rev * 0.13), vis: Math.round(visitors * 0.13) },
+        { day: 'শুক্র', rev: Math.round(rev * 0.12), vis: Math.round(visitors * 0.12) }
       ]
     };
-  }, [analyticsRange, liveOrdersRevenue, completedOrders.length]);
+  }, [liveOrdersRevenue, orders.length, completedOrders.length, incompleteLeads.length]);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
@@ -2985,6 +2631,24 @@ export default function App() {
 
               {/* Courses Table / Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                {courses.length === 0 && !showCourseForm && (
+                  <div className="col-span-full py-16 text-center border border-dashed border-white/10 rounded-2xl bg-[#0b101b]">
+                    <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <h3 className="text-base font-bold text-white mb-1">কোনো কোর্স তৈরি করা নেই</h3>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto mb-5">
+                      কোনো ডামি কোর্স নেই। আপনার রিয়েল কোর্স তৈরি করতে উপরের &quot;+ নতুন কোর্স যুক্ত করুন&quot; বাটনে ক্লিক করুন।
+                    </p>
+                    <button
+                      onClick={() => {
+                        startNewCourse();
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-1.5"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>প্রথম কোর্স তৈরি করুন</span>
+                    </button>
+                  </div>
+                )}
                 {courses.map((course) => {
                   const lessonCount = course.modules.reduce((s, m) => s + m.lessons.length, 0);
                   return (
@@ -3051,10 +2715,17 @@ export default function App() {
                         </button>
                         <button
                           onClick={async () => {
-                            await deleteCourseFromFirestore(course.slug || course.id);
-                            const updated = courses.filter((c) => c.id !== course.id);
+                            if (!confirm(`আপনি কি "${course.titleBn}" কোর্সটি সম্পূর্ণ মুছে ফেলতে চান?`)) return;
+                            notify('⏳ কোর্স মুছে ফেলা হচ্ছে...');
+                            const res = await deleteCourseFromFirestore(course.id, course.slug);
+                            const updated = courses.filter((c) => c.id !== course.id && c.slug !== course.slug);
                             setCourses(updated);
-                            await triggerCloudSync('কোর্সটি মুছে ফেলা হয়েছে!', { courses: updated });
+                            safeSet('mobiniq_admin_courses_v1', updated);
+                            if (res.success) {
+                              notify('✅ কোর্স সফলভাবে মুছে ফেলা হয়েছে!');
+                            } else {
+                              notify(`⚠️ ফায়ারবেস থেকে ডিলিট: ${res.reason || 'লোকালি মুছে ফেলা হয়েছে'}`);
+                            }
                           }}
                           className="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400"
                           title="Delete Course"
@@ -3284,6 +2955,24 @@ export default function App() {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {products.length === 0 && !showProductForm && (
+                  <div className="col-span-full py-16 text-center border border-dashed border-white/10 rounded-2xl bg-[#0b101b]">
+                    <ShoppingBag className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <h3 className="text-base font-bold text-white mb-1">কোনো ডিজিটাল প্রোডাক্ট নেই</h3>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto mb-5">
+                      কোনো ডামি প্রোডাক্ট নেই। আপনার নতুন ডিজিটাল প্রোডাক্ট যোগ করতে &quot;+ নতুন ডিজিটাল প্রোডাক্ট&quot; বাটনে ক্লিক করুন।
+                    </p>
+                    <button
+                      onClick={() => {
+                        startNewProduct();
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-1.5"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>প্রথম প্রোডাক্ট তৈরি করুন</span>
+                    </button>
+                  </div>
+                )}
                 {products.map((prod) => (
                   <div
                     key={prod.id}
@@ -3322,10 +3011,17 @@ export default function App() {
                       </button>
                       <button
                         onClick={async () => {
-                          await deleteProductFromFirestore(prod.slug || prod.id);
-                          const updated = products.filter((p) => p.id !== prod.id);
+                          if (!confirm(`আপনি কি "${prod.titleBn}" প্রোডাক্টটি সম্পূর্ণ মুছে ফেলতে চান?`)) return;
+                          notify('⏳ প্রোডাক্ট মুছে ফেলা হচ্ছে...');
+                          const res = await deleteProductFromFirestore(prod.id, prod.slug);
+                          const updated = products.filter((p) => p.id !== prod.id && p.slug !== prod.slug);
                           setProducts(updated);
-                          await triggerCloudSync('প্রোডাক্ট মুছে ফেলা হয়েছে!', { products: updated });
+                          safeSet('mobiniq_admin_products_v1', updated);
+                          if (res.success) {
+                            notify('✅ প্রোডাক্ট সফলভাবে মুছে ফেলা হয়েছে!');
+                          } else {
+                            notify(`⚠️ ফায়ারবেস থেকে ডিলিট: ${res.reason || 'লোকালি মুছে ফেলা হয়েছে'}`);
+                          }
                         }}
                         className="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-bold"
                       >
@@ -3644,6 +3340,24 @@ export default function App() {
 
               {/* Hero Slides List Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {heroSlides.length === 0 && !showHeroSlideForm && (
+                  <div className="col-span-full py-16 text-center border border-dashed border-white/10 rounded-2xl bg-[#0b101b]">
+                    <Layers className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <h3 className="text-base font-bold text-white mb-1">কোনো স্লাইডার ব্যানার নেই</h3>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto mb-5">
+                      কোনো ডামি ব্যানার নেই। হোমপেজে প্রদর্শনের জন্য &quot;+ নতুন ব্যানার যোগ করুন&quot; বাটনে ক্লিক করে ব্যানার যুক্ত করুন।
+                    </p>
+                    <button
+                      onClick={() => {
+                        startNewHeroSlide();
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-1.5"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>প্রথম ব্যানার যোগ করুন</span>
+                    </button>
+                  </div>
+                )}
                 {heroSlides.map((slide, sIdx) => (
                   <div
                     key={slide.id}
@@ -3680,10 +3394,17 @@ export default function App() {
                       </button>
                       <button
                         onClick={async () => {
+                          if (!confirm('আপনি কি এই হিরো ব্যানার স্লাইডটি মুছে ফেলতে চান?')) return;
+                          notify('⏳ ব্যানার মুছে ফেলা হচ্ছে...');
                           const updated = heroSlides.filter((s) => s.id !== slide.id);
                           setHeroSlides(updated);
-                          await saveHeroSlidesToFirestore(updated);
-                          await triggerCloudSync('হিরো ব্যানার মুছে ফেলা হয়েছে!', { heroSlides: updated });
+                          safeSet('mobiniq_admin_hero_slides_v1', updated);
+                          const res = await saveHeroSlidesToFirestore(updated);
+                          if (res.synced) {
+                            notify('✅ হিরো ব্যানার সফলভাবে মুছে ফেলা হয়েছে!');
+                          } else {
+                            notify(`⚠️ ব্যানার ডিলিট: ${res.reason || 'লোকালি মুছে ফেলা হয়েছে'}`);
+                          }
                         }}
                         className="px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-bold"
                       >
