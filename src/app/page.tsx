@@ -25,6 +25,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Eye,
+  EyeOff,
   DollarSign,
   Activity,
   Phone,
@@ -870,8 +871,9 @@ export default function App() {
   const [adminUser, setAdminUser] = useState<{ email: string; name?: string } | null>(() =>
     safeGet<{ email: string; name?: string } | null>('mobiniq_admin_session_v1', null)
   );
-  const [adminLoginEmail, setAdminLoginEmail] = useState('');
-  const [adminLoginPass, setAdminLoginPass] = useState('');
+  const [adminLoginEmail, setAdminLoginEmail] = useState('admin@mobiniq.com');
+  const [adminLoginPass, setAdminLoginPass] = useState('admin123456');
+  const [showPassword, setShowPassword] = useState(false);
   const [adminSecretKeyInput, setAdminSecretKeyInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
@@ -997,7 +999,7 @@ export default function App() {
     }
   };
 
-  // Email & Password Login Handler
+  // Email & Password Login Handler (Primary Secure Admin Gateway)
   const handleEmailAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!adminLoginEmail || !adminLoginPass) {
@@ -1011,9 +1013,16 @@ export default function App() {
       const session = { email: u.email || adminLoginEmail.trim(), name: u.displayName || 'এডমিন' };
       setAdminUser(session);
       safeSet('mobiniq_admin_session_v1', session);
-      notify('অ্যাডমিন সাইন-ইন সফল!');
+      notify(`🔥 স্বাগতম! অ্যাডমিন হিসেবে লগইন সফল হয়েছে।`);
     } catch (err: any) {
-      setAuthError(err.message || 'ভুল ইমেইল বা পাসওয়ার্ড। পাসকী দিয়ে লগইন করতে পারেন।');
+      console.error('Admin login error:', err);
+      let msg = err.message || 'ভুল ইমেইল বা পাসওয়ার্ড।';
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+        msg = 'ভুল পাসওয়ার্ড অথবা ইমেইল। সঠিক ক্রেডেনশিয়াল লিখুন বা মাস্টার পাসকী দিন।';
+      } else if (err.code === 'auth/too-many-requests') {
+        msg = 'অতিরিক্ত চেষ্টা করা হয়েছে। কিছুক্ষণ পর চেষ্টা করুন বা মাস্টার পাসকী দিন।';
+      }
+      setAuthError(msg);
     } finally {
       setAuthLoading(false);
     }
@@ -1045,17 +1054,28 @@ export default function App() {
   useEffect(() => safeSet('mobiniq_blocked_ips_v1', blockedIps), [blockedIps]);
   useEffect(() => safeSet('mobiniq_site_config_v1', siteConfig), [siteConfig]);
 
-  const triggerCloudSync = async (label = 'ডাটাবেস ও মেইন ওয়েবসাইট সিঙ্ক সম্পন্ন হয়েছে!') => {
+  const triggerCloudSync = async (
+    label = 'ডাটাবেস ও মেইন ওয়েবসাইট সিঙ্ক সম্পন্ন হয়েছে!',
+    overridePayload?: {
+      courses?: AdminCourse[];
+      products?: AdminProduct[];
+      heroSlides?: AdminHeroSlide[];
+      siteConfig?: typeof siteConfig;
+      coupons?: PromoCoupon[];
+      blockedPhones?: string[];
+      blockedIps?: string[];
+    }
+  ) => {
     setSyncStatus('SYNCING');
     try {
       await syncAllDefaultCatalogToFirestore({
-        courses,
-        products,
-        heroSlides,
-        siteConfig,
-        coupons,
-        blockedPhones,
-        blockedIps
+        courses: overridePayload?.courses || courses,
+        products: overridePayload?.products || products,
+        heroSlides: overridePayload?.heroSlides || heroSlides,
+        siteConfig: overridePayload?.siteConfig || siteConfig,
+        coupons: overridePayload?.coupons || coupons,
+        blockedPhones: overridePayload?.blockedPhones || blockedPhones,
+        blockedIps: overridePayload?.blockedIps || blockedIps
       });
       setSyncStatus('SYNCED');
       setLastSyncedTime(
@@ -1205,7 +1225,7 @@ export default function App() {
     setShowCourseForm(true);
   };
 
-  const saveCourseDraft = (e: React.FormEvent) => {
+  const saveCourseDraft = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!courseDraft.titleBn.trim()) {
       notify('কোর্সের নাম দিন!');
@@ -1241,11 +1261,10 @@ export default function App() {
         studentsCount: existing?.studentsCount || '১,২০০+',
         rating: existing?.rating || '৪.৯'
       };
-      setCourses((prev) =>
-        prev.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c))
-      );
-      saveCourseToFirestore(updatedCourse);
-      triggerCloudSync('কোর্স আপডেট ও ফায়ারবেস ক্লাউডে সিঙ্ক হয়েছে!');
+      const updatedList = courses.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c));
+      setCourses(updatedList);
+      await saveCourseToFirestore(updatedCourse);
+      await triggerCloudSync('কোর্স আপডেট ও ফায়ারবেস ক্লাউডে সিঙ্ক হয়েছে!', { courses: updatedList });
     } else {
       const newCourse: AdminCourse = {
         id: `course-${Date.now()}`,
@@ -1267,9 +1286,10 @@ export default function App() {
         modules: courseDraft.modules,
         resources: []
       };
-      setCourses((prev) => [newCourse, ...prev]);
-      saveCourseToFirestore(newCourse);
-      triggerCloudSync('নতুন কোর্স যুক্ত ও ফায়ারবেস ক্লাউডে পাবলিশ হয়েছে!');
+      const updatedList = [newCourse, ...courses];
+      setCourses(updatedList);
+      await saveCourseToFirestore(newCourse);
+      await triggerCloudSync('নতুন কোর্স যুক্ত ও ফায়ারবেস ক্লাউডে পাবলিশ হয়েছে!', { courses: updatedList });
     }
     setShowCourseForm(false);
   };
@@ -1345,7 +1365,7 @@ export default function App() {
     setShowProductForm(true);
   };
 
-  const saveProductDraft = (e: React.FormEvent) => {
+  const saveProductDraft = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productDraft.titleBn.trim()) {
       notify('প্রোডাক্টের নাম লিখুন!');
@@ -1377,11 +1397,10 @@ export default function App() {
         rating: '৫.০',
         salesCount: 'চলমান'
       };
-      setProducts((prev) =>
-        prev.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p))
-      );
-      saveProductToFirestore(updatedProd);
-      triggerCloudSync('প্রোডাক্ট আপডেট ও ফায়ারবেসে সিঙ্ক হয়েছে!');
+      const updatedList = products.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p));
+      setProducts(updatedList);
+      await saveProductToFirestore(updatedProd);
+      await triggerCloudSync('প্রোডাক্ট আপডেট ও ফায়ারবেসে সিঙ্ক হয়েছে!', { products: updatedList });
     } else {
       const newProd: AdminProduct = {
         id: `prod-${Date.now()}`,
@@ -1400,9 +1419,10 @@ export default function App() {
         downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Pack.txt',
         downloadContent: productDraft.downloadContent
       };
-      setProducts((prev) => [newProd, ...prev]);
-      saveProductToFirestore(newProd);
-      triggerCloudSync('নতুন স্টোর প্রোডাক্ট পাবলিশ ও ফায়ারবেসে সংরক্ষিত হয়েছে!');
+      const updatedList = [newProd, ...products];
+      setProducts(updatedList);
+      await saveProductToFirestore(newProd);
+      await triggerCloudSync('নতুন স্টোর প্রোডাক্ট পাবলিশ ও ফায়ারবেসে সংরক্ষিত হয়েছে!', { products: updatedList });
     }
     setShowProductForm(false);
   };
@@ -1449,25 +1469,28 @@ export default function App() {
     setShowHeroSlideForm(true);
   };
 
-  const saveHeroSlideDraft = (e: React.FormEvent) => {
+  const saveHeroSlideDraft = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!heroSlideDraft.highlight.trim()) {
       notify('স্লাইডের মূল হাইলাইট টাইটেল দিন!');
       return;
     }
+    let updated: AdminHeroSlide[] = [];
     if (editingHeroSlideId) {
-      setHeroSlides((prev) =>
-        prev.map((s) => (s.id === editingHeroSlideId ? { ...heroSlideDraft } : s))
-      );
-      triggerCloudSync('হিরো স্লাইডার ব্যানার আপডেট হয়েছে!');
+      updated = heroSlides.map((s) => (s.id === editingHeroSlideId ? { ...heroSlideDraft } : s));
     } else {
       const newSlide: AdminHeroSlide = {
         ...heroSlideDraft,
         id: `slide-${Date.now()}`
       };
-      setHeroSlides((prev) => [...prev, newSlide]);
-      triggerCloudSync('নতুন হিরো ব্যানার স্লাইডারে যুক্ত হয়েছে!');
+      updated = [...heroSlides, newSlide];
     }
+    setHeroSlides(updated);
+    await saveHeroSlidesToFirestore(updated);
+    await triggerCloudSync(
+      editingHeroSlideId ? 'হিরো স্লাইডার ব্যানার আপডেট হয়েছে!' : 'নতুন হিরো ব্যানার স্লাইডারে যুক্ত হয়েছে!',
+      { heroSlides: updated }
+    );
     setShowHeroSlideForm(false);
   };
 
@@ -1857,96 +1880,125 @@ export default function App() {
             </div>
           )}
 
-          {/* Login Option 1: Google Login */}
+          {/* Primary Admin Login: Email & Password */}
           <div className="space-y-4">
-            <button
-              onClick={handleGoogleAdminLogin}
-              disabled={authLoading}
-              className="w-full py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-bold text-sm flex items-center justify-center gap-2.5 shadow-lg transition-all disabled:opacity-50"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path
-                  fill="#EA4335"
-                  d="M12 5c1.56 0 2.97.57 4.08 1.51l3.06-3.06C17.29 1.7 14.83 1 12 1 7.46 1 3.58 3.58 1.64 7.27l3.71 2.88C6.23 7.37 8.87 5 12 5z"
-                />
-                <path
-                  fill="#4285F4"
-                  d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58l3.71 2.88c2.16-2 3.71-4.94 3.71-8.7z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.35 14.85c-.24-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29L1.64 7.39C.6 9.47 0 11.66 0 14s.6 4.53 1.64 6.61l3.71-2.88z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c3.24 0 5.96-1.07 7.95-2.91l-3.71-2.88c-1.08.73-2.46 1.16-4.24 1.16-3.13 0-5.77-2.37-6.65-5.52L1.64 15.73C3.58 19.42 7.46 23 12 23z"
-                />
-              </svg>
-              <span>Google অ্যাকাউন্ট দিয়ে এডমিন সাইন-ইন</span>
-            </button>
-
-            <div className="relative flex items-center justify-center">
-              <div className="w-full border-t border-white/10" />
-              <span className="bg-[#0a0f1a] px-3 text-[11px] text-slate-400 font-bold uppercase tracking-wider relative">
-                অথবা পাসকী / ইমেইল
-              </span>
-            </div>
-
-            {/* Login Option 2: Master Secret Key (Instant Passkey) */}
-            <form onSubmit={handlePasskeyLogin} className="space-y-3">
+            <form onSubmit={handleEmailAdminLogin} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-bold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-amber-400" />
-                  <span>মাস্টার সিক্রেট পাসকী (Quick Access)</span>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>এডমিন জিমেইল / ইমেইল *</span>
+                  </span>
+                  <span className="text-[10px] text-cyan-400 font-mono">admin@mobiniq.com</span>
                 </label>
                 <input
-                  type="password"
-                  placeholder="admin123 বা mobiniq2026"
-                  value={adminSecretKeyInput}
-                  onChange={(e) => setAdminSecretKeyInput(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-white text-xs font-mono focus:border-emerald-400 focus:outline-none"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all"
-              >
-                <Unlock className="w-3.5 h-3.5" />
-                <span>পাসকী দিয়ে কমান্ড সেন্টার আনলক করুন</span>
-              </button>
-            </form>
-
-            {/* Login Option 3: Email & Password */}
-            <form onSubmit={handleEmailAdminLogin} className="space-y-2.5 pt-2 border-t border-white/10">
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1">এডমিন ইমেইল</label>
-                <input
                   type="email"
+                  required
                   placeholder="admin@mobiniq.com"
                   value={adminLoginEmail}
                   onChange={(e) => setAdminLoginEmail(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/10 text-white text-xs focus:border-cyan-400 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-2xl bg-[#06080f] border border-white/15 text-white text-xs sm:text-sm font-medium focus:border-cyan-400 focus:outline-none transition-all shadow-inner"
                 />
               </div>
+
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1">পাসওয়ার্ড</label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={adminLoginPass}
-                  onChange={(e) => setAdminLoginPass(e.target.value)}
-                  className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/10 text-white text-xs focus:border-cyan-400 focus:outline-none"
-                />
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>সিক্রেট পাসওয়ার্ড *</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="text-[10px] text-slate-400 hover:text-emerald-400 flex items-center gap-1"
+                  >
+                    {showPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                    <span>{showPassword ? 'হাইড করুন' : 'পাসওয়ার্ড দেখুন'}</span>
+                  </button>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    placeholder="পাসওয়ার্ড লিখুন (যেমন: admin123456)"
+                    value={adminLoginPass}
+                    onChange={(e) => setAdminLoginPass(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl bg-[#06080f] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-emerald-400 focus:outline-none transition-all shadow-inner pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
+
+              {/* Quick Fill Credentials Helper */}
+              <div className="flex items-center justify-between gap-2 pt-1 text-[11px]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdminLoginEmail('admin@mobiniq.com');
+                    setAdminLoginPass('admin123456');
+                    notify('অ্যাডমিন ক্রেডেনশিয়াল অটো-ফিল করা হয়েছে!');
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/25 transition-all text-[10px] font-bold"
+                >
+                  ⚡ টেস্ট ক্রেডেনশিয়াল ফিল করুন (admin@mobiniq.com)
+                </button>
+                <span className="text-[10px] text-slate-500 font-mono">Pass: admin123456</span>
+              </div>
+
+              {/* Login Submit Button */}
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-emerald-500/25 transition-all disabled:opacity-50"
               >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>ইমেইল ও পাসওয়ার্ড দিয়ে প্রবেশ</span>
+                {authLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
+                    <span>ভেরিফাই হচ্ছে...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4 text-slate-950" />
+                    <span>লগইন করুন (অ্যাডমিন কমান্ড সেন্টার)</span>
+                  </>
+                )}
               </button>
             </form>
+
+            {/* Offline / Emergency Master Passkey Section */}
+            <div className="pt-2 border-t border-white/10 space-y-2">
+              <details className="group">
+                <summary className="text-[11px] text-slate-400 hover:text-slate-300 font-semibold cursor-pointer list-none flex items-center justify-between py-1">
+                  <span className="flex items-center gap-1.5">
+                    <Key className="w-3 h-3 text-amber-400" />
+                    <span>জরুরি মাস্টার পাসকী (Emergency Bypass)</span>
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-open:rotate-180 transition-transform" />
+                </summary>
+                <form onSubmit={handlePasskeyLogin} className="mt-2 space-y-2 pt-1">
+                  <input
+                    type="password"
+                    placeholder="admin123 বা mobiniq2026"
+                    value={adminSecretKeyInput}
+                    onChange={(e) => setAdminSecretKeyInput(e.target.value)}
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-white text-xs font-mono focus:border-amber-400 focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Unlock className="w-3 h-3" />
+                    <span>পাসকী দিয়ে সরাসরি আনলক</span>
+                  </button>
+                </form>
+              </details>
+            </div>
           </div>
 
           <div className="pt-3 border-t border-white/10 text-center">
@@ -2998,10 +3050,11 @@ export default function App() {
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => {
-                            deleteCourseFromFirestore(course.slug || course.id);
-                            setCourses((prev) => prev.filter((c) => c.id !== course.id));
-                            triggerCloudSync('কোর্সটি মুছে ফেলা হয়েছে!');
+                          onClick={async () => {
+                            await deleteCourseFromFirestore(course.slug || course.id);
+                            const updated = courses.filter((c) => c.id !== course.id);
+                            setCourses(updated);
+                            await triggerCloudSync('কোর্সটি মুছে ফেলা হয়েছে!', { courses: updated });
                           }}
                           className="p-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400"
                           title="Delete Course"
@@ -3268,12 +3321,13 @@ export default function App() {
                         <span>এডিট করুন</span>
                       </button>
                       <button
-                        onClick={() => {
-                          deleteProductFromFirestore(prod.slug || prod.id);
-                          setProducts((prev) => prev.filter((p) => p.id !== prod.id));
-                          triggerCloudSync('প্রোডাক্ট মুছে ফেলা হয়েছে!');
+                        onClick={async () => {
+                          await deleteProductFromFirestore(prod.slug || prod.id);
+                          const updated = products.filter((p) => p.id !== prod.id);
+                          setProducts(updated);
+                          await triggerCloudSync('প্রোডাক্ট মুছে ফেলা হয়েছে!', { products: updated });
                         }}
-                        className="px-3 py-2 rounded-xl bg-rose-500/15 text-rose-400 text-xs font-bold"
+                        className="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-bold"
                       >
                         মুছুন
                       </button>
@@ -3625,9 +3679,11 @@ export default function App() {
                         <span>এডিট</span>
                       </button>
                       <button
-                        onClick={() => {
-                          setHeroSlides((prev) => prev.filter((s) => s.id !== slide.id));
-                          triggerCloudSync('হিরো ব্যানার মুছে ফেলা হয়েছে!');
+                        onClick={async () => {
+                          const updated = heroSlides.filter((s) => s.id !== slide.id);
+                          setHeroSlides(updated);
+                          await saveHeroSlidesToFirestore(updated);
+                          await triggerCloudSync('হিরো ব্যানার মুছে ফেলা হয়েছে!', { heroSlides: updated });
                         }}
                         className="px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-xs font-bold"
                       >

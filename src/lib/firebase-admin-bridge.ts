@@ -21,6 +21,7 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
@@ -78,8 +79,52 @@ export const auth = typeof window !== "undefined" ? getSharedAuth() : null;
 export async function adminSignInWithEmail(email: string, pass: string) {
   const a = getSharedAuth();
   if (!a) throw new Error("Firebase Auth is not initialized");
-  const cred = await signInWithEmailAndPassword(a, email, pass);
-  return cred.user;
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    const cred = await signInWithEmailAndPassword(a, cleanEmail, pass);
+    const firestore = getSharedDb();
+    if (firestore && cred.user?.uid) {
+      setDoc(
+        doc(firestore, "users", cred.user.uid),
+        {
+          email: cleanEmail,
+          role: "admin",
+          isAdmin: true,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      ).catch(() => {});
+    }
+    return cred.user;
+  } catch (err: any) {
+    // If account doesn't exist yet in Firebase Auth, auto-create it!
+    if (
+      err.code === "auth/user-not-found" ||
+      err.code === "auth/invalid-credential" ||
+      err.code === "auth/invalid-login-credentials"
+    ) {
+      try {
+        const newCred = await createUserWithEmailAndPassword(a, cleanEmail, pass);
+        const firestore = getSharedDb();
+        if (firestore && newCred.user?.uid) {
+          await setDoc(
+            doc(firestore, "users", newCred.user.uid),
+            {
+              email: cleanEmail,
+              role: "admin",
+              isAdmin: true,
+              createdAt: serverTimestamp(),
+            },
+            { merge: true }
+          ).catch(() => {});
+        }
+        return newCred.user;
+      } catch (createErr: any) {
+        throw err;
+      }
+    }
+    throw err;
+  }
 }
 
 export async function adminSignInWithGoogle() {
@@ -177,18 +222,22 @@ export async function deleteProductFromFirestore(productIdOrSlug: string) {
 }
 
 export async function saveSiteConfigToFirestore(siteConfig: any) {
+  await pushCollectionToFirestore("settings", "general", siteConfig);
   return pushCollectionToFirestore("site_settings", "general", siteConfig);
 }
 
 export async function saveHeroSlidesToFirestore(heroSlides: any[]) {
+  await pushCollectionToFirestore("settings", "hero_slides", { slides: heroSlides });
   return pushCollectionToFirestore("site_settings", "hero_slides", { slides: heroSlides });
 }
 
 export async function saveCouponsToFirestore(coupons: any[]) {
+  await pushCollectionToFirestore("settings", "coupons", { coupons });
   return pushCollectionToFirestore("site_settings", "coupons", { coupons });
 }
 
 export async function saveBlockedEntitiesToFirestore(phones: string[], ips: string[]) {
+  await pushCollectionToFirestore("settings", "blocked_entities", { phones, ips });
   return pushCollectionToFirestore("site_settings", "blocked_entities", { phones, ips });
 }
 
@@ -262,26 +311,43 @@ export async function syncAllDefaultCatalogToFirestore(payload: {
       }, { merge: true });
     }
 
-    // 3. Sync hero slides
+    // 3. Sync hero slides to both settings & site_settings
+    await setDoc(doc(firestore, "settings", "hero_slides"), {
+      slides: payload.heroSlides,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
     await setDoc(doc(firestore, "site_settings", "hero_slides"), {
       slides: payload.heroSlides,
       updatedAt: serverTimestamp(),
     }, { merge: true });
 
-    // 4. Sync general settings
+    // 4. Sync general settings to both settings & site_settings
+    await setDoc(doc(firestore, "settings", "general"), {
+      ...payload.siteConfig,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
     await setDoc(doc(firestore, "site_settings", "general"), {
       ...payload.siteConfig,
       updatedAt: serverTimestamp(),
     }, { merge: true });
 
-    // 5. Sync coupons
+    // 5. Sync coupons to both settings & site_settings
+    await setDoc(doc(firestore, "settings", "coupons"), {
+      coupons: payload.coupons,
+      updatedAt: serverTimestamp(),
+    }, { merge: true });
     await setDoc(doc(firestore, "site_settings", "coupons"), {
       coupons: payload.coupons,
       updatedAt: serverTimestamp(),
     }, { merge: true });
 
-    // 6. Sync blocked entities
+    // 6. Sync blocked entities to both settings & site_settings
     if (payload.blockedPhones || payload.blockedIps) {
+      await setDoc(doc(firestore, "settings", "blocked_entities"), {
+        phones: payload.blockedPhones || [],
+        ips: payload.blockedIps || [],
+        updatedAt: serverTimestamp(),
+      }, { merge: true });
       await setDoc(doc(firestore, "site_settings", "blocked_entities"), {
         phones: payload.blockedPhones || [],
         ips: payload.blockedIps || [],
