@@ -269,11 +269,251 @@ const DOC_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/20
 const AI_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%2307131e'/><text x='50%' y='50%' fill='%2310b981' font-size='32' font-family='sans-serif' text-anchor='middle'>MobinIQ Complete AI Mastery</text></svg>";
 const EDIT_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='450'><rect width='100%' height='100%' fill='%23171024'/><text x='50%' y='50%' fill='%23fbbf24' font-size='32' font-family='sans-serif' text-anchor='middle'>High-Retention Video Editing</text></svg>";
 
-const INITIAL_COURSES: AdminCourse[] = [];
+const INITIAL_COURSES: AdminCourse[] = [
+  {
+    id: 'course-ai-complete',
+    slug: 'complete-ai-mastery-zero-to-pro',
+    titleBn: 'সম্পূর্ণ এআই (AI) কিভাবে শিখবো: জিরো থেকে প্রো মাস্টারক্লাস',
+    shortTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
+    subtitleBn: 'মোবাইল ও পিসিতে ChatGPT, Claude, প্রম্পট ইঞ্জিনিয়ারিং ও এআই অটোমেশন গাইড।',
+    shortDescBn: 'একদম বেসিক থেকে শুরু করে প্রফেশনাল প্রম্পট ইঞ্জিনিয়ারিং, এআই দিয়ে কনটেন্ট রিসার্চ, ওয়েব অ্যাপ তৈরি এবং অটোমেশন ওয়ার্কফ্লো শিখুন ধাপে ধাপে।',
+    price: 1250,
+    originalPrice: 3000,
+    thumbnailUrl: AI_COURSE_IMG,
+    category: 'এআই অ্যান্ড অটোমেশন',
+    studentsCount: '৪,৮৯০+',
+    rating: '৪.৯',
+    totalDuration: '১৬ ঘণ্টা',
+    status: 'PUBLISHED',
+    featured: true,
+    outcomes: [
+      'ChatGPT, Claude ও Gemini-এর অ্যাডভান্সড সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
+      'মোবাইল ও পিসি দিয়ে AI ওয়েবসাইট, ল্যান্ডিং পেজ ও টুল তৈরি',
+      '১ ঘণ্টার ডিপ রিসার্চ ও স্ক্রিপ্ট রাইটিং মাত্র ১০ মিনিটে সম্পন্ন করার ফর্মুলা',
+      'এআই ভিজ্যুয়াল, ভয়েসওভার ও নো-কোড ওয়ার্কফ্লো অটোমেশন সেটআপ'
+    ],
+    modules: [
+      {
+        id: 'mod-ai-1',
+        title: 'মডিউল ১: এআই ফাউন্ডেশন ও সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
+        order: 1,
+        lessons: [
+          {
+            id: 'les-ai-101',
+            title: '১.১ [ফ্রি প্রিভিউ] সম্পূর্ণ এআই রোডম্যাপ: কীভাবে AI আপনার কাজ ১০ গুণ সহজ করবে',
+            duration: '১৯:৩০',
+            isPreview: true,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'বিগিনার থেকে প্রো লেভেলে এআই ব্যবহারের সঠিক মাইন্ডসেট এবং টুলস পরিচিতি।'
+          },
+          {
+            id: 'les-ai-102',
+            title: '১.২ [ফ্রি প্রিভিউ] হ্যালুসিনেশন ছাড়া ১০০% নির্ভুল আউটপুট পাওয়ার প্রম্পট ফর্মুলা',
+            duration: '২৫:১০',
+            isPreview: true,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'Role, Context, Constraint এবং Few-Shot ফ্রেমওয়ার্কের প্র্যাকটিক্যাল ব্যবহার।'
+          }
+        ]
+      },
+      {
+        id: 'mod-ai-2',
+        title: 'মডিউল ২: AI ওয়েব প্রজেক্ট, অটোমেশন ও মনিটাইজেশন',
+        order: 2,
+        lessons: [
+          {
+            id: 'les-ai-201',
+            title: '২.১ কোডিং ছাড়াই AI দিয়ে প্রফেশনাল ওয়েব অ্যাপ ও ল্যান্ডিং পেজ তৈরি',
+            duration: '৩৫:২০',
+            isPreview: false,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'প্রম্পট দিয়ে ফুল-স্ট্যাক প্রজেক্ট তৈরি, গিটহাব ও ভার্সেলে লাইভ ডিপ্লয়মেন্ট।'
+          }
+        ]
+      }
+    ],
+    resources: [
+      {
+        id: 'res-ai-1',
+        title: 'এআই অটোমেশন ও সিস্টেম প্রম্পট মাস্টার শিট',
+        size: '28 KB',
+        filename: 'MobinIQ_Complete_AI_Mastery_Prompts.txt',
+        content: '# MobinIQ Complete AI Mastery Prompts\n'
+      }
+    ]
+  },
+  {
+    id: 'course-doc-mastery',
+    slug: 'cinematic-tech-documentary-masterclass',
+    titleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ও ডিপ রিসার্চ মাস্টারক্লাস',
+    shortTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
+    subtitleBn: 'ডিপ রিসার্চ, অ্যানালিটিক্যাল স্ক্রিপ্টিং ও ভিজ্যুয়াল স্টোরিটেলিং গাইড।',
+    shortDescBn: 'আন্তর্জাতিক মানের টেক ডকুমেন্টারি তৈরি, ডেটা রিসার্চ, সাউন্ড ডিজাইন এবং রিটেনশন এডিটিং শিখুন এক কোর্সে।',
+    price: 1490,
+    originalPrice: 3500,
+    thumbnailUrl: DOC_COURSE_IMG,
+    category: 'টেক ডকুমেন্টারি',
+    studentsCount: '৪,২৫০+',
+    rating: '৪.৯',
+    totalDuration: '১৮ ঘণ্টা',
+    status: 'PUBLISHED',
+    featured: true,
+    outcomes: [
+      'হাই-রিটেনশন ডকুমেন্টারি টপিক রিসার্চ ও ফ্যাক্ট-চেকিং',
+      'প্রথম ৩০ সেকেন্ডের হুক ও ৩-অ্যাক্ট অ্যানালিটিক্যাল স্ক্রিপ্ট রাইটিং',
+      'সিনেমাটিক সাউন্ড ডিজাইন, সাব-বেস ও অডিও মিক্সিং'
+    ],
+    modules: [
+      {
+        id: 'mod-doc-1',
+        title: 'মডিউল ১: ডিপ রিসার্চ ও স্ক্রিপ্ট আর্কিটেকচার',
+        order: 1,
+        lessons: [
+          {
+            id: 'les-doc-101',
+            title: '১.১ [ফ্রি প্রিভিউ] অ্যানালিটিক্যাল টেক ডকুমেন্টারি স্ট্রাকচার ও কেস স্টাডি',
+            duration: '১৮:২০',
+            isPreview: true,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'হাই-আইকিউ দর্শক ধরে রাখার স্টোরি আর্কিটেকচার এবং প্রথম ৩০ সেকেন্ডের হুক ফর্মুলা।'
+          }
+        ]
+      }
+    ],
+    resources: [
+      {
+        id: 'res-doc-1',
+        title: 'ডকুমেন্টারি স্ক্রিপ্ট ও রিসার্চ টেমপ্লেট',
+        size: '24 KB',
+        filename: 'MobinIQ_Documentary_Script_Template.md',
+        content: '# Mobin IQ Documentary Script Template\n'
+      }
+    ]
+  },
+  {
+    id: 'course-free-editing',
+    slug: 'high-retention-video-editing-fundamentals',
+    titleBn: 'হাই-রিটেনশন ভিডিও এডিটিং ও ইউটিউব গ্রোথ ব্লুপ্রিন্ট',
+    shortTitleBn: 'ভিডিও এডিটিং ও ইউটিউব গ্রোথ',
+    subtitleBn: 'মোবাইল ও পিসিতে সিনেমাটিক কাট, স্পিড গ্রাফ ও কালার গ্রেডিং।',
+    shortDescBn: 'CapCut, Premiere Pro ও After Effects-এ স্মুথ কি-ফ্রেম অ্যানিমেশন, পেসিং এবং ডার্ক সিনেমাটিক কালার গ্রেডিংয়ের প্র্যাকটিক্যাল গাইড।',
+    price: 790,
+    originalPrice: 1990,
+    thumbnailUrl: EDIT_COURSE_IMG,
+    category: 'ভিডিও এডিটিং',
+    studentsCount: '৫,১২০+',
+    rating: '৫.০',
+    totalDuration: '১২ ঘণ্টা',
+    status: 'PUBLISHED',
+    featured: true,
+    outcomes: [
+      'ফ্রেম-পারফেক্ট J-Cut, L-Cut ও ৩-সেকেন্ড ভিজ্যুয়াল রিসেট রুল',
+      'কাস্টম কি-ফ্রেম ইজিং ও স্মুথ স্পিড গ্রাফ কন্ট্রোল'
+    ],
+    modules: [
+      {
+        id: 'mod-edit-1',
+        title: 'মডিউল ১: রিটেনশন পেসিং ও কি-ফ্রেম মাস্টারি',
+        order: 1,
+        lessons: [
+          {
+            id: 'les-edit-101',
+            title: '১.১ [ফ্রি প্রিভিউ] দ্য রুল অব ৩ সেকেন্ডস ও ভিজ্যুয়াল ফ্লো',
+            duration: '১৯:৪৫',
+            isPreview: true,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'দর্শকের মনোযোগ ধরে রাখার জন্য জুম ডায়নামিক্স এবং সাউন্ড ব্রিজিংয়ের ব্যবহার।'
+          }
+        ]
+      }
+    ],
+    resources: []
+  }
+];
 
-const INITIAL_PRODUCTS: AdminProduct[] = [];
+const INITIAL_PRODUCTS: AdminProduct[] = [
+  {
+    id: 'prod-sfx-pack',
+    slug: 'cinematic-tech-documentary-sfx-pack',
+    titleBn: '১০০+ সিনেমাটিক টেক ডকুমেন্টারি সাউন্ড এফেক্টস (SFX) প্যাক',
+    shortTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
+    shortDescBn: 'সাব-বেস ড্রপ, ডিপ হুশ, ডেটা টেলিমেট্রি বিপ ও ডার্ক অ্যাম্বিয়েন্ট ব্যাকগ্রাউন্ড ড্রোন সাউন্ড প্যাক।',
+    price: 199,
+    originalPrice: 499,
+    thumbnailUrl: DOC_COURSE_IMG,
+    category: 'SFX Pack',
+    rating: '৪.৯',
+    salesCount: '১,৮৫০+',
+    status: 'PUBLISHED',
+    featuresBn: [
+      '২৫+ ডিপ সাব-বেস হিট ও সিনেমাটিক ইমপ্যাক্টস',
+      '৩০+ ডেটা টেলিমেট্রি, টেক টাইপরাইটার ও গ্লিচ সাউন্ড',
+      '২৫+ স্মুথ হুশ ও টেনশন রাইজার (CapCut ও Premiere Pro রেডি)'
+    ],
+    downloadFilename: 'MobinIQ_100_Cinematic_SFX_Pack.txt',
+    downloadContent: 'Mobin IQ 100+ Cinematic SFX Pack — Master Download Links\n'
+  },
+  {
+    id: 'prod-prompt-vault',
+    slug: '200-tested-ai-mega-prompt-vault',
+    titleBn: '২০০+ টেস্টেড এআই মেগা প্রম্পট ভল্ট (ChatGPT & Claude)',
+    shortTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
+    shortDescBn: 'স্ক্রিপ্ট রাইটিং, ডিপ রিসার্চ, ইউটিউব গ্রোথ, অ্যাড কপি ও কোডিং অটোমেশনের রেডিমেড প্রম্পট লাইব্রেরি।',
+    price: 149,
+    originalPrice: 399,
+    thumbnailUrl: AI_COURSE_IMG,
+    category: 'Prompt Vault',
+    rating: '৫.০',
+    salesCount: '২,৪১০+',
+    status: 'PUBLISHED',
+    featuresBn: [
+      '৬০+ ডকুমেন্টারি রিসার্চ ও হাই-রিটেনশন স্ক্রিপ্ট রাইটিং প্রম্পট',
+      '৫০+ ভাইরাল ইউটিউব টাইটেল, থাম্বনেইল ও ৩০-সেকেন্ড হুক জেনারেটর',
+      '৫০+ ফেসবুক অ্যাড কপি, ল্যান্ডিং পেজ ও সেলস ফানেল প্রম্পট'
+    ],
+    downloadFilename: 'MobinIQ_200_AI_Prompt_Vault.md',
+    downloadContent: '# Mobin IQ 200+ AI Mega Prompt Vault\n'
+  }
+];
 
-const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [];
+const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [
+  {
+    id: 'slide-1',
+    badge: '🔥 ধামাকা অফার চলছে',
+    topLine: 'মোবাইল ও পিসি দিয়ে',
+    highlight: 'সম্পূর্ণ AI মাস্টারি',
+    subBadge: 'প্রম্পট, ওয়েব ও অটোমেশন',
+    bottomTitle: 'বেসিক টু অ্যাডভান্স',
+    image: HERO_IMG,
+    slug: 'complete-ai-mastery-zero-to-pro',
+    pills: ['Mobile Learning', 'AI Powered', 'Free Resources'],
+    active: true
+  },
+  {
+    id: 'slide-2',
+    badge: '🔥 ধামাকা অফার চলছে',
+    topLine: 'সিনেমাটিক টেক',
+    highlight: 'ডকুমেন্টারি মেকিং',
+    subBadge: 'ডিপ রিসার্চ ও স্টোরিটেলিং',
+    bottomTitle: 'মাস্টারক্লাস ব্লুপ্রিন্ট',
+    image: DOC_COURSE_IMG,
+    slug: 'cinematic-tech-documentary-masterclass',
+    pills: ['Deep Research', 'Sound Design', '3D Motion'],
+    active: true
+  },
+  {
+    id: 'slide-3',
+    badge: '🔥 ধামাকা অফার চলছে',
+    topLine: 'VIDEO EDITING',
+    highlight: '• YOUTUBE GROWTH',
+    subBadge: 'হাই-রিটেনশন এডিটিং',
+    bottomTitle: 'মোবাইল ও পিসি গাইড',
+    image: EDIT_COURSE_IMG,
+    slug: 'high-retention-video-editing-fundamentals',
+    pills: ['High Retention', 'Speed Graph', 'Color Grading'],
+    active: true
+  }
+];
 
 const INITIAL_ORDERS: OrderRecord[] = [];
 
@@ -390,33 +630,16 @@ export default function App() {
 
   // Synchronized Persistent Admin Database State
   const [courses, setCourses] = useState<AdminCourse[]>(() => {
-    const raw = safeGet<AdminCourse[]>('mobiniq_admin_courses_v1', []);
-    return Array.isArray(raw)
-      ? raw.filter(
-          (c) =>
-            c.id !== 'course-ai-complete' &&
-            c.id !== 'course-tech-doc' &&
-            c.id !== 'course-video-editing' &&
-            c.slug !== 'complete-ai-mastery-zero-to-pro'
-        )
-      : [];
+    const raw = safeGet<AdminCourse[]>('mobiniq_admin_courses_v1', INITIAL_COURSES);
+    return Array.isArray(raw) && raw.length > 0 ? raw : INITIAL_COURSES;
   });
   const [products, setProducts] = useState<AdminProduct[]>(() => {
-    const raw = safeGet<AdminProduct[]>('mobiniq_admin_products_v1', []);
-    return Array.isArray(raw)
-      ? raw.filter(
-          (p) =>
-            p.id !== 'prod-sfx-pack' &&
-            p.id !== 'prod-prompt-vault' &&
-            p.slug !== 'cinematic-tech-documentary-sfx-pack'
-        )
-      : [];
+    const raw = safeGet<AdminProduct[]>('mobiniq_admin_products_v1', INITIAL_PRODUCTS);
+    return Array.isArray(raw) && raw.length > 0 ? raw : INITIAL_PRODUCTS;
   });
   const [heroSlides, setHeroSlides] = useState<AdminHeroSlide[]>(() => {
-    const raw = safeGet<AdminHeroSlide[]>('mobiniq_admin_hero_slides_v1', []);
-    return Array.isArray(raw)
-      ? raw.filter((s) => s.id !== 'slide-1' && s.id !== 'slide-2' && s.id !== 'slide-3')
-      : [];
+    const raw = safeGet<AdminHeroSlide[]>('mobiniq_admin_hero_slides_v1', INITIAL_HERO_SLIDES);
+    return Array.isArray(raw) && raw.length > 0 ? raw : INITIAL_HERO_SLIDES;
   });
   const [orders, setOrders] = useState<OrderRecord[]>(() =>
     safeGet('mobiniq_admin_orders_v1', INITIAL_ORDERS)
@@ -490,7 +713,7 @@ export default function App() {
 
     // 1. Live courses from Firestore
     const unsubCourses = subscribeToCourses((cloudCourses) => {
-      if (Array.isArray(cloudCourses)) {
+      if (Array.isArray(cloudCourses) && cloudCourses.length > 0) {
         setCourses(cloudCourses as AdminCourse[]);
         safeSet('mobiniq_admin_courses_v1', cloudCourses);
       }
@@ -498,7 +721,7 @@ export default function App() {
 
     // 2. Live products from Firestore
     const unsubProducts = subscribeToProducts((cloudProducts) => {
-      if (Array.isArray(cloudProducts)) {
+      if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
         setProducts(cloudProducts as AdminProduct[]);
         safeSet('mobiniq_admin_products_v1', cloudProducts);
       }
@@ -506,7 +729,7 @@ export default function App() {
 
     // 3. Live hero slides from Firestore
     const unsubHero = subscribeToHeroSlides((cloudSlides) => {
-      if (Array.isArray(cloudSlides)) {
+      if (Array.isArray(cloudSlides) && cloudSlides.length > 0) {
         setHeroSlides(cloudSlides as AdminHeroSlide[]);
         safeSet('mobiniq_admin_hero_slides_v1', cloudSlides);
       }
