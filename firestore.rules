@@ -1,0 +1,89 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true) ||
+        request.auth.token.email == 'admin@mobiniq.com' ||
+        request.auth.token.email == 'mobinyt420@gmail.com'
+      );
+    }
+
+    // 1. Public Course & Product Catalog (Public read, Admin manage)
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 2. Site Settings & Global Dynamic Configurations (Hero slider, support info, pixels, coupons)
+    match /site_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. Protected Lesson Streams (Enrolled students & Admin)
+    match /courses/{courseId}/private_lessons/{lessonId} {
+      allow read: if isAdmin() || (
+        isSignedIn() &&
+        exists(/databases/$(database)/documents/enrollments/$(request.auth.uid + '_' + courseId))
+      );
+      allow write: if isAdmin();
+    }
+
+    // 4. User Profiles (User self-manage, Admin view & manage)
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 11
+        && !('isAdmin' in request.resource.data);
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        (request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'enrolledSlugs']))
+      );
+      allow delete: if isAdmin();
+    }
+
+    // 5. Incomplete Orders (Leads from abandoned checkout - Lead capture)
+    match /incomplete_orders/{leadId} {
+      allow create, update: if request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 11
+        && request.resource.data.itemSlug is string;
+      allow read, delete: if isAdmin();
+    }
+
+    // 6. Blocked Phones & IPs (Public read for client check, Admin manage)
+    match /blocked_entities/{blockId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 7. Orders (Checkout creation, student order history, Admin full control)
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if (
+        request.resource.data.amountBdt is number &&
+        request.resource.data.phone is string &&
+        request.resource.data.status in ['PENDING', 'COMPLETED', 'VERIFIED']
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // 8. Enrollments (Enrolled access & Admin grant)
+    match /enrollments/{enrollmentId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+  }
+}
