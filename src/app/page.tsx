@@ -158,15 +158,18 @@ export interface AdminProduct {
 
 export interface AdminHeroSlide {
   id: string;
-  badge: string;
-  topLine: string;
-  highlight: string;
-  subBadge: string;
-  bottomTitle: string;
+  badge?: string;
+  topLine?: string;
+  highlight?: string;
+  subBadge?: string;
+  bottomTitle?: string;
   image: string;
   slug: string;
-  pills: string[];
+  pills?: string[];
   active: boolean;
+  showOverlay?: boolean; // false = Full Fresh Graphic Banner without black gradient or text overlay
+  showCta?: boolean; // whether to show button on banner
+  ctaText?: string; // custom button text, e.g. "এখনই কিনুন"
 }
 
 export interface OrderRecord {
@@ -1319,39 +1322,66 @@ export default function App() {
     setEditingHeroSlideId(null);
     setHeroSlideDraft({
       id: `slide-${Date.now()}`,
-      badge: '🔥 ধামাকা অফার চলছে',
-      topLine: 'নতুন বিশেষ অফার',
-      highlight: 'কোর্স বা মেটেরিয়াল',
-      subBadge: 'প্র্যাকটিক্যাল গাইডলাইন',
-      bottomTitle: 'বেসিক টু অ্যাডভান্স',
-      image: HERO_IMG,
+      badge: '',
+      topLine: '',
+      highlight: '',
+      subBadge: '',
+      bottomTitle: '',
+      image: '',
       slug: courses[0]?.slug || 'complete-ai-mastery-zero-to-pro',
-      pills: ['High Value', 'Instant Access'],
-      active: true
+      pills: [],
+      active: true,
+      showOverlay: false,
+      showCta: true,
+      ctaText: 'এখনই কিনুন'
     });
     setShowHeroSlideForm(true);
   };
 
   const startEditHeroSlide = (slide: AdminHeroSlide) => {
     setEditingHeroSlideId(slide.id);
-    setHeroSlideDraft({ ...slide });
+    setHeroSlideDraft({
+      ...slide,
+      showOverlay: slide.showOverlay ?? Boolean(slide.highlight?.trim()),
+      showCta: slide.showCta ?? true,
+      ctaText: slide.ctaText || 'এখনই কিনুন',
+      badge: slide.badge || '',
+      topLine: slide.topLine || '',
+      highlight: slide.highlight || '',
+      subBadge: slide.subBadge || '',
+      bottomTitle: slide.bottomTitle || '',
+      pills: Array.isArray(slide.pills) ? slide.pills : []
+    });
     setShowHeroSlideForm(true);
   };
 
   const saveHeroSlideDraft = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!heroSlideDraft.highlight.trim()) {
-      notify('স্লাইডের মূল হাইলাইট টাইটেল দিন!');
+    if (!heroSlideDraft.image || !heroSlideDraft.image.trim()) {
+      notify('অনুগ্রহ করে ব্যানার ছবি বা লিংক প্রদান করুন!');
       return;
     }
     notify('⏳ হিরো ব্যানার সেভ হচ্ছে...');
     try {
+      const sanitizedDraft: AdminHeroSlide = {
+        ...heroSlideDraft,
+        showOverlay: Boolean(heroSlideDraft.showOverlay),
+        showCta: heroSlideDraft.showCta ?? true,
+        ctaText: heroSlideDraft.ctaText?.trim() || 'এখনই কিনুন',
+        badge: heroSlideDraft.badge?.trim() || '',
+        topLine: heroSlideDraft.topLine?.trim() || '',
+        highlight: heroSlideDraft.highlight?.trim() || '',
+        subBadge: heroSlideDraft.subBadge?.trim() || '',
+        bottomTitle: heroSlideDraft.bottomTitle?.trim() || '',
+        pills: Array.isArray(heroSlideDraft.pills) ? heroSlideDraft.pills.filter(Boolean) : []
+      };
+
       let updated: AdminHeroSlide[] = [];
       if (editingHeroSlideId) {
-        updated = heroSlides.map((s) => (s.id === editingHeroSlideId ? { ...heroSlideDraft } : s));
+        updated = heroSlides.map((s) => (s.id === editingHeroSlideId ? { ...sanitizedDraft, id: s.id } : s));
       } else {
         const newSlide: AdminHeroSlide = {
-          ...heroSlideDraft,
+          ...sanitizedDraft,
           id: `slide-${Date.now()}`
         };
         updated = [...heroSlides, newSlide];
@@ -3293,66 +3323,96 @@ export default function App() {
                   </div>
                 </div>
 
-                {heroSlides.length > 0 && (
-                  <div className="relative aspect-[16/9] max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/15 bg-slate-950 shadow-2xl group">
-                    <img
-                      src={heroSlides[heroPreviewIndex % heroSlides.length]?.image}
-                      alt="Hero Banner Preview"
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent" />
+                {heroSlides.length > 0 && (() => {
+                  const currentSlide = heroSlides[heroPreviewIndex % heroSlides.length];
+                  const hasOverlay = currentSlide?.showOverlay ?? Boolean(currentSlide?.highlight?.trim());
+                  return (
+                    <div className="relative aspect-[16/9] max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/15 bg-slate-950 shadow-2xl group">
+                      <img
+                        src={currentSlide?.image}
+                        alt="Hero Banner Preview"
+                        className="w-full h-full object-cover"
+                      />
 
-                    {/* Badge */}
-                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 border border-amber-400/40 text-[11px] font-bold text-amber-300">
-                      {heroSlides[heroPreviewIndex % heroSlides.length]?.badge}
-                    </div>
+                      {/* Dark Gradient Overlay - ONLY shown if text overlay is enabled! */}
+                      {hasOverlay && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent pointer-events-none" />
+                      )}
 
-                    {/* Nav Arrows */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setHeroPreviewIndex((p) => (p - 1 + heroSlides.length) % heroSlides.length)
-                      }
-                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 border border-white/20 text-white flex items-center justify-center opacity-80 hover:opacity-100"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHeroPreviewIndex((p) => (p + 1) % heroSlides.length)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 border border-white/20 text-white flex items-center justify-center opacity-80 hover:opacity-100"
-                    >
-                      ›
-                    </button>
+                      {/* Badge */}
+                      {hasOverlay && currentSlide?.badge && (
+                        <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 border border-amber-400/40 text-[11px] font-bold text-amber-300 pointer-events-none">
+                          {currentSlide.badge}
+                        </div>
+                      )}
 
-                    {/* Bottom Content overlay */}
-                    <div className="absolute bottom-3 left-3 right-3 space-y-1.5">
-                      <p className="text-xs text-slate-300">
-                        {heroSlides[heroPreviewIndex % heroSlides.length]?.topLine}
-                      </p>
-                      <h3 className="text-lg sm:text-2xl font-extrabold text-white">
-                        {heroSlides[heroPreviewIndex % heroSlides.length]?.highlight}
-                      </h3>
-                      <div className="flex items-center gap-2 pt-1 flex-wrap">
-                        {heroSlides[heroPreviewIndex % heroSlides.length]?.pills?.map((pill, pi) => (
-                          <span
-                            key={pi}
-                            className="px-2 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-[10px] text-slate-200"
-                          >
-                            {pill}
-                          </span>
-                        ))}
+                      {/* Mode Indicator Badge */}
+                      <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-slate-950/80 border border-white/20 text-[10px] font-bold text-slate-200">
+                        {hasOverlay ? '📝 টেক্সট ওভারলে সক্রিয়' : '🖼️ ফুল ফ্রেশ গ্রাফিক ব্যানার'}
                       </div>
+
+                      {/* Nav Arrows */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setHeroPreviewIndex((p) => (p - 1 + heroSlides.length) % heroSlides.length)
+                        }
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 border border-white/20 text-white flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setHeroPreviewIndex((p) => (p + 1) % heroSlides.length)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-950/70 border border-white/20 text-white flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity"
+                      >
+                        ›
+                      </button>
+
+                      {/* Bottom Content overlay */}
+                      {hasOverlay ? (
+                        <div className="absolute bottom-3 left-3 right-3 space-y-1.5 pointer-events-none">
+                          {currentSlide?.topLine && (
+                            <p className="text-xs text-slate-300">{currentSlide.topLine}</p>
+                          )}
+                          {currentSlide?.highlight && (
+                            <h3 className="text-lg sm:text-2xl font-extrabold text-white">
+                              {currentSlide.highlight}
+                            </h3>
+                          )}
+                          {currentSlide?.pills && currentSlide.pills.length > 0 && (
+                            <div className="flex items-center gap-2 pt-1 flex-wrap">
+                              {currentSlide.pills.map((pill, pi) => (
+                                <span
+                                  key={pi}
+                                  className="px-2 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-[10px] text-slate-200"
+                                >
+                                  {pill}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        (currentSlide?.showCta ?? true) && (
+                          <div className="absolute bottom-3 right-3 pointer-events-none">
+                            <span className="px-3.5 py-1.5 rounded-full bg-amber-400 text-slate-950 font-bold text-xs shadow-lg inline-flex items-center gap-1">
+                              <span>{currentSlide?.ctaText || 'এখনই কিনুন'}</span>
+                              <span>→</span>
+                            </span>
+                          </div>
+                        )
+                      )}
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
 
               {/* Add / Edit Slide Modal Form */}
               {showHeroSlideForm && (
                 <form
                   onSubmit={saveHeroSlideDraft}
-                  className="admin-card rounded-3xl p-5 sm:p-6 border-2 border-amber-400/40 space-y-4 smooth-fade"
+                  className="admin-card rounded-3xl p-5 sm:p-6 border-2 border-amber-400/40 space-y-5 smooth-fade"
                 >
                   <div className="flex items-center justify-between border-b border-white/10 pb-3">
                     <h3 className="text-base font-extrabold text-amber-300">
@@ -3367,65 +3427,132 @@ export default function App() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">টপ ব্যাজ টেক্সট</label>
-                      <input
-                        type="text"
-                        value={heroSlideDraft.badge}
-                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, badge: e.target.value }))}
-                        placeholder="🔥 ধামাকা অফার চলছে"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      />
+                  {/* Mode Selector */}
+                  <div className="p-3.5 rounded-2xl bg-[#090d18] border border-white/10 space-y-2">
+                    <label className="text-xs font-bold text-amber-300">
+                      ব্যানার স্টাইল মোড নির্বাচন করুন:
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setHeroSlideDraft((p) => ({ ...p, showOverlay: false }))}
+                        className={`p-3 rounded-xl border text-left transition-all ${
+                          !heroSlideDraft.showOverlay
+                            ? 'bg-amber-400/15 border-amber-400 text-white shadow-md'
+                            : 'bg-[#06080f] border-white/10 text-slate-400 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-amber-300">
+                          <span>🖼️ ফুল ফ্রেশ গ্রাফিক ব্যানার (Clean Mode)</span>
+                          {!heroSlideDraft.showOverlay && <Check className="w-4 h-4 text-amber-400 ml-auto shrink-0" />}
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          রিকমেন্ডেড! ছবিতেই সব লেখা ও ডিজাইন থাকবে। ওয়েবসাইটে কোনো কালো শ্যাডো বা বাড়তি টেক্সট বসবে না, ব্যানার একদম পরিষ্কার ও উজ্জ্বল দেখাবে।
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setHeroSlideDraft((p) => ({ ...p, showOverlay: true }))}
+                        className={`p-3 rounded-xl border text-left transition-all ${
+                          heroSlideDraft.showOverlay
+                            ? 'bg-emerald-400/15 border-emerald-400 text-white shadow-md'
+                            : 'bg-[#06080f] border-white/10 text-slate-400 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-emerald-300">
+                          <span>📝 ওয়েবসাইট টেক্সট ওভারলে (Overlay Mode)</span>
+                          {heroSlideDraft.showOverlay && <Check className="w-4 h-4 text-emerald-400 ml-auto shrink-0" />}
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                          ছবির উপর ওয়েবসাইট থেকে শিরোনাম, ব্যাজ, সাবটাইটেল ও ট্যাগ পিলস যোগ করতে চাইলে এটি বেছে নিন।
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 1. Image URL & File Upload */}
+                  <div className="space-y-2 p-3.5 rounded-2xl bg-[#090d18] border border-white/10">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                        <span>ব্যানার ছবি (16:9 অনুপাত সবচেয়ে ভালো) *</span>
+                      </label>
+                      <span className="text-[11px] text-amber-400">
+                        ইমেজ লিংক দিন অথবা কম্পিউটার/মোবাইল থেকে সরাসরি আপলোড করুন
+                      </span>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">টপ লাইন টেক্সট</label>
-                      <input
-                        type="text"
-                        value={heroSlideDraft.topLine}
-                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, topLine: e.target.value }))}
-                        placeholder="মোবাইল ও পিসি দিয়ে"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-amber-300">মূল হাইলাইট টাইটেল *</label>
+                    <div className="flex flex-col sm:flex-row gap-2.5">
                       <input
                         type="text"
                         required
-                        value={heroSlideDraft.highlight}
-                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, highlight: e.target.value }))}
-                        placeholder="সম্পূর্ণ AI মাস্টারি"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-amber-400/40 text-xs sm:text-sm text-amber-300 font-bold"
+                        value={heroSlideDraft.image}
+                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, image: e.target.value }))}
+                        placeholder="https://... অথবা ছবি আপলোড করুন"
+                        className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
                       />
+                      <label className="px-4 py-2.5 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold cursor-pointer shrink-0 flex items-center justify-center gap-1.5 transition-colors">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>ছবি সিলেক্ট / আপলোড</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleImageUpload(file, (dataUrl) =>
+                                setHeroSlideDraft((p) => ({ ...p, image: dataUrl }))
+                              );
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">সাব-ব্যাজ / সাবটাইটেল</label>
-                      <input
-                        type="text"
-                        value={heroSlideDraft.subBadge}
-                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, subBadge: e.target.value }))}
-                        placeholder="প্রম্পট, ওয়েব ও অটোমেশন"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      />
+                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[11px] text-slate-400">প্রিসেট ব্যানার:</span>
+                        <button
+                          type="button"
+                          onClick={() => setHeroSlideDraft((p) => ({ ...p, image: HERO_IMG }))}
+                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
+                        >
+                          AI ব্যানার
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setHeroSlideDraft((p) => ({ ...p, image: DOC_COURSE_IMG }))}
+                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
+                        >
+                          ডকুমেন্টারি ব্যানার
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setHeroSlideDraft((p) => ({ ...p, image: EDIT_COURSE_IMG }))}
+                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
+                        >
+                          ভিডিও এডিটিং ব্যানার
+                        </button>
+                      </div>
+                      {heroSlideDraft.image && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-slate-400">প্রিভিউ:</span>
+                          <div className="w-16 h-10 rounded-lg overflow-hidden border border-amber-400/40">
+                            <img src={heroSlideDraft.image} alt="Preview" className="w-full h-full object-cover" />
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </div>
 
+                  {/* 2. Target Course / Product (Slug) Link */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">বটম সাবটাইটেল</label>
-                      <input
-                        type="text"
-                        value={heroSlideDraft.bottomTitle}
-                        onChange={(e) => setHeroSlideDraft((p) => ({ ...p, bottomTitle: e.target.value }))}
-                        placeholder="বেসিক টু অ্যাডভান্স"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-emerald-300">ক্লিক করলে যে লিংকে যাবে (Slug) *</label>
+                      <label className="text-xs font-bold text-emerald-300">
+                        ক্লিক করলে যে কোর্স বা প্রডাক্টে যাবে (Link Target) *
+                      </label>
                       <select
                         value={heroSlideDraft.slug}
                         onChange={(e) => setHeroSlideDraft((p) => ({ ...p, slug: e.target.value }))}
@@ -3434,126 +3561,147 @@ export default function App() {
                         <optgroup label="কোর্সসমূহ">
                           {courses.map((c) => (
                             <option key={c.id} value={c.slug}>
-                              {c.shortTitleBn} ({c.slug})
+                              কোর্স: {c.shortTitleBn} ({c.slug})
                             </option>
                           ))}
                         </optgroup>
                         <optgroup label="ডিজিটাল প্রোডাক্টসমূহ">
                           {products.map((p) => (
                             <option key={p.id} value={p.slug}>
-                              {p.shortTitleBn} ({p.slug})
+                              প্রোডাক্ট: {p.shortTitleBn} ({p.slug})
                             </option>
                           ))}
                         </optgroup>
                       </select>
+                      <p className="text-[10px] text-slate-400">
+                        মেইন ওয়েবসাইটে ভিজিটর ব্যানারে ক্লিক করলে সরাসরি এই পেজে নিয়ে যাবে।
+                      </p>
                     </div>
 
-                    {/* Image URL & File Upload */}
-                    <div className="sm:col-span-3 space-y-2 p-3.5 rounded-2xl bg-[#090d18] border border-white/10">
+                    {/* CTA Button Settings */}
+                    <div className="space-y-2 p-3 rounded-xl bg-[#090d18] border border-white/10">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-white flex items-center gap-1.5">
-                          <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                          <span>ব্যানার ছবি (16:9 অনুপাত সবচেয়ে ভালো) *</span>
-                        </label>
-                        <span className="text-[11px] text-amber-400">
-                          ইমেজ লিংক দিন অথবা কম্পিউটার/মোবাইল থেকে সরাসরি আপলোড করুন
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row gap-2.5">
-                        <input
-                          type="text"
-                          required
-                          value={heroSlideDraft.image}
-                          onChange={(e) => setHeroSlideDraft((p) => ({ ...p, image: e.target.value }))}
-                          placeholder="https://... অথবা ছবি আপলোড করুন"
-                          className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
-                        />
-                        <label className="px-4 py-2.5 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 border border-amber-400/30 text-amber-300 text-xs font-bold cursor-pointer shrink-0 flex items-center justify-center gap-1.5">
-                          <Upload className="w-3.5 h-3.5" />
-                          <span>ছবি সিলেক্ট / আপলোড</span>
+                        <label className="text-xs font-bold text-slate-200">অ্যাকশন বাটন (CTA)</label>
+                        <label className="flex items-center gap-1.5 cursor-pointer">
                           <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleImageUpload(file, (dataUrl) =>
-                                  setHeroSlideDraft((p) => ({ ...p, image: dataUrl }))
-                                );
-                              }
-                            }}
+                            type="checkbox"
+                            checked={heroSlideDraft.showCta ?? true}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, showCta: e.target.checked }))}
+                            className="w-4 h-4 rounded text-amber-400 bg-slate-900 border-white/20 focus:ring-0 cursor-pointer"
                           />
+                          <span className="text-xs text-slate-300 font-medium">বাটন অন রাখুন</span>
                         </label>
                       </div>
-
-                      <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-[11px] text-slate-400">প্রিসেট ব্যানার:</span>
-                          <button
-                            type="button"
-                            onClick={() => setHeroSlideDraft((p) => ({ ...p, image: HERO_IMG }))}
-                            className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                          >
-                            AI ব্যানার
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setHeroSlideDraft((p) => ({ ...p, image: DOC_COURSE_IMG }))}
-                            className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                          >
-                            ডকুমেন্টারি ব্যানার
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setHeroSlideDraft((p) => ({ ...p, image: EDIT_COURSE_IMG }))}
-                            className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                          >
-                            ভিডিও এডিটিং ব্যানার
-                          </button>
+                      {(heroSlideDraft.showCta ?? true) && (
+                        <div className="space-y-1">
+                          <input
+                            type="text"
+                            value={heroSlideDraft.ctaText || 'এখনই কিনুন'}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, ctaText: e.target.value }))}
+                            placeholder="যেমন: এখনই কিনুন / কোর্স দেখুন"
+                            className="w-full px-3 py-1.5 rounded-lg bg-[#06080f] border border-white/15 text-xs text-amber-300 font-bold"
+                          />
                         </div>
-                        {heroSlideDraft.image && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-[11px] text-slate-400">প্রিভিউ:</span>
-                            <div className="w-16 h-10 rounded-lg overflow-hidden border border-amber-400/40">
-                              <img src={heroSlideDraft.image} alt="Preview" className="w-full h-full object-cover" />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="sm:col-span-3 space-y-1">
-                      <label className="text-xs font-bold text-slate-300">
-                        ফিচার পিলস / ট্যাগসমূহ (কমা দিয়ে লিখুন)
-                      </label>
-                      <input
-                        type="text"
-                        value={heroSlideDraft.pills.join(', ')}
-                        onChange={(e) =>
-                          setHeroSlideDraft((p) => ({
-                            ...p,
-                            pills: e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
-                          }))
-                        }
-                        placeholder="Mobile Learning, AI Powered, Free Resources"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
-                      />
+                      )}
                     </div>
                   </div>
+
+                  {/* 3. Text Overlay Fields - ONLY when showOverlay is true */}
+                  {heroSlideDraft.showOverlay && (
+                    <div className="p-4 rounded-2xl bg-[#090d18] border border-emerald-500/20 space-y-4 smooth-fade">
+                      <div className="flex items-center gap-2 text-xs font-bold text-emerald-300 border-b border-white/10 pb-2">
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>টেক্সট ওভারলে কনফিগারেশন (ঐচ্ছিক)</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-300">টপ ব্যাজ টেক্সট</label>
+                          <input
+                            type="text"
+                            value={heroSlideDraft.badge || ''}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, badge: e.target.value }))}
+                            placeholder="🔥 ধামাকা অফার চলছে"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-300">টপ লাইন টেক্সট</label>
+                          <input
+                            type="text"
+                            value={heroSlideDraft.topLine || ''}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, topLine: e.target.value }))}
+                            placeholder="মোবাইল ও পিসি দিয়ে"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-amber-300">মূল হাইলাইট টাইটেল</label>
+                          <input
+                            type="text"
+                            value={heroSlideDraft.highlight || ''}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, highlight: e.target.value }))}
+                            placeholder="সম্পূর্ণ AI মাস্টারি"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-amber-400/40 text-xs text-amber-300 font-bold"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-300">সাব-ব্যাজ / সাবটাইটেল</label>
+                          <input
+                            type="text"
+                            value={heroSlideDraft.subBadge || ''}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, subBadge: e.target.value }))}
+                            placeholder="প্রম্পট, ওয়েব ও অটোমেশন"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-300">বটম সাবটাইটেল</label>
+                          <input
+                            type="text"
+                            value={heroSlideDraft.bottomTitle || ''}
+                            onChange={(e) => setHeroSlideDraft((p) => ({ ...p, bottomTitle: e.target.value }))}
+                            placeholder="বেসিক টু অ্যাডভান্স"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-slate-300">
+                            ফিচার পিলস / ট্যাগসমূহ (কমা দিয়ে লিখুন)
+                          </label>
+                          <input
+                            type="text"
+                            value={(heroSlideDraft.pills || []).join(', ')}
+                            onChange={(e) =>
+                              setHeroSlideDraft((p) => ({
+                                ...p,
+                                pills: e.target.value.split(',').map((s) => s.trim()).filter(Boolean)
+                              }))
+                            }
+                            placeholder="Mobile Learning, AI Powered"
+                            className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex justify-end gap-3 pt-2">
                     <button
                       type="button"
                       onClick={() => setShowHeroSlideForm(false)}
-                      className="px-4 py-2.5 rounded-xl bg-white/5 text-xs font-bold text-slate-300"
+                      className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-bold text-slate-300 transition-colors"
                     >
                       বাতিল
                     </button>
                     <button
                       type="submit"
-                      className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm"
+                      className="px-6 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg transition-all"
                     >
                       💾 ব্যানার স্লাইড সেভ ও হোমপেজে পাবলিশ করুন
                     </button>
@@ -3568,44 +3716,60 @@ export default function App() {
                     <Layers className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                     <h3 className="text-base font-bold text-white mb-1">কোনো স্লাইডার ব্যানার নেই</h3>
                     <p className="text-xs text-slate-400 max-w-md mx-auto mb-5">
-                      কোনো ডামি ব্যানার নেই। হোমপেজে প্রদর্শনের জন্য &quot;+ নতুন ব্যানার যোগ করুন&quot; বাটনে ক্লিক করে ব্যানার যুক্ত করুন।
+                      হোমপেজে প্রদর্শনের জন্য &quot;+ নতুন ব্যানার যোগ করুন&quot; বাটনে ক্লিক করে ব্যানার যুক্ত করুন।
                     </p>
                     <button
                       onClick={() => {
                         startNewHeroSlide();
                       }}
-                      className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs inline-flex items-center gap-1.5 shadow-lg"
                     >
                       <Plus className="w-4 h-4" />
                       <span>প্রথম ব্যানার যোগ করুন</span>
                     </button>
                   </div>
                 )}
-                {heroSlides.map((slide, sIdx) => (
-                  <div
-                    key={slide.id}
-                    className="admin-card rounded-2xl p-4 flex flex-col justify-between gap-3 border border-white/10"
-                  >
-                    <div className="space-y-2.5">
-                      <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10">
-                        <img src={slide.image} alt={slide.highlight} className="w-full h-full object-cover" />
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-slate-950/80 text-amber-300 text-[10px] font-bold">
-                          {slide.badge}
-                        </span>
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-slate-950/80 text-slate-300 text-[10px] font-mono">
-                          #{toBn(sIdx + 1)}
-                        </span>
-                      </div>
+                {heroSlides.map((slide, sIdx) => {
+                  const isClean = !slide.showOverlay && !slide.highlight?.trim();
+                  return (
+                    <div
+                      key={slide.id}
+                      className="admin-card rounded-2xl p-4 flex flex-col justify-between gap-3 border border-white/10"
+                    >
+                      <div className="space-y-2.5">
+                        <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-slate-950">
+                          <img src={slide.image} alt={slide.highlight || 'Banner'} className="w-full h-full object-cover" />
+                          <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            isClean ? 'bg-amber-400 text-slate-950' : 'bg-slate-950/80 text-amber-300'
+                          }`}>
+                            {isClean ? '🖼️ ক্লিন গ্রাফিক' : (slide.badge || '📝 টেক্সট ওভারলে')}
+                          </span>
+                          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-slate-950/80 text-slate-300 text-[10px] font-mono">
+                            #{toBn(sIdx + 1)}
+                          </span>
+                        </div>
 
-                      <div>
-                        <p className="text-[11px] text-slate-400">{slide.topLine}</p>
-                        <h4 className="text-base font-extrabold text-white">{slide.highlight}</h4>
-                        <p className="text-xs text-slate-400">{slide.subBadge} • {slide.bottomTitle}</p>
-                        <p className="text-[11px] text-emerald-400 font-mono mt-1">
-                          🔗 /{slide.slug}
-                        </p>
+                        <div>
+                          {isClean ? (
+                            <div className="space-y-0.5">
+                              <h4 className="text-sm font-extrabold text-white">ফুল গ্রাফিক ব্যানার</h4>
+                              <p className="text-[11px] text-slate-400">কোনো ডার্ক ওভারলে বা টেক্সট ছাড়া মূল ছবি</p>
+                            </div>
+                          ) : (
+                            <div>
+                              {slide.topLine && <p className="text-[11px] text-slate-400">{slide.topLine}</p>}
+                              <h4 className="text-base font-extrabold text-white">{slide.highlight || 'ব্যানার'}</h4>
+                              {(slide.subBadge || slide.bottomTitle) && (
+                                <p className="text-xs text-slate-400">{slide.subBadge} {slide.bottomTitle ? `• ${slide.bottomTitle}` : ''}</p>
+                              )}
+                            </div>
+                          )}
+                          <p className="text-[11px] text-emerald-400 font-mono mt-1 flex items-center gap-1">
+                            <span>🔗 টার্গেট:</span>
+                            <span className="underline">{slide.slug}</span>
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
                     <div className="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
                       <button
@@ -3635,7 +3799,8 @@ export default function App() {
                       </button>
                     </div>
                   </div>
-                ))}
+                );
+              })}
               </div>
             </div>
           )}
