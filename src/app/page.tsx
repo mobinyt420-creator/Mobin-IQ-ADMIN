@@ -1342,7 +1342,7 @@ export default function App() {
     setEditingHeroSlideId(slide.id);
     setHeroSlideDraft({
       ...slide,
-      showOverlay: slide.showOverlay ?? Boolean(slide.highlight?.trim()),
+      showOverlay: slide.showOverlay === true,
       showCta: slide.showCta ?? true,
       ctaText: slide.ctaText || 'এখনই কিনুন',
       badge: slide.badge || '',
@@ -1363,17 +1363,18 @@ export default function App() {
     }
     notify('⏳ হিরো ব্যানার সেভ হচ্ছে...');
     try {
+      const isOverlay = heroSlideDraft.showOverlay === true;
       const sanitizedDraft: AdminHeroSlide = {
         ...heroSlideDraft,
-        showOverlay: Boolean(heroSlideDraft.showOverlay),
+        showOverlay: isOverlay,
         showCta: heroSlideDraft.showCta ?? true,
         ctaText: heroSlideDraft.ctaText?.trim() || 'এখনই কিনুন',
-        badge: heroSlideDraft.badge?.trim() || '',
-        topLine: heroSlideDraft.topLine?.trim() || '',
-        highlight: heroSlideDraft.highlight?.trim() || '',
-        subBadge: heroSlideDraft.subBadge?.trim() || '',
-        bottomTitle: heroSlideDraft.bottomTitle?.trim() || '',
-        pills: Array.isArray(heroSlideDraft.pills) ? heroSlideDraft.pills.filter(Boolean) : []
+        badge: isOverlay ? (heroSlideDraft.badge?.trim() || '') : '',
+        topLine: isOverlay ? (heroSlideDraft.topLine?.trim() || '') : '',
+        highlight: isOverlay ? (heroSlideDraft.highlight?.trim() || '') : '',
+        subBadge: isOverlay ? (heroSlideDraft.subBadge?.trim() || '') : '',
+        bottomTitle: isOverlay ? (heroSlideDraft.bottomTitle?.trim() || '') : '',
+        pills: isOverlay && Array.isArray(heroSlideDraft.pills) ? heroSlideDraft.pills.filter(Boolean) : []
       };
 
       let updated: AdminHeroSlide[] = [];
