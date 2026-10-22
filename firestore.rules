@@ -6,89 +6,61 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isAdmin() {
-      return isSignedIn() && (
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true) ||
-        request.auth.token.email == 'admin@mobiniq.com' ||
-        request.auth.token.email == 'mobinyt420@gmail.com'
-      );
-    }
-
-    // 1. Public Course & Product Catalog (Public read, Admin manage)
+    // Courses collection & subcollections
     match /courses/{courseId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
     }
 
+    // Digital Products collection & subcollections
     match /products/{productId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
+      match /{allSubcollections=**} {
+        allow read: if true;
+        allow write: if isSignedIn();
+      }
     }
 
-    // 2. Site Settings & Global Dynamic Configurations (Hero slider, support info, pixels, coupons)
+    // Site Settings (general, hero_slides, coupons, etc.)
     match /site_settings/{settingId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
     }
 
     match /settings/{settingId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
     }
 
-    // 3. Protected Lesson Streams (Enrolled students & Admin)
-    match /courses/{courseId}/private_lessons/{lessonId} {
-      allow read: if isAdmin() || (
-        isSignedIn() &&
-        exists(/databases/$(database)/documents/enrollments/$(request.auth.uid + '_' + courseId))
-      );
-      allow write: if isAdmin();
-    }
-
-    // 4. User Profiles (User self-manage, Admin view & manage)
+    // User profiles
     match /users/{userId} {
-      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
-      allow create: if isSignedIn() && request.auth.uid == userId
-        && request.resource.data.phone is string
-        && request.resource.data.phone.size() >= 11
-        && !('isAdmin' in request.resource.data);
-      allow update: if isSignedIn() && (
-        isAdmin() ||
-        (request.auth.uid == userId && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'enrolledSlugs']))
-      );
-      allow delete: if isAdmin();
+      allow read, write: if true;
     }
 
-    // 5. Incomplete Orders (Leads from abandoned checkout - Lead capture)
+    // Incomplete orders (checkout lead captures)
     match /incomplete_orders/{leadId} {
-      allow create, update: if request.resource.data.phone is string
-        && request.resource.data.phone.size() >= 11
-        && request.resource.data.itemSlug is string;
-      allow read, delete: if isAdmin();
+      allow read, write: if true;
     }
 
-    // 6. Blocked Phones & IPs (Public read for client check, Admin manage)
+    // Blocked phones and IPs
     match /blocked_entities/{blockId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn();
     }
 
-    // 7. Orders (Checkout creation, student order history, Admin full control)
+    // Orders
     match /orders/{orderId} {
-      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if (
-        request.resource.data.amountBdt is number &&
-        request.resource.data.phone is string &&
-        request.resource.data.status in ['PENDING', 'COMPLETED', 'VERIFIED']
-      );
-      allow update, delete: if isAdmin();
+      allow read, write: if true;
     }
 
-    // 8. Enrollments (Enrolled access & Admin grant)
+    // Enrollments
     match /enrollments/{enrollmentId} {
-      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow write: if isAdmin();
+      allow read, write: if true;
     }
   }
 }

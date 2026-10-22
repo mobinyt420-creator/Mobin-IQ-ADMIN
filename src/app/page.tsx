@@ -836,12 +836,14 @@ export default function App() {
 
   // Synchronized Persistent Admin Database State
   const [courses, setCourses] = useState<AdminCourse[]>(() => {
-    const raw = safeGet<AdminCourse[]>('mobiniq_admin_courses_v1', INITIAL_COURSES);
-    return Array.isArray(raw) && raw.length > 0 ? raw : INITIAL_COURSES;
+    const raw = safeGet<AdminCourse[] | null>('mobiniq_admin_courses_v1', null);
+    if (Array.isArray(raw)) return raw;
+    return INITIAL_COURSES;
   });
   const [products, setProducts] = useState<AdminProduct[]>(() => {
-    const raw = safeGet<AdminProduct[]>('mobiniq_admin_products_v1', INITIAL_PRODUCTS);
-    return Array.isArray(raw) && raw.length > 0 ? raw : INITIAL_PRODUCTS;
+    const raw = safeGet<AdminProduct[] | null>('mobiniq_admin_products_v1', null);
+    if (Array.isArray(raw)) return raw;
+    return INITIAL_PRODUCTS;
   });
   const [heroSlides, setHeroSlides] = useState<AdminHeroSlide[]>(() => {
     const raw = safeGet<AdminHeroSlide[]>('mobiniq_admin_hero_slides_v1', INITIAL_HERO_SLIDES);
@@ -923,7 +925,7 @@ export default function App() {
 
     // 1. Live courses from Firestore
     const unsubCourses = subscribeToCourses((cloudCourses) => {
-      if (Array.isArray(cloudCourses) && cloudCourses.length > 0) {
+      if (Array.isArray(cloudCourses)) {
         setCourses(cloudCourses as AdminCourse[]);
         safeSet('mobiniq_admin_courses_v1', cloudCourses);
       }
@@ -931,7 +933,7 @@ export default function App() {
 
     // 2. Live products from Firestore
     const unsubProducts = subscribeToProducts((cloudProducts) => {
-      if (Array.isArray(cloudProducts) && cloudProducts.length > 0) {
+      if (Array.isArray(cloudProducts)) {
         setProducts(cloudProducts as AdminProduct[]);
         safeSet('mobiniq_admin_products_v1', cloudProducts);
       }
@@ -1236,35 +1238,19 @@ export default function App() {
       subtitle: '',
       subtitleBn: '',
       shortDescBn: '',
-      category: 'ভিডিও এডিটিং',
-      price: 1490,
-      originalPrice: 2000,
-      discountBadge: '25% OFF',
-      reviewsCount: '320+ Reviews',
-      totalDuration: '8h 20m',
-      thumbnailUrl: '/images/hero-banner.jpg',
-      bannerUrl: '/images/hero-banner.jpg',
-      softwareTagsText: 'Pr, Ae',
+      category: 'কোর্স',
+      price: 0,
+      originalPrice: 0,
+      discountBadge: '',
+      reviewsCount: '',
+      totalDuration: '',
+      thumbnailUrl: '',
+      bannerUrl: '',
+      softwareTagsText: '',
       status: 'PUBLISHED',
       featured: true,
-      outcomesText: 'প্র্যাকটিক্যাল প্রজেক্ট ভিত্তিক গাইডলাইন\nলাইফটাইম আপডেট ও রিসোর্স ফাইল',
-      modules: [
-        {
-          id: `mod-${Date.now()}`,
-          title: 'মডিউল ১: বেসিক থেকে অ্যাডভান্সড গাইডলাইন',
-          order: 1,
-          lessons: [
-            {
-              id: `les-${Date.now()}`,
-              title: '১.১ [ফ্রি প্রিভিউ] ওরিয়েন্টেশন ও টুলস পরিচিতি',
-              duration: '১৮:০০',
-              isPreview: true,
-              videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-              summaryBn: 'প্রাথমিক ধারণা ও কাজের পরিবেশ তৈরি।'
-            }
-          ]
-        }
-      ]
+      outcomesText: '',
+      modules: []
     });
     setShowCourseForm(true);
   };
@@ -1330,11 +1316,11 @@ export default function App() {
           category: courseDraft.category,
           price: Number(courseDraft.price) || 0,
           originalPrice: Number(courseDraft.originalPrice) || 0,
-          discountBadge: courseDraft.discountBadge.trim() || '25% OFF',
+          discountBadge: courseDraft.discountBadge.trim(),
           totalDuration: courseDraft.totalDuration.trim(),
-          reviewsCount: courseDraft.reviewsCount.trim() || '320+ Reviews',
-          thumbnailUrl: courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
-          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
+          reviewsCount: courseDraft.reviewsCount.trim(),
+          thumbnailUrl: courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
+          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
           modulesCount: courseDraft.modules.length,
           softwareTags,
           status: courseDraft.status,
@@ -1342,8 +1328,8 @@ export default function App() {
           outcomes,
           modules: courseDraft.modules,
           resources: existing?.resources || [],
-          studentsCount: existing?.studentsCount || '1.2K+ Joined',
-          rating: existing?.rating || '4.8'
+          studentsCount: existing?.studentsCount || '০ শিক্ষার্থী',
+          rating: existing?.rating || '5.0'
         };
         const updatedList = courses.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c));
         setCourses(updatedList);
@@ -1367,14 +1353,14 @@ export default function App() {
           shortDescBn: courseDraft.shortDescBn.trim() || courseDraft.subtitleBn.trim(),
           price: Number(courseDraft.price) || 0,
           originalPrice: Number(courseDraft.originalPrice) || 0,
-          discountBadge: courseDraft.discountBadge.trim() || '25% OFF',
-          thumbnailUrl: courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
-          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
+          discountBadge: courseDraft.discountBadge.trim(),
+          thumbnailUrl: courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
+          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
           category: courseDraft.category,
           studentsCount: 'নতুন',
           rating: '5.0',
-          reviewsCount: courseDraft.reviewsCount.trim() || '100+ Reviews',
-          totalDuration: courseDraft.totalDuration.trim() || '10 ঘণ্টা',
+          reviewsCount: courseDraft.reviewsCount.trim(),
+          totalDuration: courseDraft.totalDuration.trim(),
           modulesCount: courseDraft.modules.length,
           softwareTags,
           status: courseDraft.status,
@@ -1455,19 +1441,19 @@ export default function App() {
       slug: '',
       shortDesc: '',
       shortDescBn: '',
-      category: 'Presets & Assets',
-      price: 690,
-      originalPrice: 1300,
-      discountBadge: '50% OFF',
-      badge: 'BESTSELLER',
-      thumbnailUrl: '/images/edit-course.jpg',
-      softwareTagsText: 'Pr, Ae, DaVinci',
-      fileFormat: '.cube / 3D LUTs',
+      category: 'ডিজিটাল প্রোডাক্ট',
+      price: 0,
+      originalPrice: 0,
+      discountBadge: '',
+      badge: '',
+      thumbnailUrl: '',
+      softwareTagsText: '',
+      fileFormat: '',
       status: 'PUBLISHED',
-      featuresText: '১০০% টেস্টেড প্রিমিয়াম রিসোর্স\nইনস্ট্যান্ট ডাউনলোড অ্যাক্সেস\nলাইফটাইম সাপোর্ট',
+      featuresText: '',
       imagesText: '',
-      downloadFilename: 'MobinIQ_Asset_Pack.txt',
-      downloadContent: '# MobinIQ Instant Download Asset\n'
+      downloadFilename: '',
+      downloadContent: ''
     });
     setShowProductForm(true);
   };
@@ -1481,18 +1467,18 @@ export default function App() {
       slug: p.slug || '',
       shortDesc: p.shortDesc || '',
       shortDescBn: p.shortDescBn || '',
-      category: p.category || 'Presets & Assets',
+      category: p.category || 'ডিজিটাল প্রোডাক্ট',
       price: p.price || 0,
       originalPrice: p.originalPrice || 0,
       discountBadge: p.discountBadge || '',
       badge: p.badge || '',
-      thumbnailUrl: p.thumbnailUrl || '/images/edit-course.jpg',
+      thumbnailUrl: p.thumbnailUrl || '',
       softwareTagsText: Array.isArray(p.softwareTags) ? p.softwareTags.join(', ') : '',
-      fileFormat: p.fileFormat || '.cube / 3D LUTs',
+      fileFormat: p.fileFormat || '',
       status: p.status || 'PUBLISHED',
       featuresText: Array.isArray(p.featuresBn) ? p.featuresBn.join('\n') : (Array.isArray(p.features) ? p.features.join('\n') : ''),
       imagesText: Array.isArray((p as any).images) ? (p as any).images.join('\n') : '',
-      downloadFilename: p.downloadFilename || 'MobinIQ_Asset.txt',
+      downloadFilename: p.downloadFilename || '',
       downloadContent: p.downloadContent || ''
     });
     setShowProductForm(true);
@@ -1519,9 +1505,10 @@ export default function App() {
       .split('\n')
       .map((s) => s.trim())
       .filter(Boolean);
+    const primaryThumb = productDraft.thumbnailUrl.trim() || (parsedImages.length > 0 ? parsedImages[0] : '');
     const finalImages = parsedImages.length > 0
       ? parsedImages
-      : (productDraft.thumbnailUrl ? [productDraft.thumbnailUrl] : []);
+      : (primaryThumb ? [primaryThumb] : []);
 
     notify('⏳ প্রোডাক্ট সেভ হচ্ছে...');
     try {
@@ -1537,19 +1524,19 @@ export default function App() {
           category: productDraft.category,
           price: Number(productDraft.price) || 0,
           originalPrice: Number(productDraft.originalPrice) || 0,
-          discountBadge: productDraft.discountBadge.trim() || '50% OFF',
-          badge: productDraft.badge.trim() || 'BESTSELLER',
-          thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
+          discountBadge: productDraft.discountBadge.trim(),
+          badge: productDraft.badge.trim(),
+          thumbnailUrl: primaryThumb,
           images: finalImages,
           softwareTags,
-          fileFormat: productDraft.fileFormat.trim() || '.cube / 3D LUTs',
+          fileFormat: productDraft.fileFormat.trim(),
           status: productDraft.status,
           features: featuresBn,
           featuresBn,
           downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Asset.txt',
           downloadContent: productDraft.downloadContent,
-          rating: '4.9',
-          salesCount: '1K+ Sales'
+          rating: '5.0',
+          salesCount: '১+ সেলস'
         };
         const updatedList = products.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p));
         setProducts(updatedList);
@@ -1572,15 +1559,15 @@ export default function App() {
           shortDescBn: productDraft.shortDescBn.trim() || productDraft.shortDesc.trim() || productDraft.titleBn.trim(),
           price: Number(productDraft.price) || 0,
           originalPrice: Number(productDraft.originalPrice) || 0,
-          discountBadge: productDraft.discountBadge.trim() || '50% OFF',
-          badge: productDraft.badge.trim() || 'POPULAR',
-          thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
+          discountBadge: productDraft.discountBadge.trim(),
+          badge: productDraft.badge.trim(),
+          thumbnailUrl: primaryThumb,
           images: finalImages,
           category: productDraft.category,
           rating: '5.0',
           salesCount: 'নতুন',
           softwareTags,
-          fileFormat: productDraft.fileFormat.trim() || '.cube / 3D LUTs',
+          fileFormat: productDraft.fileFormat.trim(),
           status: productDraft.status,
           features: featuresBn,
           featuresBn,

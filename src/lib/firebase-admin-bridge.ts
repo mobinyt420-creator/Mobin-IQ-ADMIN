@@ -238,11 +238,35 @@ export async function saveCourseToFirestore(course: any) {
 }
 
 export async function deleteCourseFromFirestore(courseIdOrSlug: string, altKey?: string) {
-  const res = await deleteDocumentFromFirestore("courses", courseIdOrSlug);
-  if (altKey && altKey !== courseIdOrSlug) {
-    await deleteDocumentFromFirestore("courses", altKey);
+  const firestore = getSharedDb();
+  await ensureAdminAuth();
+  let success = false;
+  let reason = '';
+  try {
+    if (courseIdOrSlug) await deleteDocumentFromFirestore("courses", courseIdOrSlug);
+    if (altKey && altKey !== courseIdOrSlug) await deleteDocumentFromFirestore("courses", altKey);
+    // Deep scan & delete any residual documents with matching id or slug
+    if (firestore) {
+      const snap = await getDocs(collection(firestore, "courses"));
+      for (const d of snap.docs) {
+        const data = d.data();
+        if (
+          d.id === courseIdOrSlug ||
+          d.id === altKey ||
+          data.id === courseIdOrSlug ||
+          data.id === altKey ||
+          data.slug === courseIdOrSlug ||
+          data.slug === altKey
+        ) {
+          await deleteDoc(d.ref).catch(() => {});
+        }
+      }
+    }
+    return { success: true };
+  } catch (err: any) {
+    console.warn("Delete course error:", err?.message);
+    return { success: false, reason: err?.message };
   }
-  return res;
 }
 
 export async function saveProductToFirestore(product: any) {
@@ -250,11 +274,35 @@ export async function saveProductToFirestore(product: any) {
 }
 
 export async function deleteProductFromFirestore(productIdOrSlug: string, altKey?: string) {
-  const res = await deleteDocumentFromFirestore("products", productIdOrSlug);
-  if (altKey && altKey !== productIdOrSlug) {
-    await deleteDocumentFromFirestore("products", altKey);
+  const firestore = getSharedDb();
+  await ensureAdminAuth();
+  let success = false;
+  let reason = '';
+  try {
+    if (productIdOrSlug) await deleteDocumentFromFirestore("products", productIdOrSlug);
+    if (altKey && altKey !== productIdOrSlug) await deleteDocumentFromFirestore("products", altKey);
+    // Deep scan & delete any residual documents with matching id or slug
+    if (firestore) {
+      const snap = await getDocs(collection(firestore, "products"));
+      for (const d of snap.docs) {
+        const data = d.data();
+        if (
+          d.id === productIdOrSlug ||
+          d.id === altKey ||
+          data.id === productIdOrSlug ||
+          data.id === altKey ||
+          data.slug === productIdOrSlug ||
+          data.slug === altKey
+        ) {
+          await deleteDoc(d.ref).catch(() => {});
+        }
+      }
+    }
+    return { success: true };
+  } catch (err: any) {
+    console.warn("Delete product error:", err?.message);
+    return { success: false, reason: err?.message };
   }
-  return res;
 }
 
 export async function saveSiteConfigToFirestore(siteConfig: any) {
