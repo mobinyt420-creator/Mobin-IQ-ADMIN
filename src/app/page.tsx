@@ -118,17 +118,24 @@ export interface CourseResource {
 export interface AdminCourse {
   id: string;
   slug: string;
+  title?: string;
   titleBn: string;
   shortTitleBn: string;
+  subtitle?: string;
   subtitleBn: string;
   shortDescBn: string;
   price: number;
   originalPrice: number;
+  discountBadge?: string;
   thumbnailUrl: string;
-  category: 'এআই অ্যান্ড অটোমেশন' | 'টেক ডকুমেন্টারি' | 'ভিডিও এডিটিং' | 'ফ্রিল্যান্সিং ও ক্যারিয়ার';
+  bannerUrl?: string;
+  category: string;
   studentsCount: string;
   rating: string;
+  reviewsCount?: string;
   totalDuration: string;
+  modulesCount?: number;
+  softwareTags?: string[];
   status: 'PUBLISHED' | 'DRAFT';
   featured: boolean;
   outcomes: string[];
@@ -139,18 +146,24 @@ export interface AdminCourse {
 export interface AdminProduct {
   id: string;
   slug: string;
+  title?: string;
   titleBn: string;
   shortTitleBn: string;
+  shortDesc?: string;
   shortDescBn: string;
   price: number;
   originalPrice: number;
+  discountBadge?: string;
+  badge?: string;
   thumbnailUrl: string;
-  category: 'SFX Pack' | 'Prompt Vault' | 'LUT & Presets' | 'Template & E-Book';
+  category: string;
   rating: string;
   salesCount: string;
+  softwareTags?: string[];
   fileFormat?: string;
   fileSize?: string;
   status: 'PUBLISHED' | 'DRAFT';
+  features?: string[];
   featuresBn: string[];
   downloadFilename: string;
   downloadContent: string;
@@ -175,17 +188,19 @@ export interface AdminHeroSlide {
 export interface OrderRecord {
   id: string;
   orderCode: string;
+  orderId?: string;
   customerName: string;
   customerPhone: string;
   customerEmail: string;
   itemType: 'course' | 'product';
   itemSlug: string;
   itemTitleBn: string;
+  itemTitle?: string;
   amountBdt: number;
-  paymentMethod: 'UddoktaPay' | 'bKash' | 'Nagad' | 'Rocket';
+  paymentMethod: 'UddoktaPay' | 'bKash' | 'Nagad' | 'Rocket' | 'bkash_manual' | string;
   trxId: string;
   couponUsed: string | null;
-  status: 'COMPLETED' | 'PENDING' | 'REJECTED';
+  status: 'COMPLETED' | 'PENDING' | 'VERIFIED' | 'REJECTED';
   createdAt: string;
   verifiedBy: string;
 }
@@ -274,19 +289,97 @@ const EDIT_COURSE_IMG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
 
 const INITIAL_COURSES: AdminCourse[] = [
   {
+    id: 'course-cinematic-editing',
+    slug: 'cinematic-video-editing-masterclass',
+    title: 'Cinematic Video Editing Masterclass',
+    titleBn: 'সিনেমাটিক ভিডিও এডিটিং মাস্টারক্লাস',
+    shortTitleBn: 'সিনেমাটিক ভিডিও এডিটিং মাস্টারক্লাস',
+    subtitle: 'Learn professional video editing from zero to advanced. Master cinematic edits, color grading, transitions, effects and real-world projects.',
+    subtitleBn: 'জিরো থেকে অ্যাডভান্সড সিনেমাটিক ভিডিও এডিটিং, কালার গ্রেডিং, ট্রানজিশন এবং সাউন্ড ডিজাইনের পূর্ণাঙ্গ মাস্টারক্লাস।',
+    shortDescBn: 'জিরো থেকে অ্যাডভান্সড সিনেমাটিক ভিডিও এডিটিং, কালার গ্রেডিং, ট্রানজিশন এবং সাউন্ড ডিজাইনের পূর্ণাঙ্গ মাস্টারক্লাস।',
+    price: 1490,
+    originalPrice: 2000,
+    discountBadge: '25% OFF',
+    thumbnailUrl: '/images/hero-banner.jpg',
+    bannerUrl: '/images/hero-banner.jpg',
+    category: 'ভিডিও এডিটিং',
+    studentsCount: '1.2K+ Joined',
+    rating: '4.8',
+    reviewsCount: '320+ Reviews',
+    totalDuration: '8h 20m',
+    modulesCount: 12,
+    softwareTags: ['Pr', 'Ae'],
+    status: 'PUBLISHED',
+    featured: true,
+    outcomes: [
+      'Professional video editing techniques',
+      'Cinematic color grading & LUT workflows',
+      'Transitions, effects and sound design timing',
+      'Real-world projects and client delivery workflows'
+    ],
+    modules: [
+      {
+        id: 'mod-1',
+        title: 'Module 1: Workspace Setup & Essential Shortcuts',
+        order: 1,
+        lessons: [
+          {
+            id: 'les-1',
+            title: '1.1 Interface Customization & Timeline Optimization',
+            duration: '15:20',
+            isPreview: true,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'ওয়ার্কস্পেস ও টাইমলাইন কাস্টমাইজেশন।'
+          },
+          {
+            id: 'les-2',
+            title: '1.2 Keyboard Shortcuts for 3x Faster Cutting',
+            duration: '12:45',
+            isPreview: false,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'ফাস্টার কাটিং কিবোর্ড শর্টকাট।'
+          }
+        ]
+      },
+      {
+        id: 'mod-2',
+        title: 'Module 2: Narrative Cutting & Retention Psychology',
+        order: 2,
+        lessons: [
+          {
+            id: 'les-3',
+            title: '2.1 First 30 Seconds Hook & Story Pacing',
+            duration: '18:10',
+            isPreview: false,
+            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+            summaryBn: 'প্রথম ৩০ সেকেন্ডের হুক মেকিং।'
+          }
+        ]
+      }
+    ],
+    resources: []
+  },
+  {
     id: 'course-ai-complete',
     slug: 'complete-ai-mastery-zero-to-pro',
+    title: 'Complete AI Mastery Course',
     titleBn: 'সম্পূর্ণ এআই (AI) কিভাবে শিখবো: জিরো থেকে প্রো মাস্টারক্লাস',
     shortTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
+    subtitle: 'Master ChatGPT, Claude, Midjourney & AI Automation to scale your productivity, content creation and client work by 10x.',
     subtitleBn: 'মোবাইল ও পিসিতে ChatGPT, Claude, প্রম্পট ইঞ্জিনিয়ারিং ও এআই অটোমেশন গাইড।',
     shortDescBn: 'একদম বেসিক থেকে শুরু করে প্রফেশনাল প্রম্পট ইঞ্জিনিয়ারিং, এআই দিয়ে কনটেন্ট রিসার্চ, ওয়েব অ্যাপ তৈরি এবং অটোমেশন ওয়ার্কফ্লো শিখুন ধাপে ধাপে।',
     price: 1250,
-    originalPrice: 3000,
-    thumbnailUrl: AI_COURSE_IMG,
+    originalPrice: 1800,
+    discountBadge: '30% OFF',
+    thumbnailUrl: '/images/ai-course.jpg',
+    bannerUrl: '/images/ai-course.jpg',
     category: 'এআই অ্যান্ড অটোমেশন',
-    studentsCount: '৪,৮৯০+',
-    rating: '৪.৯',
-    totalDuration: '১৬ ঘণ্টা',
+    studentsCount: '4.8K+ Joined',
+    rating: '4.9',
+    reviewsCount: '410+ Reviews',
+    totalDuration: '16h',
+    modulesCount: 10,
+    softwareTags: ['ChatGPT', 'Claude'],
     status: 'PUBLISHED',
     featured: true,
     outcomes: [
@@ -348,17 +441,24 @@ const INITIAL_COURSES: AdminCourse[] = [
   {
     id: 'course-doc-mastery',
     slug: 'cinematic-tech-documentary-masterclass',
+    title: 'Cinematic Tech Documentary Masterclass',
     titleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ও ডিপ রিসার্চ মাস্টারক্লাস',
     shortTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
+    subtitle: 'Deep research, analytical scripting, storytelling, retention editing & cinematic sound design.',
     subtitleBn: 'ডিপ রিসার্চ, অ্যানালিটিক্যাল স্ক্রিপ্টিং ও ভিজ্যুয়াল স্টোরিটেলিং গাইড।',
     shortDescBn: 'আন্তর্জাতিক মানের টেক ডকুমেন্টারি তৈরি, ডেটা রিসার্চ, সাউন্ড ডিজাইন এবং রিটেনশন এডিটিং শিখুন এক কোর্সে।',
     price: 1490,
     originalPrice: 3500,
-    thumbnailUrl: DOC_COURSE_IMG,
+    discountBadge: '57% OFF',
+    thumbnailUrl: '/images/doc-course.jpg',
+    bannerUrl: '/images/doc-course.jpg',
     category: 'টেক ডকুমেন্টারি',
-    studentsCount: '৪,২৫০+',
-    rating: '৪.৯',
-    totalDuration: '১৮ ঘণ্টা',
+    studentsCount: '4.2K+ Joined',
+    rating: '4.9',
+    reviewsCount: '280+ Reviews',
+    totalDuration: '18h',
+    modulesCount: 14,
+    softwareTags: ['Pr', 'Ae', 'AI'],
     status: 'PUBLISHED',
     featured: true,
     outcomes: [
@@ -396,17 +496,24 @@ const INITIAL_COURSES: AdminCourse[] = [
   {
     id: 'course-free-editing',
     slug: 'high-retention-video-editing-fundamentals',
+    title: 'High-Retention Video Editing Fundamentals',
     titleBn: 'হাই-রিটেনশন ভিডিও এডিটিং ও ইউটিউব গ্রোথ ব্লুপ্রিন্ট',
     shortTitleBn: 'ভিডিও এডিটিং ও ইউটিউব গ্রোথ',
+    subtitle: 'Pacing, dynamic cuts, speed ramps, retention psychology & viral editing tactics.',
     subtitleBn: 'মোবাইল ও পিসিতে সিনেমাটিক কাট, স্পিড গ্রাফ ও কালার গ্রেডিং।',
     shortDescBn: 'CapCut, Premiere Pro ও After Effects-এ স্মুথ কি-ফ্রেম অ্যানিমেশন, পেসিং এবং ডার্ক সিনেমাটিক কালার গ্রেডিংয়ের প্র্যাকটিক্যাল গাইড।',
     price: 790,
     originalPrice: 1990,
-    thumbnailUrl: EDIT_COURSE_IMG,
+    discountBadge: '60% OFF',
+    thumbnailUrl: '/images/edit-course.jpg',
+    bannerUrl: '/images/edit-course.jpg',
     category: 'ভিডিও এডিটিং',
-    studentsCount: '৫,১২০+',
-    rating: '৫.০',
-    totalDuration: '১২ ঘণ্টা',
+    studentsCount: '5.1K+ Joined',
+    rating: '5.0',
+    reviewsCount: '350+ Reviews',
+    totalDuration: '12h',
+    modulesCount: 8,
+    softwareTags: ['CapCut', 'Pr'],
     status: 'PUBLISHED',
     featured: true,
     outcomes: [
@@ -436,18 +543,97 @@ const INITIAL_COURSES: AdminCourse[] = [
 
 const INITIAL_PRODUCTS: AdminProduct[] = [
   {
+    id: 'prod-luts-pack',
+    slug: 'cinematic-luts-pack',
+    title: 'Cinematic LUTs Pack',
+    titleBn: 'সিনেমাটিক LUTs প্যাক',
+    shortTitleBn: 'সিনেমাটিক LUTs প্যাক',
+    shortDesc: '50+ Premium 3D LUTs for Premiere Pro, DaVinci Resolve, Final Cut & CapCut.',
+    shortDescBn: '৫০+ প্রিমিয়াম সিনেমাটিক কালার গ্রেডিং LUTs প্যাক। ১-ক্লিক এপ্লাই ও লাইফটাইম আপডেট।',
+    price: 690,
+    originalPrice: 1300,
+    discountBadge: '50% OFF',
+    badge: 'BESTSELLER',
+    thumbnailUrl: '/images/edit-course.jpg',
+    category: 'Presets & Assets',
+    rating: '4.9',
+    salesCount: '1K+ Sales',
+    softwareTags: ['Pr', 'Ae', 'DaVinci'],
+    fileFormat: '.cube / 3D LUTs',
+    status: 'PUBLISHED',
+    features: [
+      '50+ High-end cinematic color grades',
+      'Rec.709, Sony S-Log3, Canon C-Log supported',
+      '1-Click instant application in Premiere & CapCut',
+      'Lifetime free updates & installation tutorial'
+    ],
+    featuresBn: [
+      '৫০+ হাই-এন্ড সিনেমাটিক কালার লুকস',
+      'Sony S-Log3, Canon C-Log ও Rec.709 সাপোর্টেড',
+      '১-ক্লিকে Premiere ও CapCut-এ ব্যবহারের সুবিধা',
+      'লাইফটাইম ফ্রি আপডেট ও ভিডিও গাইড'
+    ],
+    downloadFilename: 'MobinIQ_Cinematic_LUTs_Pack.zip',
+    downloadContent: '# MobinIQ Cinematic LUTs Master Pack\n'
+  },
+  {
+    id: 'prod-ai-prompts',
+    slug: 'ai-prompt-pack',
+    title: 'AI Prompt Pack',
+    titleBn: '২০০+ টেস্টেড এআই মেগা প্রম্পট ভল্ট (ChatGPT & Claude)',
+    shortTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
+    shortDesc: '200+ battle-tested master prompts for ChatGPT, Claude & Midjourney.',
+    shortDescBn: 'স্ক্রিপ্ট রাইটিং, ডিপ রিসার্চ, ইউটিউব গ্রোথ, অ্যাড কপি ও কোডিং অটোমেশনের রেডিমেড প্রম্পট লাইব্রেরি।',
+    price: 490,
+    originalPrice: 820,
+    discountBadge: '40% OFF',
+    badge: 'POPULAR',
+    thumbnailUrl: '/images/ai-course.jpg',
+    category: 'AI & Automation',
+    rating: '4.9',
+    salesCount: '850+ Sales',
+    softwareTags: ['ChatGPT', 'Claude'],
+    fileFormat: 'Notion Vault + PDF',
+    status: 'PUBLISHED',
+    features: [
+      '200+ Master prompts for scripts, sales copy & code',
+      'Viral YouTube video hook generators',
+      'Midjourney v6 hyper-realistic photo prompts',
+      'Instant Notion dashboard access'
+    ],
+    featuresBn: [
+      '৬০+ ডকুমেন্টারি রিসার্চ ও হাই-রিটেনশন স্ক্রিপ্ট রাইটিং প্রম্পট',
+      '৫০+ ভাইরাল ইউটিউব টাইটেল, থাম্বনেইল ও ৩০-সেকেন্ড হুক জেনারেটর',
+      '৫০+ ফেসবুক অ্যাড কপি, ল্যান্ডিং পেজ ও সেলস ফানেল প্রম্পট'
+    ],
+    downloadFilename: 'MobinIQ_200_AI_Prompt_Vault.md',
+    downloadContent: '# Mobin IQ 200+ AI Mega Prompt Vault\n'
+  },
+  {
     id: 'prod-sfx-pack',
     slug: 'cinematic-tech-documentary-sfx-pack',
+    title: 'Cinematic Tech SFX Pack',
     titleBn: '১০০+ সিনেমাটিক টেক ডকুমেন্টারি সাউন্ড এফেক্টস (SFX) প্যাক',
     shortTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
+    shortDesc: 'Sub-bass drops, deep whooshes, telemetry beeps, riser sweeps & ambient sound design.',
     shortDescBn: 'সাব-বেস ড্রপ, ডিপ হুশ, ডেটা টেলিমেট্রি বিপ ও ডার্ক অ্যাম্বিয়েন্ট ব্যাকগ্রাউন্ড ড্রোন সাউন্ড প্যাক।',
     price: 199,
     originalPrice: 499,
-    thumbnailUrl: DOC_COURSE_IMG,
+    discountBadge: '60% OFF',
+    badge: 'HOT',
+    thumbnailUrl: '/images/doc-course.jpg',
     category: 'SFX Pack',
-    rating: '৪.৯',
-    salesCount: '১,৮৫০+',
+    rating: '4.9',
+    salesCount: '1,850+ Sales',
+    softwareTags: ['Pr', 'CapCut', 'DaVinci'],
+    fileFormat: '24-Bit WAV / ZIP',
     status: 'PUBLISHED',
+    features: [
+      '25+ Deep sub-bass hits & cinematic impacts',
+      '30+ Data telemetry, typewriter & glitch SFX',
+      '25+ Smooth whoosh & tension risers',
+      'Studio master 24-bit 48kHz WAV audio files'
+    ],
     featuresBn: [
       '২৫+ ডিপ সাব-বেস হিট ও সিনেমাটিক ইমপ্যাক্টস',
       '৩০+ ডেটা টেলিমেট্রি, টেক টাইপরাইটার ও গ্লিচ সাউন্ড',
@@ -457,25 +643,37 @@ const INITIAL_PRODUCTS: AdminProduct[] = [
     downloadContent: 'Mobin IQ 100+ Cinematic SFX Pack — Master Download Links\n'
   },
   {
-    id: 'prod-prompt-vault',
-    slug: '200-tested-ai-mega-prompt-vault',
-    titleBn: '২০০+ টেস্টেড এআই মেগা প্রম্পট ভল্ট (ChatGPT & Claude)',
-    shortTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
-    shortDescBn: 'স্ক্রিপ্ট রাইটিং, ডিপ রিসার্চ, ইউটিউব গ্রোথ, অ্যাড কপি ও কোডিং অটোমেশনের রেডিমেড প্রম্পট লাইব্রেরি।',
-    price: 149,
-    originalPrice: 399,
-    thumbnailUrl: AI_COURSE_IMG,
-    category: 'Prompt Vault',
-    rating: '৫.০',
-    salesCount: '২,৪১০+',
+    id: 'prod-thumbnails',
+    slug: 'thumbnail-templates',
+    title: 'Viral Thumbnail Templates',
+    titleBn: 'ইউটিউব থাম্বনেইল টেমপ্লেট বান্ডেল',
+    shortTitleBn: 'ইউটিউব থাম্বনেইল টেমপ্লেট',
+    shortDesc: '30+ High CTR Viral YouTube Thumbnail PSD & Canva editable templates.',
+    shortDescBn: '৩০+ হাই সিটিআর ভাইরাল ইউটিউব থাম্বনেইল পিএসডি ও ক্যানভা এডিটেবল ফাইল।',
+    price: 390,
+    originalPrice: 750,
+    discountBadge: '48% OFF',
+    badge: 'TRENDING',
+    thumbnailUrl: '/images/hero-banner.jpg',
+    category: 'Templates',
+    rating: '4.8',
+    salesCount: '720+ Sales',
+    softwareTags: ['Photoshop', 'Canva'],
+    fileFormat: 'PSD + Canva Link',
     status: 'PUBLISHED',
-    featuresBn: [
-      '৬০+ ডকুমেন্টারি রিসার্চ ও হাই-রিটেনশন স্ক্রিপ্ট রাইটিং প্রম্পট',
-      '৫০+ ভাইরাল ইউটিউব টাইটেল, থাম্বনেইল ও ৩০-সেকেন্ড হুক জেনারেটর',
-      '৫০+ ফেসবুক অ্যাড কপি, ল্যান্ডিং পেজ ও সেলস ফানেল প্রম্পট'
+    features: [
+      '30+ High CTR YouTube thumbnail templates',
+      'Layered PSD files with organized smart objects',
+      '1-Click Canva editable links included',
+      'Custom facial glow & text styles'
     ],
-    downloadFilename: 'MobinIQ_200_AI_Prompt_Vault.md',
-    downloadContent: '# Mobin IQ 200+ AI Mega Prompt Vault\n'
+    featuresBn: [
+      '৩০+ হাই সিটিআর ভাইরাল ইউটিউব থাম্বনেইল',
+      'ফটোশপ পিএসডি ও ক্যানভা এডিটেবল লিংক',
+      'লেয়ারড স্মার্ট অবজেক্ট ও কালার স্টাইল'
+    ],
+    downloadFilename: 'MobinIQ_Thumbnail_Templates.txt',
+    downloadContent: '# MobinIQ Thumbnail Templates Master Link\n'
   }
 ];
 
@@ -673,12 +871,12 @@ export default function App() {
       gatewayBaseUrl: 'https://pay.mobiniq.com/api/checkout-v2',
       gatewayApiKey: 'up_live_98a7bc654321fedcba',
       gatewayEnabled: true,
-      bkashNumber: '01947-575870',
-      nagadNumber: '01947-575870',
-      rocketNumber: '01947-575870',
+      bkashNumber: '01308313078',
+      nagadNumber: '01308313078',
+      rocketNumber: '01308313078',
       manualAccountType: 'Personal (Send Money)',
-      supportPhone: '01947-575870',
-      supportWhatsapp: '01947575870',
+      supportPhone: '01308313078',
+      supportWhatsapp: '01308313078',
       supportEmail: 'support@mobiniq.com',
       supportMessenger: 'https://m.me/mobiniq',
       supportHours: 'সকাল ১০:০০ - রাত ১০:০০ (প্রতিদিন)',
@@ -688,9 +886,9 @@ export default function App() {
       tiktokPixelId: 'C98X2Y3Z4A5B6C',
       ga4MeasurementId: 'G-MOBINIQ2026',
       pixelEnabled: true,
-      firebaseProjectId: 'mobiniq-edtech-bd',
-      firebaseApiKey: 'AIzaSyD-MobinIQ-FirebaseKey',
-      firebaseAuthDomain: 'mobiniq-edtech-bd.firebaseapp.com',
+      firebaseProjectId: 'mobin-iq',
+      firebaseApiKey: 'AIzaSyDuB4unQgwjd0LB-9KuvpOhYzTFo7y9Hm8',
+      firebaseAuthDomain: 'mobin-iq.firebaseapp.com',
       adminEmail: 'admin@mobiniq.com'
     })
   );
@@ -959,31 +1157,43 @@ export default function App() {
   const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [showCourseForm, setShowCourseForm] = useState<boolean>(false);
   const [courseDraft, setCourseDraft] = useState<{
+    title: string;
     titleBn: string;
     shortTitleBn: string;
     slug: string;
+    subtitle: string;
     subtitleBn: string;
     shortDescBn: string;
-    category: AdminCourse['category'];
+    category: string;
     price: number;
     originalPrice: number;
+    discountBadge: string;
+    reviewsCount: string;
     totalDuration: string;
     thumbnailUrl: string;
+    bannerUrl: string;
+    softwareTagsText: string;
     status: 'PUBLISHED' | 'DRAFT';
     featured: boolean;
     outcomesText: string;
     modules: CourseModule[];
   }>({
+    title: 'Complete AI Mastery Course',
     titleBn: '',
     shortTitleBn: '',
     slug: '',
+    subtitle: '',
     subtitleBn: '',
     shortDescBn: '',
-    category: 'এআই অ্যান্ড অটোমেশন',
-    price: 1250,
-    originalPrice: 3000,
-    totalDuration: '১৫ ঘণ্টা',
-    thumbnailUrl: AI_COURSE_IMG,
+    category: 'ভিডিও এডিটিং',
+    price: 1490,
+    originalPrice: 2000,
+    discountBadge: '25% OFF',
+    reviewsCount: '320+ Reviews',
+    totalDuration: '8h 20m',
+    thumbnailUrl: '/images/hero-banner.jpg',
+    bannerUrl: '/images/hero-banner.jpg',
+    softwareTagsText: 'Pr, Ae',
     status: 'PUBLISHED',
     featured: true,
     outcomesText: 'প্রম্পট ইঞ্জিনিয়ারিং মাস্টারি\nএআই ওয়ার্কফ্লো অটোমেশন',
@@ -1009,16 +1219,22 @@ export default function App() {
   const startNewCourse = () => {
     setEditingCourseId(null);
     setCourseDraft({
+      title: '',
       titleBn: '',
       shortTitleBn: '',
       slug: '',
+      subtitle: '',
       subtitleBn: '',
       shortDescBn: '',
-      category: 'এআই অ্যান্ড অটোমেশন',
-      price: 990,
-      originalPrice: 2500,
-      totalDuration: '১৪ ঘণ্টা',
-      thumbnailUrl: AI_COURSE_IMG,
+      category: 'ভিডিও এডিটিং',
+      price: 1490,
+      originalPrice: 2000,
+      discountBadge: '25% OFF',
+      reviewsCount: '320+ Reviews',
+      totalDuration: '8h 20m',
+      thumbnailUrl: '/images/hero-banner.jpg',
+      bannerUrl: '/images/hero-banner.jpg',
+      softwareTagsText: 'Pr, Ae',
       status: 'PUBLISHED',
       featured: true,
       outcomesText: 'প্র্যাকটিক্যাল প্রজেক্ট ভিত্তিক গাইডলাইন\nলাইফটাইম আপডেট ও রিসোর্স ফাইল',
@@ -1046,20 +1262,26 @@ export default function App() {
   const startEditCourse = (c: AdminCourse) => {
     setEditingCourseId(c.id);
     setCourseDraft({
-      titleBn: c.titleBn,
-      shortTitleBn: c.shortTitleBn,
-      slug: c.slug,
-      subtitleBn: c.subtitleBn,
-      shortDescBn: c.shortDescBn,
-      category: c.category,
-      price: c.price,
-      originalPrice: c.originalPrice,
-      totalDuration: c.totalDuration,
-      thumbnailUrl: c.thumbnailUrl || AI_COURSE_IMG,
-      status: c.status,
-      featured: c.featured,
-      outcomesText: c.outcomes.join('\n'),
-      modules: c.modules
+      title: c.title || '',
+      titleBn: c.titleBn || '',
+      shortTitleBn: c.shortTitleBn || '',
+      slug: c.slug || '',
+      subtitle: c.subtitle || '',
+      subtitleBn: c.subtitleBn || '',
+      shortDescBn: c.shortDescBn || '',
+      category: c.category || 'ভিডিও এডিটিং',
+      price: c.price || 0,
+      originalPrice: c.originalPrice || 0,
+      discountBadge: c.discountBadge || '',
+      reviewsCount: c.reviewsCount || '320+ Reviews',
+      totalDuration: c.totalDuration || '8h 20m',
+      thumbnailUrl: c.thumbnailUrl || '/images/hero-banner.jpg',
+      bannerUrl: c.bannerUrl || c.thumbnailUrl || '/images/hero-banner.jpg',
+      softwareTagsText: Array.isArray(c.softwareTags) ? c.softwareTags.join(', ') : '',
+      status: c.status || 'PUBLISHED',
+      featured: Boolean(c.featured),
+      outcomesText: Array.isArray(c.outcomes) ? c.outcomes.join('\n') : '',
+      modules: c.modules || []
     });
     setShowCourseForm(true);
   };
@@ -1077,6 +1299,10 @@ export default function App() {
       .split('\n')
       .map((s) => s.trim())
       .filter(Boolean);
+    const softwareTags = courseDraft.softwareTagsText
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
 
     notify('⏳ কোর্স সেভ হচ্ছে...');
     try {
@@ -1084,23 +1310,30 @@ export default function App() {
         const existing = courses.find((c) => c.id === editingCourseId);
         const updatedCourse: AdminCourse = {
           id: editingCourseId,
+          title: courseDraft.title.trim() || courseDraft.titleBn.trim(),
           titleBn: courseDraft.titleBn.trim(),
           shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
           slug: cleanSlug,
+          subtitle: courseDraft.subtitle.trim() || courseDraft.subtitleBn.trim(),
           subtitleBn: courseDraft.subtitleBn.trim(),
           shortDescBn: courseDraft.shortDescBn.trim(),
           category: courseDraft.category,
           price: Number(courseDraft.price) || 0,
           originalPrice: Number(courseDraft.originalPrice) || 0,
+          discountBadge: courseDraft.discountBadge.trim() || '25% OFF',
           totalDuration: courseDraft.totalDuration.trim(),
-          thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
+          reviewsCount: courseDraft.reviewsCount.trim() || '320+ Reviews',
+          thumbnailUrl: courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
+          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
+          modulesCount: courseDraft.modules.length,
+          softwareTags,
           status: courseDraft.status,
           featured: courseDraft.featured,
           outcomes,
           modules: courseDraft.modules,
           resources: existing?.resources || [],
-          studentsCount: existing?.studentsCount || '১,২০০+',
-          rating: existing?.rating || '৪.৯'
+          studentsCount: existing?.studentsCount || '1.2K+ Joined',
+          rating: existing?.rating || '4.8'
         };
         const updatedList = courses.map((c) => (c.id === editingCourseId ? { ...c, ...updatedCourse } : c));
         setCourses(updatedList);
@@ -1116,17 +1349,24 @@ export default function App() {
         const newCourse: AdminCourse = {
           id: `course-${Date.now()}`,
           slug: cleanSlug,
+          title: courseDraft.title.trim() || courseDraft.titleBn.trim(),
           titleBn: courseDraft.titleBn.trim(),
           shortTitleBn: courseDraft.shortTitleBn.trim() || courseDraft.titleBn.trim(),
+          subtitle: courseDraft.subtitle.trim() || courseDraft.subtitleBn.trim(),
           subtitleBn: courseDraft.subtitleBn.trim() || courseDraft.titleBn.trim(),
           shortDescBn: courseDraft.shortDescBn.trim() || courseDraft.subtitleBn.trim(),
           price: Number(courseDraft.price) || 0,
           originalPrice: Number(courseDraft.originalPrice) || 0,
-          thumbnailUrl: courseDraft.thumbnailUrl || AI_COURSE_IMG,
+          discountBadge: courseDraft.discountBadge.trim() || '25% OFF',
+          thumbnailUrl: courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
+          bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl || '/images/hero-banner.jpg',
           category: courseDraft.category,
           studentsCount: 'নতুন',
-          rating: '৫.০',
-          totalDuration: courseDraft.totalDuration.trim() || '১০ ঘণ্টা',
+          rating: '5.0',
+          reviewsCount: courseDraft.reviewsCount.trim() || '100+ Reviews',
+          totalDuration: courseDraft.totalDuration.trim() || '10 ঘণ্টা',
+          modulesCount: courseDraft.modules.length,
+          softwareTags,
           status: courseDraft.status,
           featured: courseDraft.featured,
           outcomes,
@@ -1155,29 +1395,41 @@ export default function App() {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [showProductForm, setShowProductForm] = useState<boolean>(false);
   const [productDraft, setProductDraft] = useState<{
+    title: string;
     titleBn: string;
     shortTitleBn: string;
     slug: string;
+    shortDesc: string;
     shortDescBn: string;
-    category: AdminProduct['category'];
+    category: string;
     price: number;
     originalPrice: number;
+    discountBadge: string;
+    badge: string;
     thumbnailUrl: string;
+    softwareTagsText: string;
+    fileFormat: string;
     status: 'PUBLISHED' | 'DRAFT';
     featuresText: string;
     downloadFilename: string;
     downloadContent: string;
   }>({
+    title: '',
     titleBn: '',
     shortTitleBn: '',
     slug: '',
+    shortDesc: '',
     shortDescBn: '',
-    category: 'Prompt Vault',
-    price: 199,
-    originalPrice: 499,
-    thumbnailUrl: AI_COURSE_IMG,
+    category: 'Presets & Assets',
+    price: 690,
+    originalPrice: 1300,
+    discountBadge: '50% OFF',
+    badge: 'BESTSELLER',
+    thumbnailUrl: '/images/edit-course.jpg',
+    softwareTagsText: 'Pr, Ae, DaVinci',
+    fileFormat: '.cube / 3D LUTs',
     status: 'PUBLISHED',
-    featuresText: '১০০% টেস্টেড প্রিমিয়াম রিসোর্স\nমোবাইল ও পিসি সাপোর্টেড\nলাইফটাইম ডাউনলোড অ্যাক্সেস',
+    featuresText: '৫০+ হাই-এন্ড সিনেমাটিক কালার লুকস\nSony S-Log3, Canon C-Log ও Rec.709 সাপোর্টেড\n১-ক্লিকে Premiere ও CapCut-এ ব্যবহারের সুবিধা\nলাইফটাইম ফ্রি আপডেট ও ভিডিও গাইড',
     downloadFilename: 'MobinIQ_Digital_Pack.txt',
     downloadContent: '# MobinIQ Digital Resource Download Link\n'
   });
@@ -1185,16 +1437,22 @@ export default function App() {
   const startNewProduct = () => {
     setEditingProductId(null);
     setProductDraft({
+      title: '',
       titleBn: '',
       shortTitleBn: '',
       slug: '',
+      shortDesc: '',
       shortDescBn: '',
-      category: 'Prompt Vault',
-      price: 199,
-      originalPrice: 499,
-      thumbnailUrl: AI_COURSE_IMG,
+      category: 'Presets & Assets',
+      price: 690,
+      originalPrice: 1300,
+      discountBadge: '50% OFF',
+      badge: 'BESTSELLER',
+      thumbnailUrl: '/images/edit-course.jpg',
+      softwareTagsText: 'Pr, Ae, DaVinci',
+      fileFormat: '.cube / 3D LUTs',
       status: 'PUBLISHED',
-      featuresText: '১০০% টেস্টেড প্রিমিয়াম রিসোর্স\nইনস্ট্যান্ট ডাউনলোড অ্যাক্সেস',
+      featuresText: '১০০% টেস্টেড প্রিমিয়াম রিসোর্স\nইনস্ট্যান্ট ডাউনলোড অ্যাক্সেস\nলাইফটাইম সাপোর্ট',
       downloadFilename: 'MobinIQ_Asset_Pack.txt',
       downloadContent: '# MobinIQ Instant Download Asset\n'
     });
@@ -1204,25 +1462,31 @@ export default function App() {
   const startEditProduct = (p: AdminProduct) => {
     setEditingProductId(p.id);
     setProductDraft({
-      titleBn: p.titleBn,
-      shortTitleBn: p.shortTitleBn,
-      slug: p.slug,
-      shortDescBn: p.shortDescBn,
-      category: p.category,
-      price: p.price,
-      originalPrice: p.originalPrice,
-      thumbnailUrl: p.thumbnailUrl || AI_COURSE_IMG,
-      status: p.status,
-      featuresText: p.featuresBn.join('\n'),
-      downloadFilename: p.downloadFilename,
-      downloadContent: p.downloadContent
+      title: p.title || '',
+      titleBn: p.titleBn || '',
+      shortTitleBn: p.shortTitleBn || '',
+      slug: p.slug || '',
+      shortDesc: p.shortDesc || '',
+      shortDescBn: p.shortDescBn || '',
+      category: p.category || 'Presets & Assets',
+      price: p.price || 0,
+      originalPrice: p.originalPrice || 0,
+      discountBadge: p.discountBadge || '',
+      badge: p.badge || '',
+      thumbnailUrl: p.thumbnailUrl || '/images/edit-course.jpg',
+      softwareTagsText: Array.isArray(p.softwareTags) ? p.softwareTags.join(', ') : '',
+      fileFormat: p.fileFormat || '.cube / 3D LUTs',
+      status: p.status || 'PUBLISHED',
+      featuresText: Array.isArray(p.featuresBn) ? p.featuresBn.join('\n') : (Array.isArray(p.features) ? p.features.join('\n') : ''),
+      downloadFilename: p.downloadFilename || 'MobinIQ_Asset.txt',
+      downloadContent: p.downloadContent || ''
     });
     setShowProductForm(true);
   };
 
   const saveProductDraft = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productDraft.titleBn.trim()) {
+    if (!productDraft.titleBn.trim() && !productDraft.title.trim()) {
       notify('প্রোডাক্টের নাম লিখুন!');
       return;
     }
@@ -1233,26 +1497,37 @@ export default function App() {
       .split('\n')
       .map((s) => s.trim())
       .filter(Boolean);
+    const softwareTags = productDraft.softwareTagsText
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
 
     notify('⏳ প্রোডাক্ট সেভ হচ্ছে...');
     try {
       if (editingProductId) {
         const updatedProd: AdminProduct = {
           id: editingProductId,
-          titleBn: productDraft.titleBn.trim(),
-          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
+          title: productDraft.title.trim() || productDraft.titleBn.trim(),
+          titleBn: productDraft.titleBn.trim() || productDraft.title.trim(),
+          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim() || productDraft.title.trim(),
           slug: cleanSlug,
-          shortDescBn: productDraft.shortDescBn.trim(),
+          shortDesc: productDraft.shortDesc.trim() || productDraft.shortDescBn.trim(),
+          shortDescBn: productDraft.shortDescBn.trim() || productDraft.shortDesc.trim(),
           category: productDraft.category,
           price: Number(productDraft.price) || 0,
           originalPrice: Number(productDraft.originalPrice) || 0,
-          thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
+          discountBadge: productDraft.discountBadge.trim() || '50% OFF',
+          badge: productDraft.badge.trim() || 'BESTSELLER',
+          thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
+          softwareTags,
+          fileFormat: productDraft.fileFormat.trim() || '.cube / 3D LUTs',
           status: productDraft.status,
+          features: featuresBn,
           featuresBn,
-          downloadFilename: productDraft.downloadFilename.trim(),
+          downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Asset.txt',
           downloadContent: productDraft.downloadContent,
-          rating: '৫.০',
-          salesCount: 'চলমান'
+          rating: '4.9',
+          salesCount: '1K+ Sales'
         };
         const updatedList = products.map((p) => (p.id === editingProductId ? { ...p, ...updatedProd } : p));
         setProducts(updatedList);
@@ -1268,16 +1543,23 @@ export default function App() {
         const newProd: AdminProduct = {
           id: `prod-${Date.now()}`,
           slug: cleanSlug,
-          titleBn: productDraft.titleBn.trim(),
-          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim(),
-          shortDescBn: productDraft.shortDescBn.trim() || productDraft.titleBn.trim(),
+          title: productDraft.title.trim() || productDraft.titleBn.trim(),
+          titleBn: productDraft.titleBn.trim() || productDraft.title.trim(),
+          shortTitleBn: productDraft.shortTitleBn.trim() || productDraft.titleBn.trim() || productDraft.title.trim(),
+          shortDesc: productDraft.shortDesc.trim() || productDraft.shortDescBn.trim(),
+          shortDescBn: productDraft.shortDescBn.trim() || productDraft.shortDesc.trim() || productDraft.titleBn.trim(),
           price: Number(productDraft.price) || 0,
           originalPrice: Number(productDraft.originalPrice) || 0,
-          thumbnailUrl: productDraft.thumbnailUrl || AI_COURSE_IMG,
+          discountBadge: productDraft.discountBadge.trim() || '50% OFF',
+          badge: productDraft.badge.trim() || 'POPULAR',
+          thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
           category: productDraft.category,
-          rating: '৫.০',
+          rating: '5.0',
           salesCount: 'নতুন',
+          softwareTags,
+          fileFormat: productDraft.fileFormat.trim() || '.cube / 3D LUTs',
           status: productDraft.status,
+          features: featuresBn,
           featuresBn,
           downloadFilename: productDraft.downloadFilename.trim() || 'MobinIQ_Pack.txt',
           downloadContent: productDraft.downloadContent
@@ -1621,7 +1903,7 @@ export default function App() {
   // COMPUTED DASHBOARD ANALYTICS
   // ============================================================================
   const completedOrders = useMemo(
-    () => orders.filter((o) => o.status === 'COMPLETED'),
+    () => orders.filter((o) => o.status === 'COMPLETED' || o.status === 'VERIFIED'),
     [orders]
   );
   const pendingOrdersCount = useMemo(
@@ -1633,7 +1915,7 @@ export default function App() {
     [incompleteLeads]
   );
   const liveOrdersRevenue = useMemo(
-    () => completedOrders.reduce((s, o) => s + o.amountBdt, 0),
+    () => completedOrders.reduce((s, o) => s + (Number(o.amountBdt) || 0), 0),
     [completedOrders]
   );
 
@@ -1662,16 +1944,26 @@ export default function App() {
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
-      const statusOk = orderFilterStatus === 'ALL' || o.status === orderFilterStatus;
+      const statusOk =
+        orderFilterStatus === 'ALL' ||
+        (orderFilterStatus === 'COMPLETED'
+          ? o.status === 'COMPLETED' || o.status === 'VERIFIED'
+          : o.status === orderFilterStatus);
       const q = orderSearch.trim().toLowerCase();
+      const code = (o.orderCode || o.orderId || o.id || '').toLowerCase();
+      const name = (o.customerName || '').toLowerCase();
+      const phone = o.customerPhone || '';
+      const email = (o.customerEmail || '').toLowerCase();
+      const trx = (o.trxId || '').toLowerCase();
+      const title = (o.itemTitleBn || (o as any).itemTitle || '').toLowerCase();
       const searchOk =
         !q ||
-        o.orderCode.toLowerCase().includes(q) ||
-        o.customerName.toLowerCase().includes(q) ||
-        o.customerPhone.includes(q) ||
-        o.customerEmail.toLowerCase().includes(q) ||
-        o.trxId.toLowerCase().includes(q) ||
-        o.itemTitleBn.toLowerCase().includes(q);
+        code.includes(q) ||
+        name.includes(q) ||
+        phone.includes(q) ||
+        email.includes(q) ||
+        trx.includes(q) ||
+        title.includes(q);
       return statusOk && searchOk;
     });
   }, [orders, orderFilterStatus, orderSearch]);
@@ -1681,10 +1973,10 @@ export default function App() {
     if (!q) return users;
     return users.filter(
       (u) =>
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        u.phone.includes(q) ||
-        u.uid.toLowerCase().includes(q)
+        (u.name || '').toLowerCase().includes(q) ||
+        (u.email || '').toLowerCase().includes(q) ||
+        (u.phone || '').includes(q) ||
+        (u.uid || '').toLowerCase().includes(q)
     );
   }, [users, userSearch]);
 
@@ -2491,7 +2783,7 @@ export default function App() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="sm:col-span-2 space-y-1">
-                      <label className="text-xs font-bold text-slate-300">কোর্সের পূর্ণ নাম (বাংলায়) *</label>
+                      <label className="text-xs font-bold text-slate-300">কোর্সের পূর্ণ নাম (বাংলায়) *</label>
                       <input
                         type="text"
                         required
@@ -2503,22 +2795,25 @@ export default function App() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">কোর্সের ক্যাটাগরি *</label>
-                      <select
-                        value={courseDraft.category}
-                        onChange={(e) =>
-                          setCourseDraft((p) => ({
-                            ...p,
-                            category: e.target.value as AdminCourse['category']
-                          }))
-                        }
+                      <label className="text-xs font-bold text-slate-300">কোর্সের ইংরেজি নাম (Title EN)</label>
+                      <input
+                        type="text"
+                        value={courseDraft.title}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, title: e.target.value }))}
+                        placeholder="Complete AI Mastery Course"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      >
-                        <option value="এআই অ্যান্ড অটোমেশন">এআই অ্যান্ড অটোমেশন</option>
-                        <option value="টেক ডকুমেন্টারি">টেক ডকুমেন্টারি</option>
-                        <option value="ভিডিও এডিটিং">ভিডিও এডিটিং</option>
-                        <option value="ফ্রিল্যান্সিং ও ক্যারিয়ার">ফ্রিল্যান্সিং ও ক্যারিয়ার</option>
-                      </select>
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-300">কোর্সের ক্যাটাগরি *</label>
+                      <input
+                        type="text"
+                        value={courseDraft.category}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, category: e.target.value }))}
+                        placeholder="ভিডিও এডিটিং / AI & Automation"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
+                      />
                     </div>
 
                     <div className="space-y-1">
@@ -2533,7 +2828,7 @@ export default function App() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">URL Slug (Facebook Ad লিংকের জন্য)</label>
+                      <label className="text-xs font-bold text-slate-300">URL Slug (ওয়েবসাইট ও Ad লিংকের জন্য)</label>
                       <input
                         type="text"
                         value={courseDraft.slug}
@@ -2544,12 +2839,45 @@ export default function App() {
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">মোট সময়কাল (Duration)</label>
+                      <label className="text-xs font-bold text-cyan-300">সফটওয়্যার ট্যাগ (Software Tags - কমা দিয়ে লিখুন)</label>
+                      <input
+                        type="text"
+                        value={courseDraft.softwareTagsText}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, softwareTagsText: e.target.value }))}
+                        placeholder="Pr, Ae, DaVinci, ChatGPT"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-cyan-500/30 text-xs sm:text-sm text-cyan-300 font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-amber-300">ডিসকাউন্ট অফার ব্যাজ (Discount Badge)</label>
+                      <input
+                        type="text"
+                        value={courseDraft.discountBadge}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, discountBadge: e.target.value }))}
+                        placeholder="25% OFF বা ৭০% ছাড়"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-amber-500/30 text-xs sm:text-sm text-amber-300 font-bold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-300">রিভিউ সংখ্যা (Reviews Count)</label>
+                      <input
+                        type="text"
+                        value={courseDraft.reviewsCount}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, reviewsCount: e.target.value }))}
+                        placeholder="320+ Reviews"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-300">মোট সময়কাল (Duration)</label>
                       <input
                         type="text"
                         value={courseDraft.totalDuration}
                         onChange={(e) => setCourseDraft((p) => ({ ...p, totalDuration: e.target.value }))}
-                        placeholder="১৬ ঘণ্টা"
+                        placeholder="8h 20m বা ১৬ ঘণ্টা"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
                       />
                     </div>
@@ -2575,6 +2903,17 @@ export default function App() {
                           setCourseDraft((p) => ({ ...p, originalPrice: Number(e.target.value) }))
                         }
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-sm text-slate-300"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-3 space-y-1">
+                      <label className="text-xs font-bold text-slate-300">ওয়াইড ব্যানার URL (16:9 Banner Image)</label>
+                      <input
+                        type="text"
+                        value={courseDraft.bannerUrl}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, bannerUrl: e.target.value }))}
+                        placeholder="/images/hero-banner.jpg অথবা অনলাইন লিংক"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
                       />
                     </div>
 
@@ -2931,6 +3270,18 @@ export default function App() {
                           <p className="text-xs text-slate-400 line-clamp-2">
                             {course.subtitleBn}
                           </p>
+                          {course.softwareTags && course.softwareTags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-0.5">
+                              {course.softwareTags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                           <div className="text-[11px] text-slate-400 flex items-center gap-2">
                             <span>{toBn(course.modules.length)} মডিউল</span>
                             <span>•</span>
@@ -2938,13 +3289,20 @@ export default function App() {
                             <span>•</span>
                             <span>{course.totalDuration}</span>
                           </div>
-                          <div className="flex items-baseline gap-2 pt-1">
-                            <span className="text-lg font-extrabold text-emerald-400">
-                              ৳{toBn(course.price)}
-                            </span>
-                            <span className="text-xs text-slate-500 line-through">
-                              ৳{toBn(course.originalPrice)}
-                            </span>
+                          <div className="flex items-baseline justify-between pt-1">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-lg font-extrabold text-emerald-400">
+                                ৳{toBn(course.price)}
+                              </span>
+                              <span className="text-xs text-slate-500 line-through">
+                                ৳{toBn(course.originalPrice)}
+                              </span>
+                            </div>
+                            {course.discountBadge && (
+                              <span className="px-2 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[10px] font-bold">
+                                {course.discountBadge}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -3037,34 +3395,72 @@ export default function App() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div className="sm:col-span-2 space-y-1">
-                      <label className="text-xs font-bold text-slate-300">প্রোডাক্টের নাম (বাংলায়) *</label>
+                      <label className="text-xs font-bold text-slate-300">প্রোডাক্টের নাম (বাংলায়) *</label>
                       <input
                         type="text"
                         required
                         value={productDraft.titleBn}
                         onChange={(e) => setProductDraft((p) => ({ ...p, titleBn: e.target.value }))}
-                        placeholder="যেমন: ১০০+ সিনেমাটিক সাউন্ড এফেক্টস প্যাক"
+                        placeholder="যেমন: সিনেমাটিক LUTs প্যাক"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
                       />
                     </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-300">প্রোডাক্টের ইংরেজি নাম (Title EN)</label>
+                      <input
+                        type="text"
+                        value={productDraft.title}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, title: e.target.value }))}
+                        placeholder="Cinematic LUTs Pack"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
+                      />
+                    </div>
+
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-slate-300">প্রোডাক্টের ধরন (Category)</label>
-                      <select
+                      <input
+                        type="text"
                         value={productDraft.category}
-                        onChange={(e) =>
-                          setProductDraft((p) => ({
-                            ...p,
-                            category: e.target.value as AdminProduct['category']
-                          }))
-                        }
+                        onChange={(e) => setProductDraft((p) => ({ ...p, category: e.target.value }))}
+                        placeholder="Presets & Assets / AI & Automation / SFX Pack"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white"
-                      >
-                        <option value="SFX Pack">SFX Pack</option>
-                        <option value="Prompt Vault">Prompt Vault</option>
-                        <option value="LUT & Presets">LUT & Presets</option>
-                        <option value="Template & E-Book">Template & E-Book</option>
-                      </select>
+                      />
                     </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-slate-300">URL Slug (ওয়েবসাইট ও শপ লিংকের জন্য)</label>
+                      <input
+                        type="text"
+                        value={productDraft.slug}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, slug: e.target.value }))}
+                        placeholder="cinematic-luts-pack"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-cyan-300 font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-cyan-300">সফটওয়্যার ট্যাগ (Software Tags - কমা দিয়ে লিখুন)</label>
+                      <input
+                        type="text"
+                        value={productDraft.softwareTagsText}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, softwareTagsText: e.target.value }))}
+                        placeholder="Pr, Ae, DaVinci, CapCut"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-cyan-500/30 text-xs sm:text-sm text-cyan-300 font-mono"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-amber-300">ফাইল ফরম্যাট (File Format)</label>
+                      <input
+                        type="text"
+                        value={productDraft.fileFormat}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, fileFormat: e.target.value }))}
+                        placeholder=".cube / 3D LUTs বা Notion Vault + PDF বা 24-Bit WAV"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-amber-500/30 text-xs sm:text-sm text-amber-300 font-mono"
+                      />
+                    </div>
+
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-emerald-300">অফার মূল্য (৳ BDT) *</label>
                       <input
@@ -3075,8 +3471,9 @@ export default function App() {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-emerald-500/40 text-sm font-extrabold text-emerald-400"
                       />
                     </div>
+
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-300">রেগুলার মূল্য (৳)</label>
+                      <label className="text-xs font-bold text-slate-300">রেগুলার মূল্য (৳ স্ট্রাইকথ্রু)</label>
                       <input
                         type="number"
                         value={productDraft.originalPrice}
@@ -3084,6 +3481,28 @@ export default function App() {
                           setProductDraft((p) => ({ ...p, originalPrice: Number(e.target.value) }))
                         }
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-sm text-slate-300"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-amber-300">ডিসকাউন্ট ব্যাজ (Discount Badge)</label>
+                      <input
+                        type="text"
+                        value={productDraft.discountBadge}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, discountBadge: e.target.value }))}
+                        placeholder="50% OFF বা ৪০% ছাড়"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-amber-300 font-bold"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-cyan-300">স্পেশাল ব্যাজ (Product Badge)</label>
+                      <input
+                        type="text"
+                        value={productDraft.badge}
+                        onChange={(e) => setProductDraft((p) => ({ ...p, badge: e.target.value }))}
+                        placeholder="BESTSELLER / POPULAR / HOT / NEW"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-cyan-300 font-bold"
                       />
                     </div>
                   </div>
@@ -3239,11 +3658,41 @@ export default function App() {
                         className="w-24 h-24 rounded-2xl object-cover border border-white/10 shrink-0"
                       />
                       <div className="space-y-1 min-w-0">
-                        <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 text-[10px] font-bold">
-                          {prod.category}
-                        </span>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 text-[10px] font-bold">
+                            {prod.category}
+                          </span>
+                          {prod.badge && (
+                            <span className="px-2 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/30 text-amber-300 text-[10px] font-extrabold">
+                              {prod.badge}
+                            </span>
+                          )}
+                          {prod.discountBadge && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px] font-bold">
+                              {prod.discountBadge}
+                            </span>
+                          )}
+                        </div>
                         <h3 className="text-base font-extrabold text-white">{prod.titleBn}</h3>
-                        <p className="text-xs text-slate-400 line-clamp-2">{prod.shortDescBn}</p>
+                        {prod.title && <p className="text-[11px] text-slate-400 font-mono">{prod.title}</p>}
+                        <p className="text-xs text-slate-400 line-clamp-2">{prod.shortDescBn || prod.shortDesc}</p>
+                        {prod.softwareTags && prod.softwareTags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 pt-0.5">
+                            {prod.softwareTags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-mono font-bold"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        {prod.fileFormat && (
+                          <span className="text-[10px] text-amber-300/90 font-mono block">
+                            Format: {prod.fileFormat}
+                          </span>
+                        )}
                         <div className="flex items-baseline gap-2 pt-1">
                           <span className="text-xl font-extrabold text-emerald-400">
                             ৳{toBn(prod.price)}
@@ -3990,90 +4439,134 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 text-xs">
-                      {filteredOrders.map((ord) => (
-                        <tr key={ord.id} className="hover:bg-white/[0.02]">
-                          <td className="py-3.5 px-4">
-                            <span className="font-mono font-extrabold text-white block">
-                              {ord.orderCode}
-                            </span>
-                            <span className="text-[11px] text-slate-400">{ord.createdAt}</span>
-                          </td>
-                          <td className="py-3.5 px-4">
-                            <span className="font-bold text-white block">{ord.customerName}</span>
-                            <span className="font-mono text-amber-300 text-[11px] block">
-                              {ord.customerPhone}
-                            </span>
-                            <span className="text-[10px] text-slate-400">{ord.customerEmail}</span>
-                          </td>
-                          <td className="py-3.5 px-4">
-                            <span className="font-bold text-slate-200 block">{ord.itemTitleBn}</span>
-                            <span className="text-emerald-400 font-extrabold">
-                              ৳{toBn(ord.amountBdt)}
-                            </span>
-                          </td>
-                          <td className="py-3.5 px-4">
-                            <span className="px-2 py-0.5 rounded bg-white/10 text-white text-[10px] font-bold">
-                              {ord.paymentMethod}
-                            </span>
-                            <span className="font-mono text-cyan-300 block mt-1">
-                              TrxID: {ord.trxId}
-                            </span>
-                          </td>
-                          <td className="py-3.5 px-4">
-                            {ord.status === 'COMPLETED' && (
-                              <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold">
-                                সম্পন্ন ✓
+                      {filteredOrders.map((ord) => {
+                        const orderCode = ord.orderCode || (ord as any).orderId || ord.id;
+                        const itemTitle = ord.itemTitleBn || (ord as any).itemTitle || 'কোর্স / প্রোডাক্ট';
+                        const isApproved = ord.status === 'COMPLETED' || ord.status === 'VERIFIED';
+                        const cleanPhone = (ord.customerPhone || '').replace(/\D/g, '');
+                        return (
+                          <tr key={ord.id} className="hover:bg-white/[0.03] transition-colors">
+                            <td className="py-3.5 px-4">
+                              <span className="font-mono font-extrabold text-white block">
+                                {orderCode}
                               </span>
-                            )}
-                            {ord.status === 'PENDING' && (
-                              <span className="px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold">
-                                পেন্ডিং ভেরিফিকেশন
+                              <span className="text-[11px] text-slate-400">
+                                {typeof ord.createdAt === 'string'
+                                  ? ord.createdAt
+                                  : (ord.createdAt as any)?.seconds
+                                  ? new Date((ord.createdAt as any).seconds * 1000).toLocaleString('bn-BD')
+                                  : 'আজ'}
                               </span>
-                            )}
-                            {ord.status === 'REJECTED' && (
-                              <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-extrabold">
-                                রিজেক্টেড
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="font-bold text-white block">{ord.customerName || 'কাস্টমার'}</span>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="font-mono text-amber-300 text-[11px] block">
+                                  {ord.customerPhone || 'N/A'}
+                                </span>
+                                {cleanPhone && (
+                                  <a
+                                    href={`https://wa.me/88${cleanPhone}?text=${encodeURIComponent(`Hello ${ord.customerName || ''}, thank you for purchasing "${itemTitle}" on MobinIQ! We received your order (${orderCode}).`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-1.5 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-[10px] inline-flex items-center gap-1 transition-colors"
+                                    title="WhatsApp এ চ্যাট করুন"
+                                  >
+                                    <MessageCircle className="w-3 h-3" />
+                                    <span>চ্যাট</span>
+                                  </a>
+                                )}
+                              </div>
+                              <span className="text-[10px] text-slate-400 block mt-0.5">{ord.customerEmail || ''}</span>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="font-bold text-slate-200 block">{itemTitle}</span>
+                              <span className="text-emerald-400 font-extrabold text-sm">
+                                ৳{toBn(ord.amountBdt || 0)}
                               </span>
-                            )}
-                            <span className="block text-[10px] text-slate-400 mt-1">
-                              {ord.verifiedBy}
-                            </span>
-                          </td>
-                          <td className="py-3.5 px-4 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                              {ord.status !== 'COMPLETED' && (
-                                <button
-                                  onClick={() => approveOrder(ord.id)}
-                                  className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-[11px]"
-                                >
-                                  ✓ অ্যাপ্রুভ
-                                </button>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="px-2 py-0.5 rounded bg-white/10 text-white text-[10px] font-bold">
+                                {ord.paymentMethod || 'Manual'}
+                              </span>
+                              <div className="flex items-center gap-1 mt-1">
+                                <span className="font-mono text-cyan-300 text-[11px]">
+                                  TrxID: {ord.trxId || 'N/A'}
+                                </span>
+                                {ord.trxId && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      copyText(ord.trxId);
+                                      notify(`TrxID ${ord.trxId} কপি করা হয়েছে!`);
+                                    }}
+                                    className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-cyan-300 transition-colors"
+                                    title="TrxID কপি করুন"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                            <td className="py-3.5 px-4">
+                              {isApproved && (
+                                <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-extrabold inline-flex items-center gap-1">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                  <span>ভেরিফাইড / সম্পন্ন ✓</span>
+                                </span>
                               )}
                               {ord.status === 'PENDING' && (
-                                <button
-                                  onClick={() => rejectOrder(ord.id)}
-                                  className="px-2.5 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-[11px]"
-                                >
-                                  ✕ বাতিল
-                                </button>
+                                <span className="px-2.5 py-1 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold inline-flex items-center gap-1">
+                                  <Clock className="w-3 h-3 text-amber-300 animate-pulse" />
+                                  <span>পেন্ডিং ভেরিফিকেশন</span>
+                                </span>
                               )}
-                              <button
-                                onClick={() => {
-                                  downloadFile(
-                                    `Invoice_${ord.orderCode}.txt`,
-                                    `MobinIQ Official Payment Invoice\nOrder: ${ord.orderCode}\nCustomer: ${ord.customerName} (${ord.customerPhone})\nItem: ${ord.itemTitleBn}\nAmount: BDT ${ord.amountBdt}\nTrxID: ${ord.trxId}\nStatus: ${ord.status}\n`
-                                  );
-                                  notify(`ইনভয়েস ${ord.orderCode} ডাউনলোড হয়েছে!`);
-                                }}
-                                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300"
-                                title="Download Invoice"
-                              >
-                                <FileText className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                              {ord.status === 'REJECTED' && (
+                                <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-extrabold">
+                                  রিজেক্টেড
+                                </span>
+                              )}
+                              <span className="block text-[10px] text-slate-400 mt-1">
+                                {ord.verifiedBy || (isApproved ? 'Auto Verified' : '')}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {!isApproved && (
+                                  <button
+                                    onClick={() => approveOrder(ord.id)}
+                                    className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-[11px] shadow-sm flex items-center gap-1"
+                                  >
+                                    <Check className="w-3 h-3" />
+                                    <span>অ্যাপ্রুভ</span>
+                                  </button>
+                                )}
+                                {ord.status === 'PENDING' && (
+                                  <button
+                                    onClick={() => rejectOrder(ord.id)}
+                                    className="px-2.5 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-[11px]"
+                                  >
+                                    ✕ বাতিল
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => {
+                                    downloadFile(
+                                      `Invoice_${orderCode}.txt`,
+                                      `MobinIQ Official Payment Invoice\nOrder: ${orderCode}\nCustomer: ${ord.customerName} (${ord.customerPhone})\nItem: ${itemTitle}\nAmount: BDT ${ord.amountBdt}\nTrxID: ${ord.trxId}\nStatus: ${ord.status}\n`
+                                    );
+                                    notify(`ইনভয়েস ${orderCode} ডাউনলোড হয়েছে!`);
+                                  }}
+                                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300"
+                                  title="Download Invoice"
+                                >
+                                  <FileText className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -4633,8 +5126,11 @@ export default function App() {
                 </div>
 
                 <button
-                  onClick={() => triggerCloudSync('পেমেন্ট গেটওয়ে ও বিকাশ/নগদ নম্বর মেইন সাইটে আপডেট হয়েছে!')}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs sm:text-sm"
+                  onClick={async () => {
+                    await saveSiteConfigToFirestore(siteConfig);
+                    triggerCloudSync('পেমেন্ট গেটওয়ে ও বিকাশ/নগদ নম্বর মেইন সাইটে আপডেট হয়েছে!');
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md transition-all"
                 >
                   💾 গেটওয়ে সেটিংস সেভ করুন
                 </button>
@@ -4666,7 +5162,7 @@ export default function App() {
                       type="text"
                       value={siteConfig.supportWhatsapp}
                       onChange={(e) => setSiteConfig((p) => ({ ...p, supportWhatsapp: e.target.value }))}
-                      placeholder="01947575870"
+                      placeholder="01308313078"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-emerald-500/40 text-xs sm:text-sm text-emerald-300 font-mono font-bold"
                     />
                     <span className="text-[10px] text-slate-500 block">
@@ -4676,13 +5172,13 @@ export default function App() {
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-slate-300 block">
-                      হটলাইন কল নম্বর (সরাসরি ডায়াল)
+                      হটলাইন কল নম্বর (সরাসরি ডায়াল)
                     </label>
                     <input
                       type="text"
                       value={siteConfig.supportPhone}
                       onChange={(e) => setSiteConfig((p) => ({ ...p, supportPhone: e.target.value }))}
-                      placeholder="01947-575870"
+                      placeholder="01308313078"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
                     />
                   </div>
@@ -4715,7 +5211,7 @@ export default function App() {
 
                   <div className="sm:col-span-2 space-y-1.5">
                     <label className="text-xs font-bold text-slate-300 block">
-                      সাপোর্ট ও রেসপন্স সময়কাল (Working Hours)
+                      সাপোর্ট ও রেসপন্স সময়কাল (Working Hours)
                     </label>
                     <input
                       type="text"
@@ -4729,8 +5225,11 @@ export default function App() {
 
                 <button
                   type="button"
-                  onClick={() => triggerCloudSync('সাপোর্ট চ্যানেল ও হটলাইন নম্বর আপডেট হয়েছে!')}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-2"
+                  onClick={async () => {
+                    await saveSiteConfigToFirestore(siteConfig);
+                    triggerCloudSync('সাপোর্ট চ্যানেল ও হটলাইন নম্বর আপডেট হয়েছে!');
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all"
                 >
                   <Check className="w-4 h-4" />
                   <span>💾 সাপোর্ট সেটিংস সেভ ও সিঙ্ক করুন</span>
