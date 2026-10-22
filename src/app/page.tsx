@@ -276,6 +276,10 @@ export interface SiteBridgeConfig {
   firebaseApiKey: string;
   firebaseAuthDomain: string;
   adminEmail: string;
+  youtubeSubs?: string;
+  activeStudents?: string;
+  positiveReviews?: string;
+  studentEarnings?: string;
 }
 
 // ============================================================================
@@ -889,7 +893,11 @@ export default function App() {
       firebaseProjectId: 'mobin-iq',
       firebaseApiKey: 'AIzaSyDuB4unQgwjd0LB-9KuvpOhYzTFo7y9Hm8',
       firebaseAuthDomain: 'mobin-iq.firebaseapp.com',
-      adminEmail: 'admin@mobiniq.com'
+      adminEmail: 'admin@mobiniq.com',
+      youtubeSubs: '125K+',
+      activeStudents: '10,500+',
+      positiveReviews: '98.8%',
+      studentEarnings: '$150K+'
     })
   );
 
@@ -5234,6 +5242,86 @@ export default function App() {
                 >
                   <Check className="w-4 h-4" />
                   <span>💾 সাপোর্ট সেটিংস সেভ ও সিঙ্ক করুন</span>
+                </button>
+              </div>
+
+              {/* Social Trust & Achievement Stats Manager */}
+              <div className="admin-card rounded-3xl p-5 sm:p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                      <span>⚡ অর্জন ও সামাজিক বিশ্বাস কাউন্টার ম্যানেজার</span>
+                    </h3>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      মেইন ওয়েবসাইটের ব্যানারের নিচের ৪টি সোশ্যাল প্রুফ ও কাউন্টিং স্ট্যাটস পরিবর্তন করুন
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-rose-300 block">
+                      কমিউনিটি সদস্য (YouTube Subs)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.youtubeSubs || '125K+'}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, youtubeSubs: e.target.value }))}
+                      placeholder="125K+"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-300 block">
+                      সফল শিক্ষার্থী (Active Students)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.activeStudents || '10,500+'}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, activeStudents: e.target.value }))}
+                      placeholder="10,500+"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-amber-300 block">
+                      পজিটিভ ফিডব্যাক (5-Star Reviews)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.positiveReviews || '98.8%'}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, positiveReviews: e.target.value }))}
+                      placeholder="98.8%"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-emerald-300 block">
+                      আন্তর্জাতিক ডলার আয় (Student Earnings)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.studentEarnings || '$150K+'}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, studentEarnings: e.target.value }))}
+                      placeholder="$150K+"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await saveSiteConfigToFirestore(siteConfig);
+                    triggerCloudSync('অর্জন ও বিশ্বাস কাউন্টার স্ট্যাটস মেইন সাইটে আপডেট হয়েছে!');
+                  }}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>💾 কাউন্টার স্ট্যাটস সেভ ও সিঙ্ক করুন</span>
                 </button>
               </div>
 
