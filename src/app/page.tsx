@@ -156,6 +156,7 @@ export interface AdminProduct {
   discountBadge?: string;
   badge?: string;
   thumbnailUrl: string;
+  images?: string[];
   category: string;
   rating: string;
   salesCount: string;
@@ -1420,6 +1421,7 @@ export default function App() {
     fileFormat: string;
     status: 'PUBLISHED' | 'DRAFT';
     featuresText: string;
+    imagesText: string;
     downloadFilename: string;
     downloadContent: string;
   }>({
@@ -1439,6 +1441,7 @@ export default function App() {
     fileFormat: '.cube / 3D LUTs',
     status: 'PUBLISHED',
     featuresText: '৫০+ হাই-এন্ড সিনেমাটিক কালার লুকস\nSony S-Log3, Canon C-Log ও Rec.709 সাপোর্টেড\n১-ক্লিকে Premiere ও CapCut-এ ব্যবহারের সুবিধা\nলাইফটাইম ফ্রি আপডেট ও ভিডিও গাইড',
+    imagesText: '/images/edit-course.jpg\n/images/hero-banner.jpg\n/images/doc-course.jpg',
     downloadFilename: 'MobinIQ_Digital_Pack.txt',
     downloadContent: '# MobinIQ Digital Resource Download Link\n'
   });
@@ -1462,6 +1465,7 @@ export default function App() {
       fileFormat: '.cube / 3D LUTs',
       status: 'PUBLISHED',
       featuresText: '১০০% টেস্টেড প্রিমিয়াম রিসোর্স\nইনস্ট্যান্ট ডাউনলোড অ্যাক্সেস\nলাইফটাইম সাপোর্ট',
+      imagesText: '',
       downloadFilename: 'MobinIQ_Asset_Pack.txt',
       downloadContent: '# MobinIQ Instant Download Asset\n'
     });
@@ -1487,6 +1491,7 @@ export default function App() {
       fileFormat: p.fileFormat || '.cube / 3D LUTs',
       status: p.status || 'PUBLISHED',
       featuresText: Array.isArray(p.featuresBn) ? p.featuresBn.join('\n') : (Array.isArray(p.features) ? p.features.join('\n') : ''),
+      imagesText: Array.isArray((p as any).images) ? (p as any).images.join('\n') : '',
       downloadFilename: p.downloadFilename || 'MobinIQ_Asset.txt',
       downloadContent: p.downloadContent || ''
     });
@@ -1510,6 +1515,13 @@ export default function App() {
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
+    const parsedImages = productDraft.imagesText
+      .split('\n')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const finalImages = parsedImages.length > 0
+      ? parsedImages
+      : (productDraft.thumbnailUrl ? [productDraft.thumbnailUrl] : []);
 
     notify('⏳ প্রোডাক্ট সেভ হচ্ছে...');
     try {
@@ -1528,6 +1540,7 @@ export default function App() {
           discountBadge: productDraft.discountBadge.trim() || '50% OFF',
           badge: productDraft.badge.trim() || 'BESTSELLER',
           thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
+          images: finalImages,
           softwareTags,
           fileFormat: productDraft.fileFormat.trim() || '.cube / 3D LUTs',
           status: productDraft.status,
@@ -1562,6 +1575,7 @@ export default function App() {
           discountBadge: productDraft.discountBadge.trim() || '50% OFF',
           badge: productDraft.badge.trim() || 'POPULAR',
           thumbnailUrl: productDraft.thumbnailUrl || '/images/edit-course.jpg',
+          images: finalImages,
           category: productDraft.category,
           rating: '5.0',
           salesCount: 'নতুন',
@@ -3213,6 +3227,20 @@ export default function App() {
                     </div>
                   </div>
 
+                  {/* Multi-image preview URLs for 1:1 Slider */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-300">
+                      মাল্টিপল ১:১ স্লাইডার ইমেজ লিঙ্ক (প্রতি লাইনে একটি করে ইমেজ URL দিন - ওয়েবসাইটে স্বয়ংক্রিয়ভাবে স্লাইড হবে)
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="/images/edit-course.jpg&#10;/images/hero-banner.jpg&#10;/images/doc-course.jpg"
+                      value={productDraft.imagesText}
+                      onChange={(e) => setProductDraft((p) => ({ ...p, imagesText: e.target.value }))}
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-white placeholder:text-slate-600"
+                    />
+                  </div>
+
                   <div className="flex justify-end gap-3">
                     <button
                       type="button"
@@ -3616,6 +3644,20 @@ export default function App() {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-cyan-300"
                       />
                     </div>
+                  </div>
+
+                  {/* Multi-image preview URLs for 1:1 Slider */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-300">
+                      মাল্টিপল ১:১ স্লাইডার ইমেজ লিঙ্ক (প্রতি লাইনে একটি করে ইমেজ URL দিন - ওয়েবসাইটে স্বয়ংক্রিয়ভাবে স্লাইড হবে)
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="/images/edit-course.jpg&#10;/images/hero-banner.jpg&#10;/images/doc-course.jpg"
+                      value={productDraft.imagesText}
+                      onChange={(e) => setProductDraft((p) => ({ ...p, imagesText: e.target.value }))}
+                      className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-white placeholder:text-slate-600"
+                    />
                   </div>
 
                   <div className="flex justify-end gap-3">
