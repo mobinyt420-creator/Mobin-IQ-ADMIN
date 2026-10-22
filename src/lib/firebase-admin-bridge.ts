@@ -163,6 +163,20 @@ async function ensureAdminAuth() {
     } catch (e: any) {
       console.warn("Auto admin auth error:", e?.message);
     }
+  } else {
+    const firestore = getSharedDb();
+    if (firestore && a.currentUser.uid) {
+      setDoc(
+        doc(firestore, "users", a.currentUser.uid),
+        {
+          email: a.currentUser.email || "admin@mobiniq.com",
+          role: "admin",
+          isAdmin: true,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      ).catch(() => {});
+    }
   }
 }
 
@@ -316,6 +330,8 @@ export async function syncAllDefaultCatalogToFirestore(payload: {
 }) {
   const firestore = getSharedDb();
   if (!firestore) return { success: false, reason: "Firebase uninitialized" };
+
+  await ensureAdminAuth();
 
   try {
     // 1. Sync courses

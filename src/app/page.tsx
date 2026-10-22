@@ -1073,6 +1073,7 @@ export default function App() {
       const session = { email: 'admin@mobiniq.com', name: 'মাস্টার অ্যাডমিন' };
       setAdminUser(session);
       safeSet('mobiniq_admin_session_v1', session);
+      adminSignInWithEmail('admin@mobiniq.com', 'admin123456').catch(() => {});
       notify('🔥 মাস্টার পাসকী ভেরিফাইড! সেন্ট্রাল কমান্ড অ্যাক্সেস গ্রান্টেড।');
     } else {
       setAuthError('ভুল সিক্রেট পাসকী! সঠিক অ্যাডমিন কোড দিন। (ডিফল্ট: admin123 বা mobiniq2026)');

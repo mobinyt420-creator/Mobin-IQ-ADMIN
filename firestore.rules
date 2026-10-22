@@ -32,6 +32,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // 3. Protected Lesson Streams (Enrolled students & Admin)
     match /courses/{courseId}/private_lessons/{lessonId} {
       allow read: if isAdmin() || (
