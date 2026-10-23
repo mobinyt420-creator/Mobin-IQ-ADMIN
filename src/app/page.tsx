@@ -287,6 +287,7 @@ export interface SiteBridgeConfig {
   activeStudents?: string;
   positiveReviews?: string;
   studentEarnings?: string;
+  requireCourseLogin?: boolean;
 }
 
 // ============================================================================
@@ -671,7 +672,8 @@ export default function App() {
       youtubeSubs: '125K+',
       activeStudents: '10,500+',
       positiveReviews: '98.8%',
-      studentEarnings: '$150K+'
+      studentEarnings: '$150K+',
+      requireCourseLogin: true
     })
   );
 
@@ -5350,6 +5352,36 @@ export default function App() {
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-sm text-white font-extrabold font-mono"
                     />
                   </div>
+                </div>
+
+                {/* Course Login Enforcement Switch */}
+                <div className="p-4 rounded-2xl bg-[#06080f] border border-sky-500/30 flex items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-sky-300 block">
+                      কোর্স এনরোলে গুগল লগইন বাধ্যতামূলক (Mandatory Google Login for Courses)
+                    </label>
+                    <p className="text-[11px] text-slate-400">
+                      চালু রাখলে কোনো শিক্ষার্থী লগইন না করে কোর্স এনরোল করতে পারবে না। গুগল দিয়ে ১-ক্লিকে লগইন করার পর চেকআউট ও পেমেন্ট অপশন চালু হবে। (ডিজিটাল প্রোডাক্টে গেস্ট ডাউনলোড উন্মুক্ত থাকবে)
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSiteConfig((p) => ({
+                        ...p,
+                        requireCourseLogin: p.requireCourseLogin === false ? true : false,
+                      }))
+                    }
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      siteConfig.requireCourseLogin !== false ? 'bg-sky-500' : 'bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                        siteConfig.requireCourseLogin !== false ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
                 </div>
 
                 <button
