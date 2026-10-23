@@ -131,6 +131,7 @@ export interface AdminCourse {
   discountBadge?: string;
   thumbnailUrl: string;
   bannerUrl?: string;
+  introVideoUrl?: string;
   category: string;
   studentsCount: string;
   rating: string;
@@ -309,6 +310,7 @@ const INITIAL_COURSES: AdminCourse[] = [
     discountBadge: '25% OFF',
     thumbnailUrl: '/images/course-ai-automation.jpg',
     bannerUrl: '/images/course-ai-automation.jpg',
+    introVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     category: 'এআই ও অটোমেশন',
     studentsCount: '1.2K+ Joined',
     rating: '4.9',
@@ -992,6 +994,7 @@ export default function App() {
     totalDuration: string;
     thumbnailUrl: string;
     bannerUrl: string;
+    introVideoUrl: string;
     softwareTagsText: string;
     status: 'PUBLISHED' | 'DRAFT';
     featured: boolean;
@@ -1013,6 +1016,7 @@ export default function App() {
     totalDuration: '8h 20m',
     thumbnailUrl: '/images/hero-banner.jpg',
     bannerUrl: '/images/hero-banner.jpg',
+    introVideoUrl: '',
     softwareTagsText: 'Pr, Ae',
     status: 'PUBLISHED',
     featured: true,
@@ -1054,6 +1058,7 @@ export default function App() {
       totalDuration: '',
       thumbnailUrl: '',
       bannerUrl: '',
+      introVideoUrl: '',
       softwareTagsText: '',
       status: 'PUBLISHED',
       featured: true,
@@ -1081,6 +1086,7 @@ export default function App() {
       totalDuration: c.totalDuration || '8h 20m',
       thumbnailUrl: c.thumbnailUrl || '/images/hero-banner.jpg',
       bannerUrl: c.bannerUrl || c.thumbnailUrl || '/images/hero-banner.jpg',
+      introVideoUrl: c.introVideoUrl || '',
       softwareTagsText: Array.isArray(c.softwareTags) ? c.softwareTags.join(', ') : '',
       status: c.status || 'PUBLISHED',
       featured: Boolean(c.featured),
@@ -1129,6 +1135,7 @@ export default function App() {
           reviewsCount: courseDraft.reviewsCount.trim(),
           thumbnailUrl: courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
           bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
+          introVideoUrl: courseDraft.introVideoUrl?.trim() || '',
           modulesCount: courseDraft.modules.length,
           softwareTags,
           status: courseDraft.status,
@@ -1164,6 +1171,7 @@ export default function App() {
           discountBadge: courseDraft.discountBadge.trim(),
           thumbnailUrl: courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
           bannerUrl: courseDraft.bannerUrl.trim() || courseDraft.thumbnailUrl.trim() || '/images/hero-banner.jpg',
+          introVideoUrl: courseDraft.introVideoUrl?.trim() || '',
           category: courseDraft.category,
           studentsCount: 'নতুন',
           rating: '5.0',
@@ -1644,6 +1652,7 @@ export default function App() {
   // ============================================================================
   const [userSearch, setUserSearch] = useState<string>('');
   const [selectedUserForEnroll, setSelectedUserForEnroll] = useState<string | null>(null);
+  const [selectedUserForOrders, setSelectedUserForOrders] = useState<string | null>(null);
   const [newBlockPhone, setNewBlockPhone] = useState<string>('');
   const [newBlockIp, setNewBlockIp] = useState<string>('');
 
@@ -2932,6 +2941,23 @@ export default function App() {
                           </div>
                         )}
                       </div>
+                    </div>
+
+                    <div className="sm:col-span-3 space-y-2 p-3.5 rounded-2xl bg-[#090d18] border border-cyan-500/25">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <label className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                          <Play className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>কোর্সের ইন্ট্রো / ট্রেলার ভিডিও লিংক (YouTube URL / Embed Link)</span>
+                        </label>
+                        <span className="text-[11px] text-cyan-400">মেইন ওয়েবসাইটে প্লে বাটনে ক্লিক করলে এই ট্রেলারটি সরাসরি চলবে</span>
+                      </div>
+                      <input
+                        type="text"
+                        value={courseDraft.introVideoUrl}
+                        onChange={(e) => setCourseDraft((p) => ({ ...p, introVideoUrl: e.target.value }))}
+                        placeholder="যেমন: https://www.youtube.com/watch?v=dQw4w9WgXcQ অথবা https://youtu.be/..."
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-cyan-500/30 text-xs sm:text-sm text-cyan-200 font-mono focus:border-cyan-400 focus:outline-none"
+                      />
                     </div>
                   </div>
 
@@ -4817,14 +4843,41 @@ export default function App() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
-                        <button
-                          onClick={() =>
-                            setSelectedUserForEnroll(selectedUserForEnroll === u.uid ? null : u.uid)
-                          }
-                          className="px-3.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-bold"
-                        >
-                          🎓 কোর্স অ্যাক্সেস ({toBn(u.enrolledSlugs.length)})
-                        </button>
+                        {(() => {
+                          const userOrders = orders.filter((o) =>
+                            (o.customerEmail && u.email && o.customerEmail.toLowerCase() === u.email.toLowerCase()) ||
+                            (o.customerPhone && u.phone && o.customerPhone.replace(/\D/g, '') === u.phone.replace(/\D/g, '')) ||
+                            ((o as any).userId && (o as any).userId === u.uid)
+                          );
+                          return (
+                            <>
+                              <button
+                                onClick={() =>
+                                  setSelectedUserForOrders(selectedUserForOrders === u.uid ? null : u.uid)
+                                }
+                                className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                                  selectedUserForOrders === u.uid
+                                    ? 'bg-sky-500 text-white border-sky-400'
+                                    : 'bg-sky-500/15 hover:bg-sky-500/25 border-sky-500/30 text-sky-300'
+                                }`}
+                              >
+                                📜 অর্ডার হিস্ট্রি ({toBn(userOrders.length)})
+                              </button>
+                              <button
+                                onClick={() =>
+                                  setSelectedUserForEnroll(selectedUserForEnroll === u.uid ? null : u.uid)
+                                }
+                                className={`px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all ${
+                                  selectedUserForEnroll === u.uid
+                                    ? 'bg-emerald-500 text-slate-950 border-emerald-400'
+                                    : 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 text-emerald-300'
+                                }`}
+                              >
+                                🎓 কোর্স অ্যাক্সেস ({toBn(u.enrolledSlugs.length)})
+                              </button>
+                            </>
+                          );
+                        })()}
                         <button
                           onClick={() => toggleUserBan(u.uid)}
                           className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
@@ -4837,6 +4890,109 @@ export default function App() {
                         </button>
                       </div>
                     </div>
+
+                    {/* Expandable Order History for this User */}
+                    {selectedUserForOrders === u.uid && (
+                      <div className="p-4 rounded-xl bg-[#06080f] border border-sky-500/30 space-y-3 smooth-fade">
+                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                          <span className="text-xs font-extrabold text-sky-300 flex items-center gap-1.5">
+                            <ShoppingCart className="w-4 h-4 text-sky-400" />
+                            <span>{u.name} এর সকল ক্রয়ের হিস্ট্রি ও পেমেন্ট রেকর্ড</span>
+                          </span>
+                          <button
+                            onClick={() => setSelectedUserForOrders(null)}
+                            className="text-[11px] text-slate-400 hover:text-white"
+                          >
+                            বন্ধ করুন ✕
+                          </button>
+                        </div>
+
+                        {(() => {
+                          const userOrders = orders.filter((o) =>
+                            (o.customerEmail && u.email && o.customerEmail.toLowerCase() === u.email.toLowerCase()) ||
+                            (o.customerPhone && u.phone && o.customerPhone.replace(/\D/g, '') === u.phone.replace(/\D/g, '')) ||
+                            ((o as any).userId && (o as any).userId === u.uid)
+                          );
+
+                          if (userOrders.length === 0) {
+                            return (
+                              <p className="text-xs text-slate-400 py-3 text-center">
+                                এই ইউজারের এখনও কোনো ক্রয় বা অর্ডার রেকর্ড নেই।
+                              </p>
+                            );
+                          }
+
+                          return (
+                            <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
+                              {userOrders.map((ord) => (
+                                <div
+                                  key={ord.id}
+                                  className="p-3 rounded-xl bg-[#0b101c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                                >
+                                  <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-mono font-bold text-sky-400">
+                                        {ord.orderCode}
+                                      </span>
+                                      <span className="text-white font-bold">
+                                        {ord.itemTitleBn || ord.itemTitle}
+                                      </span>
+                                      <span className="px-2 py-0.5 rounded bg-white/5 text-[10px] text-slate-300 uppercase">
+                                        {ord.itemType}
+                                      </span>
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
+                                      <span>পেমেন্ট: <strong className="text-white">{ord.paymentMethod}</strong></span>
+                                      {ord.trxId && (
+                                        <span>TrxID: <strong className="text-amber-300 font-mono">{ord.trxId}</strong></span>
+                                      )}
+                                      <span>তারিখ: {ord.createdAt || 'সদ্য'}</span>
+                                      <span className="text-emerald-400 font-bold">
+                                        ৳{toBn(ord.amountBdt)}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                                        ord.status === 'VERIFIED' || ord.status === 'COMPLETED'
+                                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                          : ord.status === 'REJECTED'
+                                          ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                      }`}
+                                    >
+                                      {ord.status === 'VERIFIED' || ord.status === 'COMPLETED'
+                                        ? 'ভেরিফাইড / অ্যাক্টিভ'
+                                        : ord.status === 'REJECTED'
+                                        ? 'বাতিলকৃত'
+                                        : 'পেন্ডিং ভেরিফিকেশন'}
+                                    </span>
+                                    {ord.status === 'PENDING' && (
+                                      <div className="flex items-center gap-1">
+                                        <button
+                                          onClick={() => approveOrder(ord.id)}
+                                          className="px-2 py-1 rounded bg-emerald-500 text-slate-950 font-bold text-[10px]"
+                                        >
+                                          অ্যাপ্রুভ ✓
+                                        </button>
+                                        <button
+                                          onClick={() => rejectOrder(ord.id)}
+                                          className="px-2 py-1 rounded bg-rose-500/20 text-rose-300 font-bold text-[10px]"
+                                        >
+                                          বাতিল ✕
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
 
                     {/* Expandable Course Access Toggles for this Student */}
                     {selectedUserForEnroll === u.uid && (
