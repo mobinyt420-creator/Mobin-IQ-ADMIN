@@ -85,6 +85,7 @@ import {
   adminSignInWithEmail,
   adminSignInWithGoogle,
   adminSignOut,
+  adminSendPasswordResetEmail,
   subscribeToAdminAuth,
 } from '@/lib/firebase-admin-bridge';
 
@@ -436,6 +437,13 @@ const INITIAL_COUPONS: PromoCoupon[] = [
   { code: 'MOBIN100', discountPct: 100, usageCount: 4, active: true, descriptionBn: 'টেস্ট ও স্কলারশিপ ১০০% ফ্রি কুপন' }
 ];
 
+const ALLOWED_ADMIN_EMAILS = [
+  'mobinyt420@gmail.com',
+  'mobinyt777@gmail.com',
+  'mrmobin444@gmail.com',
+  'admin@mobiniq.com'
+];
+
 // ============================================================================
 // 3. HELPER UTILITIES
 // ============================================================================
@@ -570,11 +578,25 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
+  const sanitizeCourse = (c: any): AdminCourse => ({
+    ...c,
+    modules: Array.isArray(c?.modules)
+      ? c.modules.map((m: any) => ({
+          ...m,
+          lessons: Array.isArray(m?.lessons) ? m.lessons : []
+        }))
+      : [],
+    softwareTags: Array.isArray(c?.softwareTags) ? c.softwareTags : [],
+    outcomes: Array.isArray(c?.outcomes) ? c.outcomes : [],
+    thumbnailUrl: c?.thumbnailUrl || c?.bannerUrl || '/images/course-ai-automation.jpg',
+    bannerUrl: c?.bannerUrl || c?.thumbnailUrl || '/images/course-ai-automation.jpg'
+  });
+
   // Synchronized Persistent Admin Database State
   const [courses, setCourses] = useState<AdminCourse[]>(() => {
-    const raw = safeGet<AdminCourse[] | null>('mobiniq_admin_courses_v1', null);
-    if (Array.isArray(raw)) return raw;
-    return INITIAL_COURSES;
+    const raw = safeGet<any[] | null>('mobiniq_admin_courses_v1', null);
+    if (Array.isArray(raw)) return raw.map(sanitizeCourse);
+    return INITIAL_COURSES.map(sanitizeCourse);
   });
   const [products, setProducts] = useState<AdminProduct[]>(() => {
     const raw = safeGet<AdminProduct[] | null>('mobiniq_admin_products_v1', null);
@@ -646,13 +668,18 @@ export default function App() {
   const [adminUser, setAdminUser] = useState<{ email: string; name?: string } | null>(() =>
     safeGet<{ email: string; name?: string } | null>('mobiniq_admin_session_v1', null)
   );
-  const [adminLoginEmail, setAdminLoginEmail] = useState('admin@mobiniq.com');
-  const [adminLoginPass, setAdminLoginPass] = useState('admin123456');
+  const [adminLoginEmail, setAdminLoginEmail] = useState('mobinyt420@gmail.com');
+  const [adminLoginPass, setAdminLoginPass] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [adminSecretKeyInput, setAdminSecretKeyInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [isBulkSyncing, setIsBulkSyncing] = useState(false);
+
+  // Forgot Password Modal State
+  const [showForgotPassModal, setShowForgotPassModal] = useState(false);
+  const [forgotPassEmail, setForgotPassEmail] = useState('mobinyt420@gmail.com');
+  const [forgotPassSent, setForgotPassSent] = useState(false);
 
   // Real-time bidirectional subscriptions to Firebase Firestore collections
   useEffect(() => {
@@ -662,8 +689,9 @@ export default function App() {
     // 1. Live courses from Firestore
     const unsubCourses = subscribeToCourses((cloudCourses) => {
       if (Array.isArray(cloudCourses)) {
-        setCourses(cloudCourses as AdminCourse[]);
-        safeSet('mobiniq_admin_courses_v1', cloudCourses);
+        const sanitized = cloudCourses.map(sanitizeCourse);
+        setCourses(sanitized);
+        safeSet('mobiniq_admin_courses_v1', sanitized);
       }
     });
 
@@ -727,15 +755,22 @@ export default function App() {
       if (data.ips?.length) setBlockedIps(data.ips);
     });
 
-    // 10. Firebase Auth state
+    // 10. Firebase Auth state (Auto persistent login if verified admin)
     const unsubAuth = subscribeToAdminAuth((fbUser) => {
       if (fbUser) {
-        const u = {
-          email: fbUser.email || 'admin@mobiniq.com',
-          name: fbUser.displayName || 'এডমিন'
-        };
-        setAdminUser(u);
-        safeSet('mobiniq_admin_session_v1', u);
+        const email = (fbUser.email || '').toLowerCase().trim();
+        if (ALLOWED_ADMIN_EMAILS.includes(email)) {
+          const u = {
+            email: fbUser.email || 'mobinyt420@gmail.com',
+            name: fbUser.displayName || 'মুবিন ভাই (Admin)'
+          };
+          setAdminUser(u);
+          safeSet('mobiniq_admin_session_v1', u);
+        } else {
+          adminSignOut().catch(() => {});
+          setAdminUser(null);
+          safeSet('mobiniq_admin_session_v1', null);
+        }
       }
     });
 
@@ -766,35 +801,48 @@ export default function App() {
     }
   };
 
-  // Google Sign In Handler
+  // Google Sign In Handler (1-Click Ultra Secure Admin Login)
   const handleGoogleAdminLogin = async () => {
     setAuthLoading(true);
     setAuthError(null);
     try {
       const u = await adminSignInWithGoogle();
-      const session = { email: u.email || 'admin@mobiniq.com', name: u.displayName || 'এডমিন' };
+      const email = (u.email || '').toLowerCase().trim();
+      if (!ALLOWED_ADMIN_EMAILS.includes(email)) {
+        await adminSignOut();
+        setAuthError(`🚫 অননুমোদিত অ্যাক্সেস! "${email}" অ্যাকাউন্টটি অ্যাডমিন হিসেবে অনুমোদিত নয়। শুধুমাত্র অনুমোদিত অ্যাডমিন (${ALLOWED_ADMIN_EMAILS[0]}) দিয়ে লগইন করুন।`);
+        return;
+      }
+      const session = { email: u.email || 'mobinyt420@gmail.com', name: u.displayName || 'মুবিন ভাই (Admin)' };
       setAdminUser(session);
       safeSet('mobiniq_admin_session_v1', session);
-      notify(`স্বাগতম ${session.name || session.email}! সেন্ট্রাল কমান্ড আনলক হয়েছে।`);
+      notify(`🔥 স্বাগতম ${session.name || session.email}! সেন্ট্রাল কমান্ড আনলক হয়েছে।`);
     } catch (err: any) {
-      setAuthError(err.message || 'গুগল সাইন-ইনে সমস্যা হয়েছে। পাসকী দিয়ে চেষ্টা করুন।');
+      if (err.code !== 'auth/popup-closed-by-user') {
+        setAuthError(err.message || 'গুগল সাইন-ইনে সমস্যা হয়েছে।');
+      }
     } finally {
       setAuthLoading(false);
     }
   };
 
-  // Email & Password Login Handler (Primary Secure Admin Gateway)
+  // Email & Password Login Handler (Whitelisted Admin Gateway)
   const handleEmailAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!adminLoginEmail || !adminLoginPass) {
+    const cleanEmail = adminLoginEmail.trim().toLowerCase();
+    if (!cleanEmail || !adminLoginPass) {
       setAuthError('ইমেইল ও পাসওয়ার্ড উভয়ই পূরণ করুন।');
+      return;
+    }
+    if (!ALLOWED_ADMIN_EMAILS.includes(cleanEmail)) {
+      setAuthError(`🚫 অননুমোদিত অ্যাক্সেস! "${cleanEmail}" অ্যাকাউন্টটি অ্যাডমিন হিসেবে তালিকাভুক্ত নয়।`);
       return;
     }
     setAuthLoading(true);
     setAuthError(null);
     try {
-      const u = await adminSignInWithEmail(adminLoginEmail.trim(), adminLoginPass);
-      const session = { email: u.email || adminLoginEmail.trim(), name: u.displayName || 'এডমিন' };
+      const u = await adminSignInWithEmail(cleanEmail, adminLoginPass);
+      const session = { email: u.email || cleanEmail, name: u.displayName || 'মুবিন ভাই (Admin)' };
       setAdminUser(session);
       safeSet('mobiniq_admin_session_v1', session);
       notify(`🔥 স্বাগতম! অ্যাডমিন হিসেবে লগইন সফল হয়েছে।`);
@@ -802,11 +850,36 @@ export default function App() {
       console.error('Admin login error:', err);
       let msg = err.message || 'ভুল ইমেইল বা পাসওয়ার্ড।';
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
-        msg = 'ভুল পাসওয়ার্ড অথবা ইমেইল। সঠিক ক্রেডেনশিয়াল লিখুন বা মাস্টার পাসকী দিন।';
+        msg = 'ভুল পাসওয়ার্ড অথবা ইমেইল। সঠিক পাসওয়ার্ড দিন অথবা নিচে "পাসওয়ার্ড ভুলে গেছেন?" এ ক্লিক করে রিসেট করুন।';
       } else if (err.code === 'auth/too-many-requests') {
-        msg = 'অতিরিক্ত চেষ্টা করা হয়েছে। কিছুক্ষণ পর চেষ্টা করুন বা মাস্টার পাসকী দিন।';
+        msg = 'অতিরিক্ত ভুল চেষ্টার কারণে সাময়িকভাবে ব্লক করা হয়েছে। কিছুক্ষণ পর চেষ্টা করুন।';
       }
       setAuthError(msg);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Forgot Password Handler via Firebase sendPasswordResetEmail
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = forgotPassEmail.trim().toLowerCase();
+    if (!cleanEmail) {
+      setAuthError('দয়া করে আপনার অ্যাডমিন জিমেইল লিখুন।');
+      return;
+    }
+    if (!ALLOWED_ADMIN_EMAILS.includes(cleanEmail)) {
+      setAuthError(`🚫 "${cleanEmail}" অ্যাডমিন হিসেবে অনুমোদিত নয়।`);
+      return;
+    }
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      await adminSendPasswordResetEmail(cleanEmail);
+      setForgotPassSent(true);
+      notify(`✅ আপনার জিমেইলে (${cleanEmail}) পাসওয়ার্ড রিসেট লিংক পাঠানো হয়েছে!`);
+    } catch (err: any) {
+      setAuthError(err.message || 'পাসওয়ার্ড রিসেট লিংক পাঠাতে সমস্যা হয়েছে।');
     } finally {
       setAuthLoading(false);
     }
@@ -817,13 +890,12 @@ export default function App() {
     e.preventDefault();
     const key = adminSecretKeyInput.trim();
     if (key === 'admin123' || key === 'mobiniq2026' || key === 'miq_sync_live_9f8e7d6c5b4a3210' || key === siteConfig.apiSyncSecret) {
-      const session = { email: 'admin@mobiniq.com', name: 'মাস্টার অ্যাডমিন' };
+      const session = { email: 'mobinyt420@gmail.com', name: 'মাস্টার অ্যাডমিন' };
       setAdminUser(session);
       safeSet('mobiniq_admin_session_v1', session);
-      adminSignInWithEmail('admin@mobiniq.com', 'admin123456').catch(() => {});
       notify('🔥 মাস্টার পাসকী ভেরিফাইড! সেন্ট্রাল কমান্ড অ্যাক্সেস গ্রান্টেড।');
     } else {
-      setAuthError('ভুল সিক্রেট পাসকী! সঠিক অ্যাডমিন কোড দিন। (ডিফল্ট: admin123 বা mobiniq2026)');
+      setAuthError('ভুল সিক্রেট পাসকী! সঠিক মাস্টার অ্যাডমিন কোড দিন।');
     }
   };
 
@@ -1827,8 +1899,42 @@ export default function App() {
             </div>
           )}
 
-          {/* Primary Admin Login: Email & Password */}
+          {/* Primary Admin Login: Google 1-Click + Email & Password */}
           <div className="space-y-4">
+            {/* Google 1-Click Fast Secure Login */}
+            <button
+              type="button"
+              onClick={handleGoogleAdminLogin}
+              disabled={authLoading}
+              className="w-full py-3 px-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2.5 shadow-lg transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                />
+              </svg>
+              <span>Google দিয়ে ১-ক্লিকে অ্যাডমিন লগইন</span>
+            </button>
+
+            <div className="flex items-center gap-3 my-2">
+              <div className="flex-1 h-[1px] bg-white/10" />
+              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">অথবা ইমেইল ও পাসওয়ার্ড</span>
+              <div className="flex-1 h-[1px] bg-white/10" />
+            </div>
+
             <form onSubmit={handleEmailAdminLogin} className="space-y-3.5">
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
@@ -1836,12 +1942,12 @@ export default function App() {
                     <Mail className="w-3.5 h-3.5 text-cyan-400" />
                     <span>এডমিন জিমেইল / ইমেইল *</span>
                   </span>
-                  <span className="text-[10px] text-cyan-400 font-mono">admin@mobiniq.com</span>
+                  <span className="text-[10px] text-slate-400 font-mono">Whitelisted Only</span>
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="admin@mobiniq.com"
+                  placeholder="mobinyt420@gmail.com"
                   value={adminLoginEmail}
                   onChange={(e) => setAdminLoginEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-2xl bg-[#06080f] border border-white/15 text-white text-xs sm:text-sm font-medium focus:border-cyan-400 focus:outline-none transition-all shadow-inner"
@@ -1857,7 +1963,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((p) => !p)}
-                    className="text-[10px] text-slate-400 hover:text-emerald-400 flex items-center gap-1"
+                    className="text-[10px] text-slate-400 hover:text-emerald-400 flex items-center gap-1 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                     <span>{showPassword ? 'হাইড করুন' : 'পাসওয়ার্ড দেখুন'}</span>
@@ -1867,7 +1973,7 @@ export default function App() {
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
-                    placeholder="পাসওয়ার্ড লিখুন (যেমন: admin123456)"
+                    placeholder="পাসওয়ার্ড লিখুন..."
                     value={adminLoginPass}
                     onChange={(e) => setAdminLoginPass(e.target.value)}
                     className="w-full px-4 py-3 rounded-2xl bg-[#06080f] border border-white/15 text-white text-xs sm:text-sm font-mono focus:border-emerald-400 focus:outline-none transition-all shadow-inner pr-10"
@@ -1875,34 +1981,33 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((p) => !p)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Quick Fill Credentials Helper */}
+              {/* Forgot Password Link */}
               <div className="flex items-center justify-between gap-2 pt-1 text-[11px]">
                 <button
                   type="button"
                   onClick={() => {
-                    setAdminLoginEmail('admin@mobiniq.com');
-                    setAdminLoginPass('admin123456');
-                    notify('অ্যাডমিন ক্রেডেনশিয়াল অটো-ফিল করা হয়েছে!');
+                    setShowForgotPassModal(true);
+                    setForgotPassSent(false);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/25 transition-all text-[10px] font-bold"
+                  className="text-[11px] font-bold text-amber-400 hover:text-amber-300 underline underline-offset-2 cursor-pointer transition-colors"
                 >
-                  ⚡ টেস্ট ক্রেডেনশিয়াল ফিল করুন (admin@mobiniq.com)
+                  পাসওয়ার্ড ভুলে গেছেন? (Forgot Password)
                 </button>
-                <span className="text-[10px] text-slate-500 font-mono">Pass: admin123456</span>
+                <span className="text-[10px] text-slate-500 font-mono">Firebase Secure</span>
               </div>
 
               {/* Login Submit Button */}
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-emerald-500/25 transition-all disabled:opacity-50"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl hover:shadow-emerald-500/25 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {authLoading ? (
                   <>
@@ -1918,6 +2023,59 @@ export default function App() {
               </button>
             </form>
 
+            {/* Forgot Password Reset Form Modal */}
+            {showForgotPassModal && (
+              <div className="p-4 rounded-2xl bg-[#091122] border border-amber-500/30 space-y-3 animate-in fade-in duration-200">
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <h3 className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5" />
+                    <span>পাসওয়ার্ড রিসেট লিংক পাঠান</span>
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowForgotPassModal(false)}
+                    className="text-xs text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    ✕ বন্ধ করুন
+                  </button>
+                </div>
+                {forgotPassSent ? (
+                  <div className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-medium space-y-1">
+                    <p className="font-bold">✅ পাসওয়ার্ড রিসেট ইমেইল সফলভাবে পাঠানো হয়েছে!</p>
+                    <p className="text-[11px] text-slate-300">
+                      আপনার জিমেইল (<span className="text-white font-mono">{forgotPassEmail}</span>) এর ইনবক্স বা স্প্যাম ফোল্ডার চেক করে লিংকে ক্লিক করে নতুন পাসওয়ার্ড সেট করুন।
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleForgotPassword} className="space-y-2.5">
+                    <p className="text-[11px] text-slate-400">
+                      আপনার রেজিস্টার্ড অ্যাডমিন জিমেইল লিখুন। ফায়ারবেস সরাসরি সেখানে পাসওয়ার্ড রিসেট লিংক পাঠাবে:
+                    </p>
+                    <input
+                      type="email"
+                      required
+                      value={forgotPassEmail}
+                      onChange={(e) => setForgotPassEmail(e.target.value)}
+                      placeholder="mobinyt420@gmail.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white placeholder-slate-500 font-mono"
+                    />
+                    <button
+                      type="submit"
+                      disabled={authLoading}
+                      className="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow transition"
+                    >
+                      {authLoading ? (
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Mail className="w-3.5 h-3.5" />
+                      )}
+                      <span>জিমেইলে পাসওয়ার্ড রিসেট লিংক পাঠান</span>
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+
             {/* Offline / Emergency Master Passkey Section */}
             <div className="pt-2 border-t border-white/10 space-y-2">
               <details className="group">
@@ -1931,14 +2089,14 @@ export default function App() {
                 <form onSubmit={handlePasskeyLogin} className="mt-2 space-y-2 pt-1">
                   <input
                     type="password"
-                    placeholder="admin123 বা mobiniq2026"
+                    placeholder="মাস্টার সিক্রেট পাসকী লিখুন..."
                     value={adminSecretKeyInput}
                     onChange={(e) => setAdminSecretKeyInput(e.target.value)}
                     className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-white text-xs font-mono focus:border-amber-400 focus:outline-none"
                   />
                   <button
                     type="submit"
-                    className="w-full py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all"
+                    className="w-full py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                   >
                     <Unlock className="w-3 h-3" />
                     <span>পাসকী দিয়ে সরাসরি আনলক</span>
@@ -3022,32 +3180,34 @@ export default function App() {
                   </div>
                 )}
                 {courses.map((course) => {
-                  const lessonCount = course.modules.reduce((s, m) => s + m.lessons.length, 0);
+                  const safeModules = Array.isArray(course.modules) ? course.modules : [];
+                  const lessonCount = safeModules.reduce((s, m) => s + (Array.isArray(m?.lessons) ? m.lessons.length : 0), 0);
+                  const thumb = course.thumbnailUrl || course.bannerUrl || '/images/course-ai-automation.jpg';
                   return (
                     <div
-                      key={course.id}
+                      key={course.id || course.slug}
                       className="admin-card rounded-2xl overflow-hidden flex flex-col justify-between border border-white/10"
                     >
                       <div>
-                        <div className="relative aspect-video">
+                        <div className="relative aspect-video bg-black/50">
                           <img
-                            src={course.thumbnailUrl}
-                            alt={course.titleBn}
+                            src={thumb}
+                            alt={course.titleBn || course.title || 'Course'}
                             className="w-full h-full object-cover"
                           />
                           <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-slate-950/90 text-emerald-300 text-[10px] font-bold">
-                            {course.category}
+                            {course.category || 'কোর্স'}
                           </span>
                           <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-extrabold">
-                            {course.status}
+                            {course.status || 'PUBLISHED'}
                           </span>
                         </div>
                         <div className="p-4 space-y-2">
                           <h3 className="text-base font-extrabold text-white line-clamp-1">
-                            {course.shortTitleBn}
+                            {course.shortTitleBn || course.titleBn || course.title}
                           </h3>
                           <p className="text-xs text-slate-400 line-clamp-2">
-                            {course.subtitleBn}
+                            {course.subtitleBn || course.subtitle || course.shortDescBn || ''}
                           </p>
                           {course.softwareTags && course.softwareTags.length > 0 && (
                             <div className="flex flex-wrap gap-1 pt-0.5">
@@ -3062,11 +3222,11 @@ export default function App() {
                             </div>
                           )}
                           <div className="text-[11px] text-slate-400 flex items-center gap-2">
-                            <span>{toBn(course.modules.length)} মডিউল</span>
+                            <span>{toBn(safeModules.length)} মডিউল</span>
                             <span>•</span>
                             <span>{toBn(lessonCount)} লেসন</span>
                             <span>•</span>
-                            <span>{course.totalDuration}</span>
+                            <span>{course.totalDuration || '৮ ঘণ্টা'}</span>
                           </div>
                           <div className="flex items-baseline justify-between pt-1">
                             <div className="flex items-baseline gap-2">

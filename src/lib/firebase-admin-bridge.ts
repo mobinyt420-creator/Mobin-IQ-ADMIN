@@ -25,6 +25,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
+  sendPasswordResetEmail,
   onAuthStateChanged,
   type User as FirebaseUser
 } from "firebase/auth";
@@ -142,6 +143,12 @@ export async function adminSignOut() {
   if (typeof window !== "undefined") {
     localStorage.removeItem("mobiniq_admin_session_v1");
   }
+}
+
+export async function adminSendPasswordResetEmail(email: string) {
+  const a = getSharedAuth();
+  if (!a) throw new Error("Firebase Auth is not initialized");
+  await sendPasswordResetEmail(a, email);
 }
 
 export function subscribeToAdminAuth(callback: (user: FirebaseUser | null) => void) {
