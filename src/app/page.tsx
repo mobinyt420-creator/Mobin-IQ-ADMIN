@@ -363,360 +363,74 @@ const INITIAL_COURSES: AdminCourse[] = [
       }
     ],
     resources: []
-  },
-  {
-    id: 'course-ai-complete',
-    slug: 'complete-ai-mastery-zero-to-pro',
-    title: 'Complete AI Mastery Course',
-    titleBn: 'সম্পূর্ণ এআই (AI) কিভাবে শিখবো: জিরো থেকে প্রো মাস্টারক্লাস',
-    shortTitleBn: 'সম্পূর্ণ এআই (AI) মাস্টারি কোর্স',
-    subtitle: 'Master ChatGPT, Claude, Midjourney & AI Automation to scale your productivity, content creation and client work by 10x.',
-    subtitleBn: 'মোবাইল ও পিসিতে ChatGPT, Claude, প্রম্পট ইঞ্জিনিয়ারিং ও এআই অটোমেশন গাইড।',
-    shortDescBn: 'একদম বেসিক থেকে শুরু করে প্রফেশনাল প্রম্পট ইঞ্জিনিয়ারিং, এআই দিয়ে কনটেন্ট রিসার্চ, ওয়েব অ্যাপ তৈরি এবং অটোমেশন ওয়ার্কফ্লো শিখুন ধাপে ধাপে।',
-    price: 1250,
-    originalPrice: 1800,
-    discountBadge: '30% OFF',
-    thumbnailUrl: '/images/ai-course.jpg',
-    bannerUrl: '/images/ai-course.jpg',
-    category: 'এআই অ্যান্ড অটোমেশন',
-    studentsCount: '4.8K+ Joined',
-    rating: '4.9',
-    reviewsCount: '410+ Reviews',
-    totalDuration: '16h',
-    modulesCount: 10,
-    softwareTags: ['ChatGPT', 'Claude'],
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'ChatGPT, Claude ও Gemini-এর অ্যাডভান্সড সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
-      'মোবাইল ও পিসি দিয়ে AI ওয়েবসাইট, ল্যান্ডিং পেজ ও টুল তৈরি',
-      '১ ঘণ্টার ডিপ রিসার্চ ও স্ক্রিপ্ট রাইটিং মাত্র ১০ মিনিটে সম্পন্ন করার ফর্মুলা',
-      'এআই ভিজ্যুয়াল, ভয়েসওভার ও নো-কোড ওয়ার্কফ্লো অটোমেশন সেটআপ'
-    ],
-    modules: [
-      {
-        id: 'mod-ai-1',
-        title: 'মডিউল ১: এআই ফাউন্ডেশন ও সিস্টেম প্রম্পট ইঞ্জিনিয়ারিং',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-ai-101',
-            title: '১.১ [ফ্রি প্রিভিউ] সম্পূর্ণ এআই রোডম্যাপ: কীভাবে AI আপনার কাজ ১০ গুণ সহজ করবে',
-            duration: '১৯:৩০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'বিগিনার থেকে প্রো লেভেলে এআই ব্যবহারের সঠিক মাইন্ডসেট এবং টুলস পরিচিতি।'
-          },
-          {
-            id: 'les-ai-102',
-            title: '১.২ [ফ্রি প্রিভিউ] হ্যালুসিনেশন ছাড়া ১০০% নির্ভুল আউটপুট পাওয়ার প্রম্পট ফর্মুলা',
-            duration: '২৫:১০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'Role, Context, Constraint এবং Few-Shot ফ্রেমওয়ার্কের প্র্যাকটিক্যাল ব্যবহার।'
-          }
-        ]
-      },
-      {
-        id: 'mod-ai-2',
-        title: 'মডিউল ২: AI ওয়েব প্রজেক্ট, অটোমেশন ও মনিটাইজেশন',
-        order: 2,
-        lessons: [
-          {
-            id: 'les-ai-201',
-            title: '২.১ কোডিং ছাড়াই AI দিয়ে প্রফেশনাল ওয়েব অ্যাপ ও ল্যান্ডিং পেজ তৈরি',
-            duration: '৩৫:২০',
-            isPreview: false,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'প্রম্পট দিয়ে ফুল-স্ট্যাক প্রজেক্ট তৈরি, গিটহাব ও ভার্সেলে লাইভ ডিপ্লয়মেন্ট।'
-          }
-        ]
-      }
-    ],
-    resources: [
-      {
-        id: 'res-ai-1',
-        title: 'এআই অটোমেশন ও সিস্টেম প্রম্পট মাস্টার শিট',
-        size: '28 KB',
-        filename: 'MobinIQ_Complete_AI_Mastery_Prompts.txt',
-        content: '# MobinIQ Complete AI Mastery Prompts\n'
-      }
-    ]
-  },
-  {
-    id: 'course-doc-mastery',
-    slug: 'cinematic-tech-documentary-masterclass',
-    title: 'Cinematic Tech Documentary Masterclass',
-    titleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ও ডিপ রিসার্চ মাস্টারক্লাস',
-    shortTitleBn: 'সিনেমাটিক টেক ডকুমেন্টারি ব্লুপ্রিন্ট',
-    subtitle: 'Deep research, analytical scripting, storytelling, retention editing & cinematic sound design.',
-    subtitleBn: 'ডিপ রিসার্চ, অ্যানালিটিক্যাল স্ক্রিপ্টিং ও ভিজ্যুয়াল স্টোরিটেলিং গাইড।',
-    shortDescBn: 'আন্তর্জাতিক মানের টেক ডকুমেন্টারি তৈরি, ডেটা রিসার্চ, সাউন্ড ডিজাইন এবং রিটেনশন এডিটিং শিখুন এক কোর্সে।',
-    price: 1490,
-    originalPrice: 3500,
-    discountBadge: '57% OFF',
-    thumbnailUrl: '/images/doc-course.jpg',
-    bannerUrl: '/images/doc-course.jpg',
-    category: 'টেক ডকুমেন্টারি',
-    studentsCount: '4.2K+ Joined',
-    rating: '4.9',
-    reviewsCount: '280+ Reviews',
-    totalDuration: '18h',
-    modulesCount: 14,
-    softwareTags: ['Pr', 'Ae', 'AI'],
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'হাই-রিটেনশন ডকুমেন্টারি টপিক রিসার্চ ও ফ্যাক্ট-চেকিং',
-      'প্রথম ৩০ সেকেন্ডের হুক ও ৩-অ্যাক্ট অ্যানালিটিক্যাল স্ক্রিপ্ট রাইটিং',
-      'সিনেমাটিক সাউন্ড ডিজাইন, সাব-বেস ও অডিও মিক্সিং'
-    ],
-    modules: [
-      {
-        id: 'mod-doc-1',
-        title: 'মডিউল ১: ডিপ রিসার্চ ও স্ক্রিপ্ট আর্কিটেকচার',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-doc-101',
-            title: '১.১ [ফ্রি প্রিভিউ] অ্যানালিটিক্যাল টেক ডকুমেন্টারি স্ট্রাকচার ও কেস স্টাডি',
-            duration: '১৮:২০',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'হাই-আইকিউ দর্শক ধরে রাখার স্টোরি আর্কিটেকচার এবং প্রথম ৩০ সেকেন্ডের হুক ফর্মুলা।'
-          }
-        ]
-      }
-    ],
-    resources: [
-      {
-        id: 'res-doc-1',
-        title: 'ডকুমেন্টারি স্ক্রিপ্ট ও রিসার্চ টেমপ্লেট',
-        size: '24 KB',
-        filename: 'MobinIQ_Documentary_Script_Template.md',
-        content: '# Mobin IQ Documentary Script Template\n'
-      }
-    ]
-  },
-  {
-    id: 'course-free-editing',
-    slug: 'high-retention-video-editing-fundamentals',
-    title: 'High-Retention Video Editing Fundamentals',
-    titleBn: 'হাই-রিটেনশন ভিডিও এডিটিং ও ইউটিউব গ্রোথ ব্লুপ্রিন্ট',
-    shortTitleBn: 'ভিডিও এডিটিং ও ইউটিউব গ্রোথ',
-    subtitle: 'Pacing, dynamic cuts, speed ramps, retention psychology & viral editing tactics.',
-    subtitleBn: 'মোবাইল ও পিসিতে সিনেমাটিক কাট, স্পিড গ্রাফ ও কালার গ্রেডিং।',
-    shortDescBn: 'CapCut, Premiere Pro ও After Effects-এ স্মুথ কি-ফ্রেম অ্যানিমেশন, পেসিং এবং ডার্ক সিনেমাটিক কালার গ্রেডিংয়ের প্র্যাকটিক্যাল গাইড।',
-    price: 790,
-    originalPrice: 1990,
-    discountBadge: '60% OFF',
-    thumbnailUrl: '/images/edit-course.jpg',
-    bannerUrl: '/images/edit-course.jpg',
-    category: 'ভিডিও এডিটিং',
-    studentsCount: '5.1K+ Joined',
-    rating: '5.0',
-    reviewsCount: '350+ Reviews',
-    totalDuration: '12h',
-    modulesCount: 8,
-    softwareTags: ['CapCut', 'Pr'],
-    status: 'PUBLISHED',
-    featured: true,
-    outcomes: [
-      'ফ্রেম-পারফেক্ট J-Cut, L-Cut ও ৩-সেকেন্ড ভিজ্যুয়াল রিসেট রুল',
-      'কাস্টম কি-ফ্রেম ইজিং ও স্মুথ স্পিড গ্রাফ কন্ট্রোল'
-    ],
-    modules: [
-      {
-        id: 'mod-edit-1',
-        title: 'মডিউল ১: রিটেনশন পেসিং ও কি-ফ্রেম মাস্টারি',
-        order: 1,
-        lessons: [
-          {
-            id: 'les-edit-101',
-            title: '১.১ [ফ্রি প্রিভিউ] দ্য রুল অব ৩ সেকেন্ডস ও ভিজ্যুয়াল ফ্লো',
-            duration: '১৯:৪৫',
-            isPreview: true,
-            videoUrl: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            summaryBn: 'দর্শকের মনোযোগ ধরে রাখার জন্য জুম ডায়নামিক্স এবং সাউন্ড ব্রিজিংয়ের ব্যবহার।'
-          }
-        ]
-      }
-    ],
-    resources: []
   }
 ];
 
 const INITIAL_PRODUCTS: AdminProduct[] = [
   {
     id: 'prod-luts-pack',
-    slug: 'cinematic-luts-pack',
-    title: 'Cinematic LUTs Pack',
-    titleBn: 'সিনেমাটিক LUTs প্যাক',
-    shortTitleBn: 'সিনেমাটিক LUTs প্যাক',
-    shortDesc: '50+ Premium 3D LUTs for Premiere Pro, DaVinci Resolve, Final Cut & CapCut.',
-    shortDescBn: '৫০+ প্রিমিয়াম সিনেমাটিক কালার গ্রেডিং LUTs প্যাক। ১-ক্লিক এপ্লাই ও লাইফটাইম আপডেট।',
-    price: 690,
-    originalPrice: 1300,
-    discountBadge: '50% OFF',
-    badge: 'BESTSELLER',
-    thumbnailUrl: '/images/edit-course.jpg',
-    category: 'Presets & Assets',
-    rating: '4.9',
-    salesCount: '1K+ Sales',
-    softwareTags: ['Pr', 'Ae', 'DaVinci'],
-    fileFormat: '.cube / 3D LUTs',
-    status: 'PUBLISHED',
-    features: [
-      '50+ High-end cinematic color grades',
-      'Rec.709, Sony S-Log3, Canon C-Log supported',
-      '1-Click instant application in Premiere & CapCut',
-      'Lifetime free updates & installation tutorial'
-    ],
-    featuresBn: [
-      '৫০+ হাই-এন্ড সিনেমাটিক কালার লুকস',
-      'Sony S-Log3, Canon C-Log ও Rec.709 সাপোর্টেড',
-      '১-ক্লিকে Premiere ও CapCut-এ ব্যবহারের সুবিধা',
-      'লাইফটাইম ফ্রি আপডেট ও ভিডিও গাইড'
-    ],
-    downloadFilename: 'MobinIQ_Cinematic_LUTs_Pack.zip',
-    downloadContent: '# MobinIQ Cinematic LUTs Master Pack\n'
-  },
-  {
-    id: 'prod-ai-prompts',
-    slug: 'ai-prompt-pack',
-    title: 'AI Prompt Pack',
-    titleBn: '২০০+ টেস্টেড এআই মেগা প্রম্পট ভল্ট (ChatGPT & Claude)',
-    shortTitleBn: '২০০+ এআই মেগা প্রম্পট ভল্ট',
-    shortDesc: '200+ battle-tested master prompts for ChatGPT, Claude & Midjourney.',
-    shortDescBn: 'স্ক্রিপ্ট রাইটিং, ডিপ রিসার্চ, ইউটিউব গ্রোথ, অ্যাড কপি ও কোডিং অটোমেশনের রেডিমেড প্রম্পট লাইব্রেরি।',
-    price: 490,
-    originalPrice: 820,
-    discountBadge: '40% OFF',
-    badge: 'POPULAR',
-    thumbnailUrl: '/images/ai-course.jpg',
-    category: 'AI & Automation',
-    rating: '4.9',
-    salesCount: '850+ Sales',
-    softwareTags: ['ChatGPT', 'Claude'],
-    fileFormat: 'Notion Vault + PDF',
-    status: 'PUBLISHED',
-    features: [
-      '200+ Master prompts for scripts, sales copy & code',
-      'Viral YouTube video hook generators',
-      'Midjourney v6 hyper-realistic photo prompts',
-      'Instant Notion dashboard access'
-    ],
-    featuresBn: [
-      '৬০+ ডকুমেন্টারি রিসার্চ ও হাই-রিটেনশন স্ক্রিপ্ট রাইটিং প্রম্পট',
-      '৫০+ ভাইরাল ইউটিউব টাইটেল, থাম্বনেইল ও ৩০-সেকেন্ড হুক জেনারেটর',
-      '৫০+ ফেসবুক অ্যাড কপি, ল্যান্ডিং পেজ ও সেলস ফানেল প্রম্পট'
-    ],
-    downloadFilename: 'MobinIQ_200_AI_Prompt_Vault.md',
-    downloadContent: '# Mobin IQ 200+ AI Mega Prompt Vault\n'
-  },
-  {
-    id: 'prod-sfx-pack',
-    slug: 'cinematic-tech-documentary-sfx-pack',
-    title: 'Cinematic Tech SFX Pack',
-    titleBn: '১০০+ সিনেমাটিক টেক ডকুমেন্টারি সাউন্ড এফেক্টস (SFX) প্যাক',
-    shortTitleBn: '১০০+ সিনেমাটিক SFX সাউন্ড প্যাক',
-    shortDesc: 'Sub-bass drops, deep whooshes, telemetry beeps, riser sweeps & ambient sound design.',
-    shortDescBn: 'সাব-বেস ড্রপ, ডিপ হুশ, ডেটা টেলিমেট্রি বিপ ও ডার্ক অ্যাম্বিয়েন্ট ব্যাকগ্রাউন্ড ড্রোন সাউন্ড প্যাক।',
+    slug: 'product-1792699417996',
+    title: 'Gemini AI Pro',
+    titleBn: 'Gemini AI Pro[18 মাস]',
+    shortTitleBn: 'Gemini AI Pro[18 মাস]',
+    shortDesc: 'Gemini AI Pro 18 Months Official Access with Full Owner Benefits.',
+    shortDescBn: 'Gemini AI Pro ১৮ মাস অফিসিয়াল অ্যাক্সেস ও ফুল ওনার বেনিফিটস।',
     price: 199,
-    originalPrice: 499,
-    discountBadge: '60% OFF',
-    badge: 'HOT',
-    thumbnailUrl: '/images/doc-course.jpg',
-    category: 'SFX Pack',
-    rating: '4.9',
-    salesCount: '1,850+ Sales',
-    softwareTags: ['Pr', 'CapCut', 'DaVinci'],
-    fileFormat: '24-Bit WAV / ZIP',
+    originalPrice: 699,
+    discountBadge: '77% OFF',
+    badge: 'BESTSELLER',
+    thumbnailUrl: 'https://admin.noobtopup.com/products/1787730903.jpg',
+    images: ['https://admin.noobtopup.com/products/1787730903.jpg'],
+    category: 'Ai',
+    rating: '5.0',
+    salesCount: '1K+ Sales',
+    softwareTags: ['Gemini'],
+    fileFormat: 'Links',
     status: 'PUBLISHED',
     features: [
-      '25+ Deep sub-bass hits & cinematic impacts',
-      '30+ Data telemetry, typewriter & glitch SFX',
-      '25+ Smooth whoosh & tension risers',
-      'Studio master 24-bit 48kHz WAV audio files'
+      '👑 Full Owner 💯',
+      '✅ শুধু একবার পেমেন্ট, ১৮ মাস ব্যবহার',
+      '✅ আপনি নিজেই Owner থাকবেন',
+      '✅ সর্বোচ্চ ৫ জনকে Invite দিতে পারবেন',
+      '✅ Gemini Pro, Veo 3, Flow, Whisk & AI Studio',
+      '✅ Single Invite এ 5TB Storage'
     ],
     featuresBn: [
-      '২৫+ ডিপ সাব-বেস হিট ও সিনেমাটিক ইমপ্যাক্টস',
-      '৩০+ ডেটা টেলিমেট্রি, টেক টাইপরাইটার ও গ্লিচ সাউন্ড',
-      '২৫+ স্মুথ হুশ ও টেনশন রাইজার (CapCut ও Premiere Pro রেডি)'
+      '👑 Full Owner 💯',
+      '✅ শুধু একবার পেমেন্ট, ১৮ মাস ব্যবহার',
+      '✅ আপনি নিজেই Owner থাকবেন',
+      '✅ সর্বোচ্চ ৫ জনকে Invite দিতে পারবেন',
+      '✅ Gemini Pro, Veo 3, Flow, Whisk & AI Studio',
+      '✅ Single Invite এ 5TB Storage'
     ],
-    downloadFilename: 'MobinIQ_100_Cinematic_SFX_Pack.txt',
-    downloadContent: 'Mobin IQ 100+ Cinematic SFX Pack — Master Download Links\n'
-  },
-  {
-    id: 'prod-thumbnails',
-    slug: 'thumbnail-templates',
-    title: 'Viral Thumbnail Templates',
-    titleBn: 'ইউটিউব থাম্বনেইল টেমপ্লেট বান্ডেল',
-    shortTitleBn: 'ইউটিউব থাম্বনেইল টেমপ্লেট',
-    shortDesc: '30+ High CTR Viral YouTube Thumbnail PSD & Canva editable templates.',
-    shortDescBn: '৩০+ হাই সিটিআর ভাইরাল ইউটিউব থাম্বনেইল পিএসডি ও ক্যানভা এডিটেবল ফাইল।',
-    price: 390,
-    originalPrice: 750,
-    discountBadge: '48% OFF',
-    badge: 'TRENDING',
-    thumbnailUrl: '/images/hero-banner.jpg',
-    category: 'Templates',
-    rating: '4.8',
-    salesCount: '720+ Sales',
-    softwareTags: ['Photoshop', 'Canva'],
-    fileFormat: 'PSD + Canva Link',
-    status: 'PUBLISHED',
-    features: [
-      '30+ High CTR YouTube thumbnail templates',
-      'Layered PSD files with organized smart objects',
-      '1-Click Canva editable links included',
-      'Custom facial glow & text styles'
-    ],
-    featuresBn: [
-      '৩০+ হাই সিটিআর ভাইরাল ইউটিউব থাম্বনেইল',
-      'ফটোশপ পিএসডি ও ক্যানভা এডিটেবল লিংক',
-      'লেয়ারড স্মার্ট অবজেক্ট ও কালার স্টাইল'
-    ],
-    downloadFilename: 'MobinIQ_Thumbnail_Templates.txt',
-    downloadContent: '# MobinIQ Thumbnail Templates Master Link\n'
+    downloadFilename: 'MobinIQ_Gemini_Access.txt',
+    downloadContent: '# MobinIQ Gemini AI Pro Access\n'
   }
 ];
 
 const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [
   {
     id: 'slide-1',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'মোবাইল ও পিসি দিয়ে',
-    highlight: 'সম্পূর্ণ AI মাস্টারি',
-    subBadge: 'প্রম্পট, ওয়েব ও অটোমেশন',
-    bottomTitle: 'বেসিক টু অ্যাডভান্স',
+    badge: '🔥 প্রফেশনাল মাস্টারক্লাস',
+    topLine: 'জিরো থেকে অ্যাডভান্সড',
+    highlight: 'সিনেমাটিক ভিডিও এডিটিং',
+    subBadge: 'কালার গ্রেডিং ও সাউন্ড ডিজাইন',
+    bottomTitle: 'কমপ্লিট কোর্স',
     image: HERO_IMG,
-    slug: 'complete-ai-mastery-zero-to-pro',
-    pills: ['Mobile Learning', 'AI Powered', 'Free Resources'],
+    slug: 'cinematic-video-editing-masterclass',
+    pills: ['Pr & Ae', 'Color Grading', 'Sound Design'],
     active: true
   },
   {
     id: 'slide-2',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'সিনেমাটিক টেক',
-    highlight: 'ডকুমেন্টারি মেকিং',
-    subBadge: 'ডিপ রিসার্চ ও স্টোরিটেলিং',
-    bottomTitle: 'মাস্টারক্লাস ব্লুপ্রিন্ট',
-    image: DOC_COURSE_IMG,
-    slug: 'cinematic-tech-documentary-masterclass',
-    pills: ['Deep Research', 'Sound Design', '3D Motion'],
-    active: true
-  },
-  {
-    id: 'slide-3',
-    badge: '🔥 ধামাকা অফার চলছে',
-    topLine: 'VIDEO EDITING',
-    highlight: '• YOUTUBE GROWTH',
-    subBadge: 'হাই-রিটেনশন এডিটিং',
-    bottomTitle: 'মোবাইল ও পিসি গাইড',
-    image: EDIT_COURSE_IMG,
-    slug: 'high-retention-video-editing-fundamentals',
-    pills: ['High Retention', 'Speed Graph', 'Color Grading'],
+    badge: '🔥 হট ডিল (৭৭% ছাড়)',
+    topLine: 'অফিসিয়াল ১৮ মাস',
+    highlight: 'Gemini AI Pro',
+    subBadge: 'ফুল ওনার অ্যাক্সেস',
+    bottomTitle: 'ইনস্ট্যান্ট ডেলিভারি',
+    image: 'https://admin.noobtopup.com/products/1787730903.jpg',
+    slug: 'product-1792699417996',
+    pills: ['Gemini Pro', 'Veo 3', '5TB Cloud'],
     active: true
   }
 ];
@@ -1402,12 +1116,13 @@ export default function App() {
     originalPrice: number;
     discountBadge: string;
     badge: string;
-    thumbnailUrl: string;
+    image1: string;
+    image2: string;
+    image3: string;
     softwareTagsText: string;
     fileFormat: string;
     status: 'PUBLISHED' | 'DRAFT';
     featuresText: string;
-    imagesText: string;
     downloadFilename: string;
     downloadContent: string;
   }>({
@@ -1417,19 +1132,20 @@ export default function App() {
     slug: '',
     shortDesc: '',
     shortDescBn: '',
-    category: 'Presets & Assets',
-    price: 690,
-    originalPrice: 1300,
-    discountBadge: '50% OFF',
-    badge: 'BESTSELLER',
-    thumbnailUrl: '/images/edit-course.jpg',
-    softwareTagsText: 'Pr, Ae, DaVinci',
-    fileFormat: '.cube / 3D LUTs',
+    category: '',
+    price: 0,
+    originalPrice: 0,
+    discountBadge: '',
+    badge: '',
+    image1: '',
+    image2: '',
+    image3: '',
+    softwareTagsText: '',
+    fileFormat: '',
     status: 'PUBLISHED',
-    featuresText: '৫০+ হাই-এন্ড সিনেমাটিক কালার লুকস\nSony S-Log3, Canon C-Log ও Rec.709 সাপোর্টেড\n১-ক্লিকে Premiere ও CapCut-এ ব্যবহারের সুবিধা\nলাইফটাইম ফ্রি আপডেট ও ভিডিও গাইড',
-    imagesText: '/images/edit-course.jpg\n/images/hero-banner.jpg\n/images/doc-course.jpg',
-    downloadFilename: 'MobinIQ_Digital_Pack.txt',
-    downloadContent: '# MobinIQ Digital Resource Download Link\n'
+    featuresText: '',
+    downloadFilename: '',
+    downloadContent: ''
   });
 
   const startNewProduct = () => {
@@ -1441,17 +1157,18 @@ export default function App() {
       slug: '',
       shortDesc: '',
       shortDescBn: '',
-      category: 'ডিজিটাল প্রোডাক্ট',
+      category: '',
       price: 0,
       originalPrice: 0,
       discountBadge: '',
       badge: '',
-      thumbnailUrl: '',
+      image1: '',
+      image2: '',
+      image3: '',
       softwareTagsText: '',
       fileFormat: '',
       status: 'PUBLISHED',
       featuresText: '',
-      imagesText: '',
       downloadFilename: '',
       downloadContent: ''
     });
@@ -1460,6 +1177,10 @@ export default function App() {
 
   const startEditProduct = (p: AdminProduct) => {
     setEditingProductId(p.id);
+    const existingImgs = Array.isArray((p as any).images) && (p as any).images.length > 0
+      ? (p as any).images
+      : (p.thumbnailUrl ? [p.thumbnailUrl] : []);
+
     setProductDraft({
       title: p.title || '',
       titleBn: p.titleBn || '',
@@ -1467,17 +1188,18 @@ export default function App() {
       slug: p.slug || '',
       shortDesc: p.shortDesc || '',
       shortDescBn: p.shortDescBn || '',
-      category: p.category || 'ডিজিটাল প্রোডাক্ট',
+      category: p.category || '',
       price: p.price || 0,
       originalPrice: p.originalPrice || 0,
       discountBadge: p.discountBadge || '',
       badge: p.badge || '',
-      thumbnailUrl: p.thumbnailUrl || '',
+      image1: existingImgs[0] || p.thumbnailUrl || '',
+      image2: existingImgs[1] || '',
+      image3: existingImgs[2] || '',
       softwareTagsText: Array.isArray(p.softwareTags) ? p.softwareTags.join(', ') : '',
       fileFormat: p.fileFormat || '',
       status: p.status || 'PUBLISHED',
       featuresText: Array.isArray(p.featuresBn) ? p.featuresBn.join('\n') : (Array.isArray(p.features) ? p.features.join('\n') : ''),
-      imagesText: Array.isArray((p as any).images) ? (p as any).images.join('\n') : '',
       downloadFilename: p.downloadFilename || '',
       downloadContent: p.downloadContent || ''
     });
@@ -1501,14 +1223,15 @@ export default function App() {
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean);
-    const parsedImages = productDraft.imagesText
-      .split('\n')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    const primaryThumb = productDraft.thumbnailUrl.trim() || (parsedImages.length > 0 ? parsedImages[0] : '');
-    const finalImages = parsedImages.length > 0
-      ? parsedImages
-      : (primaryThumb ? [primaryThumb] : []);
+
+    // Collect exactly 1, 2, or 3 images provided by user
+    const finalImages = [
+      productDraft.image1.trim(),
+      productDraft.image2.trim(),
+      productDraft.image3.trim(),
+    ].filter(Boolean);
+
+    const primaryThumb = finalImages[0] || productDraft.image1.trim() || '/images/edit-course.jpg';
 
     notify('⏳ প্রোডাক্ট সেভ হচ্ছে...');
     try {
@@ -3214,20 +2937,6 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Multi-image preview URLs for 1:1 Slider */}
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-300">
-                      মাল্টিপল ১:১ স্লাইডার ইমেজ লিঙ্ক (প্রতি লাইনে একটি করে ইমেজ URL দিন - ওয়েবসাইটে স্বয়ংক্রিয়ভাবে স্লাইড হবে)
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder="/images/edit-course.jpg&#10;/images/hero-banner.jpg&#10;/images/doc-course.jpg"
-                      value={productDraft.imagesText}
-                      onChange={(e) => setProductDraft((p) => ({ ...p, imagesText: e.target.value }))}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-white placeholder:text-slate-600"
-                    />
-                  </div>
-
                   <div className="flex justify-end gap-3">
                     <button
                       type="button"
@@ -3531,78 +3240,187 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="space-y-2 p-3.5 rounded-2xl bg-[#090d18] border border-white/10">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>প্রোডাক্ট থাম্বনেইল / ছবি *</span>
-                      </label>
-                      <span className="text-[11px] text-cyan-400">
-                        ইমেজ লিংক দিন অথবা কম্পিউটার/মোবাইল থেকে সরাসরি আপলোড করুন
+                  {/* ================================================================ */}
+                  {/* 3-IMAGE DEDICATED SLOTS (MAIN THUMBNAIL + 2 SLIDER IMAGES) */}
+                  {/* ================================================================ */}
+                  <div className="space-y-4 p-4 sm:p-5 rounded-2xl bg-[#090d18] border border-cyan-500/20">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 text-cyan-400" />
+                        <span className="text-sm font-extrabold text-white">
+                          প্রোডাক্ট ছবি ও ১:১ স্লাইডার (সর্বোচ্চ ৩টি ছবি)
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-cyan-300/80">
+                        ১টি দিলে স্লাইডার বন্ধ থাকবে | ২টি বা ৩টি দিলে মসৃণ ১:১ স্লাইডার চলবে
                       </span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-2.5">
-                      <input
-                        type="text"
-                        required
-                        value={productDraft.thumbnailUrl}
-                        onChange={(e) => setProductDraft((p) => ({ ...p, thumbnailUrl: e.target.value }))}
-                        placeholder="https://... অথবা ছবি আপলোড করুন"
-                        className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
-                      />
-                      <label className="px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer shrink-0 flex items-center justify-center gap-1.5 transition-colors">
-                        <Upload className="w-3.5 h-3.5" />
-                        <span>ছবি সিলেক্ট / আপলোড</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              handleImageUpload(file, (dataUrl) =>
-                                setProductDraft((p) => ({ ...p, thumbnailUrl: dataUrl }))
-                              );
-                            }
-                          }}
-                        />
-                      </label>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/5">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[11px] text-slate-400">প্রিসেট:</span>
-                        <button
-                          type="button"
-                          onClick={() => setProductDraft((p) => ({ ...p, thumbnailUrl: DOC_COURSE_IMG }))}
-                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                        >
-                          সাউন্ড প্যাক
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setProductDraft((p) => ({ ...p, thumbnailUrl: AI_COURSE_IMG }))}
-                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                        >
-                          প্রম্পট ভল্ট
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setProductDraft((p) => ({ ...p, thumbnailUrl: EDIT_COURSE_IMG }))}
-                          className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 text-[10px] text-slate-300"
-                        >
-                          LUT & প্রিসেট
-                        </button>
-                      </div>
-                      {productDraft.thumbnailUrl && (
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-slate-400">লাইভ প্রিভিউ:</span>
-                          <div className="w-16 h-10 rounded-lg overflow-hidden border border-cyan-500/40">
-                            <img src={productDraft.thumbnailUrl} alt="Preview" className="w-full h-full object-cover" />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {/* Image Slot 1: Primary Cover / Thumbnail */}
+                      <div className="space-y-2 p-3 rounded-xl bg-[#06080f] border border-cyan-500/40 relative flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-black text-cyan-300 flex items-center gap-1">
+                              <span>ইমেজ ১ (প্রধান কভার) *</span>
+                            </label>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-bold">
+                              থাম্বনেইল
+                            </span>
+                          </div>
+                          <input
+                            type="text"
+                            value={productDraft.image1}
+                            onChange={(e) => setProductDraft((p) => ({ ...p, image1: e.target.value }))}
+                            placeholder="ইমেজ ১ এর URL..."
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-black/50 border border-white/15 text-xs text-white placeholder-slate-500"
+                          />
+                          <div className="flex items-center gap-2">
+                            <label className="flex-1 py-1.5 px-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1 transition">
+                              <Upload className="w-3 h-3" />
+                              <span>ছবি আপলোড</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleImageUpload(file, (dataUrl) => setProductDraft((p) => ({ ...p, image1: dataUrl })));
+                                }}
+                              />
+                            </label>
+                            {productDraft.image1 && (
+                              <button
+                                type="button"
+                                onClick={() => setProductDraft((p) => ({ ...p, image1: '' }))}
+                                className="px-2 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-[11px] font-bold"
+                                title="মুছুন"
+                              >
+                                মুছুন
+                              </button>
+                            )}
                           </div>
                         </div>
-                      )}
+                        {productDraft.image1 ? (
+                          <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border border-cyan-500/40 bg-black">
+                            <img src={productDraft.image1} alt="Preview 1" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="mt-2 aspect-square w-full rounded-lg border border-dashed border-cyan-500/20 flex items-center justify-center text-[10px] text-slate-500">
+                            ছবি ১ যুক্ত করুন
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Image Slot 2: Slider Image 2 (Optional) */}
+                      <div className="space-y-2 p-3 rounded-xl bg-[#06080f] border border-white/15 relative flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-bold text-slate-300">
+                              ইমেজ ২ (স্লাইডার ছবি ২)
+                            </label>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-400">
+                              অপশনাল
+                            </span>
+                          </div>
+                          <input
+                            type="text"
+                            value={productDraft.image2}
+                            onChange={(e) => setProductDraft((p) => ({ ...p, image2: e.target.value }))}
+                            placeholder="ইমেজ ২ এর URL (অপশনাল)..."
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-black/50 border border-white/15 text-xs text-white placeholder-slate-500"
+                          />
+                          <div className="flex items-center gap-2">
+                            <label className="flex-1 py-1.5 px-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-slate-300 text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1 transition">
+                              <Upload className="w-3 h-3" />
+                              <span>ছবি আপলোড</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleImageUpload(file, (dataUrl) => setProductDraft((p) => ({ ...p, image2: dataUrl })));
+                                }}
+                              />
+                            </label>
+                            {productDraft.image2 && (
+                              <button
+                                type="button"
+                                onClick={() => setProductDraft((p) => ({ ...p, image2: '' }))}
+                                className="px-2 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-[11px] font-bold"
+                                title="মুছুন"
+                              >
+                                মুছুন
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        {productDraft.image2 ? (
+                          <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border border-white/20 bg-black">
+                            <img src={productDraft.image2} alt="Preview 2" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="mt-2 aspect-square w-full rounded-lg border border-dashed border-white/10 flex items-center justify-center text-[10px] text-slate-600">
+                            ছবি ২ খালি (কোনো ছবি নেই)
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Image Slot 3: Slider Image 3 (Optional) */}
+                      <div className="space-y-2 p-3 rounded-xl bg-[#06080f] border border-white/15 relative flex flex-col justify-between">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-bold text-slate-300">
+                              ইমেজ ৩ (স্লাইডার ছবি ৩)
+                            </label>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-slate-400">
+                              অপশনাল
+                            </span>
+                          </div>
+                          <input
+                            type="text"
+                            value={productDraft.image3}
+                            onChange={(e) => setProductDraft((p) => ({ ...p, image3: e.target.value }))}
+                            placeholder="ইমেজ ৩ এর URL (অপশনাল)..."
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-black/50 border border-white/15 text-xs text-white placeholder-slate-500"
+                          />
+                          <div className="flex items-center gap-2">
+                            <label className="flex-1 py-1.5 px-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-slate-300 text-[11px] font-bold cursor-pointer flex items-center justify-center gap-1 transition">
+                              <Upload className="w-3 h-3" />
+                              <span>ছবি আপলোড</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) handleImageUpload(file, (dataUrl) => setProductDraft((p) => ({ ...p, image3: dataUrl })));
+                                }}
+                              />
+                            </label>
+                            {productDraft.image3 && (
+                              <button
+                                type="button"
+                                onClick={() => setProductDraft((p) => ({ ...p, image3: '' }))}
+                                className="px-2 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 text-[11px] font-bold"
+                                title="মুছুন"
+                              >
+                                মুছুন
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        {productDraft.image3 ? (
+                          <div className="mt-2 relative aspect-square w-full rounded-lg overflow-hidden border border-white/20 bg-black">
+                            <img src={productDraft.image3} alt="Preview 3" className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="mt-2 aspect-square w-full rounded-lg border border-dashed border-white/10 flex items-center justify-center text-[10px] text-slate-600">
+                            ছবি ৩ খালি (কোনো ছবি নেই)
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -3631,20 +3449,6 @@ export default function App() {
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-cyan-300"
                       />
                     </div>
-                  </div>
-
-                  {/* Multi-image preview URLs for 1:1 Slider */}
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-300">
-                      মাল্টিপল ১:১ স্লাইডার ইমেজ লিঙ্ক (প্রতি লাইনে একটি করে ইমেজ URL দিন - ওয়েবসাইটে স্বয়ংক্রিয়ভাবে স্লাইড হবে)
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder="/images/edit-course.jpg&#10;/images/hero-banner.jpg&#10;/images/doc-course.jpg"
-                      value={productDraft.imagesText}
-                      onChange={(e) => setProductDraft((p) => ({ ...p, imagesText: e.target.value }))}
-                      className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs font-mono text-white placeholder:text-slate-600"
-                    />
                   </div>
 
                   <div className="flex justify-end gap-3">
