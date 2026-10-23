@@ -269,6 +269,9 @@ export interface SiteBridgeConfig {
   supportWhatsapp: string;
   supportEmail: string;
   supportMessenger: string;
+  facebookUrl?: string;
+  telegramUrl?: string;
+  youtubeUrl?: string;
   supportHours: string;
   fbPixelId: string;
   fbCapiToken: string;
@@ -615,9 +618,14 @@ export default function App() {
   const [incompleteLeads, setIncompleteLeads] = useState<IncompleteOrderLead[]>(() =>
     safeGet('mobiniq_incomplete_leads_v1', [])
   );
-  const [users, setUsers] = useState<ManagedUser[]>(() =>
-    safeGet('mobiniq_admin_users_v1', INITIAL_USERS)
-  );
+  const [users, setUsers] = useState<ManagedUser[]>(() => {
+    const raw = safeGet<ManagedUser[]>('mobiniq_admin_users_v1', INITIAL_USERS);
+    if (!Array.isArray(raw)) return INITIAL_USERS;
+    return raw.map((u) => ({
+      ...u,
+      enrolledSlugs: Array.isArray(u?.enrolledSlugs) ? u.enrolledSlugs : []
+    }));
+  });
   const [coupons, setCoupons] = useState<PromoCoupon[]>(() =>
     safeGet('mobiniq_admin_coupons_v1', INITIAL_COUPONS)
   );
@@ -646,6 +654,9 @@ export default function App() {
       supportWhatsapp: '01308313078',
       supportEmail: 'support@mobiniq.com',
       supportMessenger: 'https://m.me/mobiniq',
+      facebookUrl: 'https://facebook.com/mobiniq',
+      telegramUrl: 'https://t.me/mobiniq',
+      youtubeUrl: 'https://youtube.com/@mobinyt',
       supportHours: 'সকাল ১০:০০ - রাত ১০:০০ (প্রতিদিন)',
       fbPixelId: '149283746501928',
       fbCapiToken: 'EAABsbCS1iHgBO9x8MobinIQToken',
@@ -746,8 +757,19 @@ export default function App() {
     // 8. Live student users from main website
     const unsubUsers = subscribeToUsers((cloudUsers) => {
       if (Array.isArray(cloudUsers)) {
-        setUsers(cloudUsers as ManagedUser[]);
-        safeSet('mobiniq_admin_users_v1', cloudUsers);
+        const sanitized = cloudUsers.map((u: any) => ({
+          ...u,
+          enrolledSlugs: Array.isArray(u?.enrolledSlugs) ? u.enrolledSlugs : [],
+          phone: u?.phone || '',
+          email: u?.email || '',
+          name: u?.name || 'শিক্ষার্থী',
+          status: u?.status || 'ACTIVE',
+          totalSpentBdt: Number(u?.totalSpentBdt) || 0,
+          joinedAt: u?.joinedAt || 'সদ্য',
+          lastActive: u?.lastActive || 'এইমাত্র'
+        }));
+        setUsers(sanitized as ManagedUser[]);
+        safeSet('mobiniq_admin_users_v1', sanitized);
       }
     });
 
@@ -1660,12 +1682,13 @@ export default function App() {
     setUsers((prev) =>
       prev.map((u) => {
         if (u.uid !== uid) return u;
-        const has = u.enrolledSlugs.includes(courseSlug);
+        const safeEnrolled = Array.isArray(u.enrolledSlugs) ? u.enrolledSlugs : [];
+        const has = safeEnrolled.includes(courseSlug);
         return {
           ...u,
           enrolledSlugs: has
-            ? u.enrolledSlugs.filter((s) => s !== courseSlug)
-            : [...u.enrolledSlugs, courseSlug]
+            ? safeEnrolled.filter((s) => s !== courseSlug)
+            : [...safeEnrolled, courseSlug]
         };
       })
     );
@@ -4873,7 +4896,7 @@ export default function App() {
                                     : 'bg-emerald-500/15 hover:bg-emerald-500/25 border-emerald-500/30 text-emerald-300'
                                 }`}
                               >
-                                🎓 কোর্স অ্যাক্সেস ({toBn(u.enrolledSlugs.length)})
+                                🎓 কোর্স অ্যাক্সেস ({toBn(Array.isArray(u.enrolledSlugs) ? u.enrolledSlugs.length : 0)})
                               </button>
                             </>
                           );
@@ -5002,7 +5025,7 @@ export default function App() {
                         </span>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           {courses.map((c) => {
-                            const enrolled = u.enrolledSlugs.includes(c.slug);
+                            const enrolled = Array.isArray(u.enrolledSlugs) && u.enrolledSlugs.includes(c.slug);
                             return (
                               <button
                                 key={c.slug}
@@ -5410,6 +5433,45 @@ export default function App() {
                       onChange={(e) => setSiteConfig((p) => ({ ...p, supportMessenger: e.target.value }))}
                       placeholder="https://m.me/mobiniq"
                       className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-400 block">
+                      ফেসবুক পেজ / গ্রুপ লিংক (Facebook Page/Group)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.facebookUrl || ''}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, facebookUrl: e.target.value }))}
+                      placeholder="https://facebook.com/mobiniq"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-sky-500/30 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-cyan-400 block">
+                      টেলিগ্রাম চ্যানেল / গ্রুপ লিংক (Telegram Community)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.telegramUrl || ''}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, telegramUrl: e.target.value }))}
+                      placeholder="https://t.me/mobiniq"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-cyan-500/30 text-xs sm:text-sm text-white font-mono"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="text-xs font-bold text-rose-400 block">
+                      ইউটিউব চ্যানেল লিংক (YouTube Channel)
+                    </label>
+                    <input
+                      type="text"
+                      value={siteConfig.youtubeUrl || ''}
+                      onChange={(e) => setSiteConfig((p) => ({ ...p, youtubeUrl: e.target.value }))}
+                      placeholder="https://youtube.com/@mobinyt"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-rose-500/30 text-xs sm:text-sm text-white font-mono"
                     />
                   </div>
 
