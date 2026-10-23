@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
+import NextImage from 'next/image';
 import {
   LayoutDashboard,
   BookOpen,
@@ -1974,10 +1975,15 @@ export default function App() {
           {/* Brand Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 via-cyan-500 to-amber-400 p-0.5 shadow-lg">
-                <div className="w-full h-full rounded-[14px] bg-[#06080f] flex items-center justify-center">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                </div>
+              <div className="relative w-10 h-10 rounded-2xl overflow-hidden border border-emerald-500/40 shadow-[0_0_15px_rgba(16,185,129,0.3)] bg-[#06080f] shrink-0">
+                <NextImage
+                  src="/images/logo.jpg"
+                  alt="MobinIQ"
+                  fill
+                  sizes="40px"
+                  className="object-cover"
+                  priority
+                />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">

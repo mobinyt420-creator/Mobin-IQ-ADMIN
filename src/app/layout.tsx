@@ -4,6 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "MobinIQ Admin OS | Central Command Panel",
   description: "Dedicated Standalone Admin Panel connected via Firebase Firestore & REST API Bridge",
+  icons: {
+    icon: '/images/logo.jpg',
+    apple: '/images/logo.jpg',
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
