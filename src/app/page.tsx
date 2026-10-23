@@ -306,8 +306,8 @@ const INITIAL_COURSES: AdminCourse[] = [
     price: 1490,
     originalPrice: 2000,
     discountBadge: '25% OFF',
-    thumbnailUrl: 'https://admin.noobtopup.com/banners/1780292958.jpg',
-    bannerUrl: 'https://admin.noobtopup.com/banners/1780292958.jpg',
+    thumbnailUrl: '/images/course-ai-automation.jpg',
+    bannerUrl: '/images/course-ai-automation.jpg',
     category: 'এআই ও অটোমেশন',
     studentsCount: '1.2K+ Joined',
     rating: '4.9',
@@ -417,8 +417,8 @@ const INITIAL_HERO_SLIDES: AdminHeroSlide[] = [
     highlight: '',
     subBadge: '',
     bottomTitle: '',
-    image: 'https://admin.noobtopup.com/banners/1780292958.jpg',
-    slug: 'cinematic-video-editing-masterclass',
+    image: '/images/course-ai-automation.jpg',
+    slug: 'ai-youtube-automation-masterclass',
     pills: [],
     active: true,
     showOverlay: false,
@@ -449,8 +449,39 @@ const handleImageUpload = (file: File, callback: (dataUrl: string) => void) => {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (ev) => {
-    if (ev.target?.result) {
-      callback(ev.target.result as string);
+    const rawData = ev.target?.result as string;
+    if (!rawData) return;
+    try {
+      const img = new window.Image();
+      img.onload = () => {
+        const maxDim = 1200;
+        let w = img.width;
+        let h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.82);
+          callback(compressed);
+        } else {
+          callback(rawData);
+        }
+      };
+      img.onerror = () => callback(rawData);
+      img.src = rawData;
+    } catch {
+      callback(rawData);
     }
   };
   reader.readAsDataURL(file);
@@ -2636,14 +2667,33 @@ export default function App() {
                     </div>
 
                     <div className="sm:col-span-3 space-y-1">
-                      <label className="text-xs font-bold text-slate-300">ওয়াইড ব্যানার URL (16:9 Banner Image)</label>
-                      <input
-                        type="text"
-                        value={courseDraft.bannerUrl}
-                        onChange={(e) => setCourseDraft((p) => ({ ...p, bannerUrl: e.target.value }))}
-                        placeholder="/images/hero-banner.jpg অথবা অনলাইন লিংক"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
-                      />
+                      <label className="text-xs font-bold text-slate-300">ওয়াইড ব্যানার (16:9 Banner Image - ঐচ্ছিক)</label>
+                      <div className="flex flex-col sm:flex-row gap-2.5">
+                        <input
+                          type="text"
+                          value={courseDraft.bannerUrl}
+                          onChange={(e) => setCourseDraft((p) => ({ ...p, bannerUrl: e.target.value }))}
+                          placeholder="ইমেজ লিংক অথবা ডান পাশের বাটন দিয়ে আপলোড করুন"
+                          className="flex-1 px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-xs text-white"
+                        />
+                        <label className="px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer shrink-0 flex items-center justify-center gap-1.5 transition-colors">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>ব্যানার আপলোড</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleImageUpload(file, (dataUrl) =>
+                                  setCourseDraft((p) => ({ ...p, bannerUrl: dataUrl }))
+                                );
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     </div>
 
                     <div className="sm:col-span-3 space-y-2 p-3.5 rounded-2xl bg-[#090d18] border border-white/10">

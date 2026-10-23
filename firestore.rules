@@ -1,65 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    // Courses collection & subcollections
-    match /courses/{courseId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-      match /{allSubcollections=**} {
-        allow read: if true;
-        allow write: if isSignedIn();
-      }
-    }
-
-    // Digital Products collection & subcollections
-    match /products/{productId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-      match /{allSubcollections=**} {
-        allow read: if true;
-        allow write: if isSignedIn();
-      }
-    }
-
-    // Site Settings (general, hero_slides, coupons, etc.)
-    match /site_settings/{settingId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-
-    match /settings/{settingId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-
-    // User profiles
-    match /users/{userId} {
-      allow read, write: if true;
-    }
-
-    // Incomplete orders (checkout lead captures)
-    match /incomplete_orders/{leadId} {
-      allow read, write: if true;
-    }
-
-    // Blocked phones and IPs
-    match /blocked_entities/{blockId} {
-      allow read: if true;
-      allow write: if isSignedIn();
-    }
-
-    // Orders
-    match /orders/{orderId} {
-      allow read, write: if true;
-    }
-
-    // Enrollments
-    match /enrollments/{enrollmentId} {
+    match /{document=**} {
       allow read, write: if true;
     }
   }
