@@ -446,8 +446,7 @@ const INITIAL_COUPONS: PromoCoupon[] = [
 const ALLOWED_ADMIN_EMAILS = [
   'mobinyt420@gmail.com',
   'mobinyt777@gmail.com',
-  'mrmobin444@gmail.com',
-  'admin@mobiniq.com'
+  'mrmobin444@gmail.com'
 ];
 
 // ============================================================================
@@ -642,10 +641,10 @@ export default function App() {
     safeGet('mobiniq_site_config_v1', {
       mainWebsiteUrl: 'https://mobiniq.com',
       adminPanelUrl: 'https://admin.mobiniq.com',
-      apiSyncSecret: 'miq_sync_live_9f8e7d6c5b4a3210',
+      apiSyncSecret: '',
       gatewayProvider: 'UddoktaPay',
       gatewayBaseUrl: 'https://pay.mobiniq.com/api/checkout-v2',
-      gatewayApiKey: 'up_live_98a7bc654321fedcba',
+      gatewayApiKey: '',
       gatewayEnabled: true,
       bkashNumber: '01308313078',
       nagadNumber: '01308313078',
@@ -653,22 +652,22 @@ export default function App() {
       manualAccountType: 'Personal (Send Money)',
       supportPhone: '01308313078',
       supportWhatsapp: '01308313078',
-      supportEmail: 'support@mobiniq.com',
+      supportEmail: 'mobinyt420@gmail.com',
       supportMessenger: 'https://m.me/mobiniq',
       facebookUrl: 'https://facebook.com/mobiniq',
       telegramUrl: 'https://t.me/mobiniq',
       youtubeUrl: 'https://youtube.com/@mobinyt',
       supportHours: 'সকাল ১০:০০ - রাত ১০:০০ (প্রতিদিন)',
-      fbPixelId: '149283746501928',
-      fbCapiToken: 'EAABsbCS1iHgBO9x8MobinIQToken',
-      fbTestEventCode: 'TEST49281',
-      tiktokPixelId: 'C98X2Y3Z4A5B6C',
+      fbPixelId: '',
+      fbCapiToken: '',
+      fbTestEventCode: '',
+      tiktokPixelId: '',
       ga4MeasurementId: 'G-MOBINIQ2026',
       pixelEnabled: true,
       firebaseProjectId: 'mobin-iq',
-      firebaseApiKey: 'AIzaSyDuB4unQgwjd0LB-9KuvpOhYzTFo7y9Hm8',
+      firebaseApiKey: '',
       firebaseAuthDomain: 'mobin-iq.firebaseapp.com',
-      adminEmail: 'admin@mobiniq.com',
+      adminEmail: 'mobinyt420@gmail.com',
       youtubeSubs: '125K+',
       activeStudents: '10,500+',
       positiveReviews: '98.8%',
@@ -680,13 +679,10 @@ export default function App() {
   // ============================================================================
   // ADMIN AUTHENTICATION & SECURITY STATE
   // ============================================================================
-  const [adminUser, setAdminUser] = useState<{ email: string; name?: string } | null>(() =>
-    safeGet<{ email: string; name?: string } | null>('mobiniq_admin_session_v1', null)
-  );
+  const [adminUser, setAdminUser] = useState<{ email: string; name?: string } | null>(null);
   const [adminLoginEmail, setAdminLoginEmail] = useState('mobinyt420@gmail.com');
   const [adminLoginPass, setAdminLoginPass] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [adminSecretKeyInput, setAdminSecretKeyInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(false);
   const [isBulkSyncing, setIsBulkSyncing] = useState(false);
@@ -698,9 +694,6 @@ export default function App() {
 
   // Real-time bidirectional subscriptions to Firebase Firestore collections
   useEffect(() => {
-    // 0. Ensure Firebase Auth is active with Admin credentials in background
-    adminSignInWithEmail('admin@mobiniq.com', 'admin123456').catch(() => {});
-
     // 1. Live courses from Firestore
     const unsubCourses = subscribeToCourses((cloudCourses) => {
       if (Array.isArray(cloudCourses)) {
@@ -797,6 +790,9 @@ export default function App() {
           setAdminUser(null);
           safeSet('mobiniq_admin_session_v1', null);
         }
+      } else {
+        setAdminUser(null);
+        safeSet('mobiniq_admin_session_v1', null);
       }
     });
 
@@ -911,19 +907,6 @@ export default function App() {
     }
   };
 
-  // Passkey Login Handler
-  const handlePasskeyLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    const key = adminSecretKeyInput.trim();
-    if (key === 'admin123' || key === 'mobiniq2026' || key === 'miq_sync_live_9f8e7d6c5b4a3210' || key === siteConfig.apiSyncSecret) {
-      const session = { email: 'mobinyt420@gmail.com', name: 'মাস্টার অ্যাডমিন' };
-      setAdminUser(session);
-      safeSet('mobiniq_admin_session_v1', session);
-      notify('🔥 মাস্টার পাসকী ভেরিফাইড! সেন্ট্রাল কমান্ড অ্যাক্সেস গ্রান্টেড।');
-    } else {
-      setAuthError('ভুল সিক্রেট পাসকী! সঠিক মাস্টার অ্যাডমিন কোড দিন।');
-    }
-  };
 
   // Dual Sync: Save to localStorage and Push 100% to Firebase Cloud
   useEffect(() => safeSet('mobiniq_admin_courses_v1', courses), [courses]);
@@ -2110,34 +2093,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Offline / Emergency Master Passkey Section */}
-            <div className="pt-2 border-t border-white/10 space-y-2">
-              <details className="group">
-                <summary className="text-[11px] text-slate-400 hover:text-slate-300 font-semibold cursor-pointer list-none flex items-center justify-between py-1">
-                  <span className="flex items-center gap-1.5">
-                    <Key className="w-3 h-3 text-amber-400" />
-                    <span>জরুরি মাস্টার পাসকী (Emergency Bypass)</span>
-                  </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-open:rotate-180 transition-transform" />
-                </summary>
-                <form onSubmit={handlePasskeyLogin} className="mt-2 space-y-2 pt-1">
-                  <input
-                    type="password"
-                    placeholder="মাস্টার সিক্রেট পাসকী লিখুন..."
-                    value={adminSecretKeyInput}
-                    onChange={(e) => setAdminSecretKeyInput(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-white text-xs font-mono focus:border-amber-400 focus:outline-none"
-                  />
-                  <button
-                    type="submit"
-                    className="w-full py-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <Unlock className="w-3 h-3" />
-                    <span>পাসকী দিয়ে সরাসরি আনলক</span>
-                  </button>
-                </form>
-              </details>
-            </div>
           </div>
 
           <div className="pt-3 border-t border-white/10 text-center">

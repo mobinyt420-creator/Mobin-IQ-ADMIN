@@ -1,8 +1,78 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    
+    // Admin Verification Function
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email == 'mobinyt420@gmail.com' ||
+        request.auth.token.email == 'mobinyt777@gmail.com' ||
+        request.auth.token.email == 'mrmobin444@gmail.com'
+      );
+    }
+    
+    // 1. Public Content: Read is open to all, Write is strictly locked to verified Admin
+    match /courses/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /digital_products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /hero_slides/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /site_settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /coupons/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /blocked_entities/{id} {
+      allow read, write: if isAdmin();
+    }
+    
+    // 2. Orders: Customers can submit new orders with initial 'PENDING' status.
+    // Reading is restricted to the student owner or the Admin.
+    // Modifying, verifying, or deleting is strictly locked to Admin.
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if isAdmin() || (
+        request.auth != null && (
+          request.auth.uid == resource.data.userId || 
+          request.auth.token.email == resource.data.customerEmail
+        )
+      );
+      allow update, delete: if isAdmin();
+    }
+    
+    // 3. Incomplete Checkout Leads: Automated lead capture
+    match /incomplete_orders/{leadId} {
+      allow create, update: if true;
+      allow read, delete: if isAdmin();
+    }
+    
+    // 4. User Profiles:
+    // Students can read/update their own profile (phone, name); Admin has full access.
+    match /users/{userId} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow delete: if isAdmin();
     }
   }
 }

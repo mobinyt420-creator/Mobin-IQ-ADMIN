@@ -81,51 +81,21 @@ export async function adminSignInWithEmail(email: string, pass: string) {
   const a = getSharedAuth();
   if (!a) throw new Error("Firebase Auth is not initialized");
   const cleanEmail = email.trim().toLowerCase();
-  try {
-    const cred = await signInWithEmailAndPassword(a, cleanEmail, pass);
-    const firestore = getSharedDb();
-    if (firestore && cred.user?.uid) {
-      setDoc(
-        doc(firestore, "users", cred.user.uid),
-        {
-          email: cleanEmail,
-          role: "admin",
-          isAdmin: true,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      ).catch(() => {});
-    }
-    return cred.user;
-  } catch (err: any) {
-    // If account doesn't exist yet in Firebase Auth, auto-create it!
-    if (
-      err.code === "auth/user-not-found" ||
-      err.code === "auth/invalid-credential" ||
-      err.code === "auth/invalid-login-credentials"
-    ) {
-      try {
-        const newCred = await createUserWithEmailAndPassword(a, cleanEmail, pass);
-        const firestore = getSharedDb();
-        if (firestore && newCred.user?.uid) {
-          await setDoc(
-            doc(firestore, "users", newCred.user.uid),
-            {
-              email: cleanEmail,
-              role: "admin",
-              isAdmin: true,
-              createdAt: serverTimestamp(),
-            },
-            { merge: true }
-          ).catch(() => {});
-        }
-        return newCred.user;
-      } catch (createErr: any) {
-        throw err;
-      }
-    }
-    throw err;
+  const cred = await signInWithEmailAndPassword(a, cleanEmail, pass);
+  const firestore = getSharedDb();
+  if (firestore && cred.user?.uid) {
+    setDoc(
+      doc(firestore, "users", cred.user.uid),
+      {
+        email: cleanEmail,
+        role: "admin",
+        isAdmin: true,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    ).catch(() => {});
   }
+  return cred.user;
 }
 
 export async function adminSignInWithGoogle() {
@@ -163,27 +133,9 @@ export function subscribeToAdminAuth(callback: (user: FirebaseUser | null) => vo
 
 async function ensureAdminAuth() {
   const a = getSharedAuth();
-  if (!a) return;
+  if (!a) throw new Error("Firebase Auth is not initialized");
   if (!a.currentUser) {
-    try {
-      await adminSignInWithEmail('admin@mobiniq.com', 'admin123456');
-    } catch (e: any) {
-      console.warn("Auto admin auth error:", e?.message);
-    }
-  } else {
-    const firestore = getSharedDb();
-    if (firestore && a.currentUser.uid) {
-      setDoc(
-        doc(firestore, "users", a.currentUser.uid),
-        {
-          email: a.currentUser.email || "admin@mobiniq.com",
-          role: "admin",
-          isAdmin: true,
-          updatedAt: serverTimestamp(),
-        },
-        { merge: true }
-      ).catch(() => {});
-    }
+    throw new Error("Unauthorized: Admin must be authenticated to perform this operation.");
   }
 }
 
