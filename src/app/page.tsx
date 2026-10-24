@@ -445,6 +445,7 @@ const INITIAL_COUPONS: PromoCoupon[] = [
 
 const ALLOWED_ADMIN_EMAILS = [
   'mobinyt420@gmail.com',
+  'mobinyt444@gmail.com',
   'mobinyt777@gmail.com',
   'mrmobin444@gmail.com'
 ];
@@ -994,8 +995,8 @@ export default function App() {
     subtitleBn: string;
     shortDescBn: string;
     category: string;
-    price: number;
-    originalPrice: number;
+    price: number | string;
+    originalPrice: number | string;
     discountBadge: string;
     reviewsCount: string;
     totalDuration: string;
@@ -1016,8 +1017,8 @@ export default function App() {
     subtitleBn: '',
     shortDescBn: '',
     category: 'ভিডিও এডিটিং',
-    price: 1490,
-    originalPrice: 2000,
+    price: '',
+    originalPrice: '',
     discountBadge: '25% OFF',
     reviewsCount: '320+ Reviews',
     totalDuration: '8h 20m',
@@ -1058,8 +1059,8 @@ export default function App() {
       subtitleBn: '',
       shortDescBn: '',
       category: 'কোর্স',
-      price: 0,
-      originalPrice: 0,
+      price: '',
+      originalPrice: '',
       discountBadge: '',
       reviewsCount: '',
       totalDuration: '',
@@ -1086,8 +1087,8 @@ export default function App() {
       subtitleBn: c.subtitleBn || '',
       shortDescBn: c.shortDescBn || '',
       category: c.category || 'ভিডিও এডিটিং',
-      price: c.price || 0,
-      originalPrice: c.originalPrice || 0,
+      price: c.price ? c.price : '',
+      originalPrice: c.originalPrice ? c.originalPrice : '',
       discountBadge: c.discountBadge || '',
       reviewsCount: c.reviewsCount || '320+ Reviews',
       totalDuration: c.totalDuration || '8h 20m',
@@ -1221,8 +1222,8 @@ export default function App() {
     shortDesc: string;
     shortDescBn: string;
     category: string;
-    price: number;
-    originalPrice: number;
+    price: number | string;
+    originalPrice: number | string;
     discountBadge: string;
     badge: string;
     image1: string;
@@ -1242,8 +1243,8 @@ export default function App() {
     shortDesc: '',
     shortDescBn: '',
     category: '',
-    price: 0,
-    originalPrice: 0,
+    price: '',
+    originalPrice: '',
     discountBadge: '',
     badge: '',
     image1: '',
@@ -1267,8 +1268,8 @@ export default function App() {
       shortDesc: '',
       shortDescBn: '',
       category: '',
-      price: 0,
-      originalPrice: 0,
+      price: '',
+      originalPrice: '',
       discountBadge: '',
       badge: '',
       image1: '',
@@ -1298,8 +1299,8 @@ export default function App() {
       shortDesc: p.shortDesc || '',
       shortDescBn: p.shortDescBn || '',
       category: p.category || '',
-      price: p.price || 0,
-      originalPrice: p.originalPrice || 0,
+      price: p.price ? p.price : '',
+      originalPrice: p.originalPrice ? p.originalPrice : '',
       discountBadge: p.discountBadge || '',
       badge: p.badge || '',
       image1: existingImgs[0] || p.thumbnailUrl || '',
@@ -1740,7 +1741,7 @@ export default function App() {
   };
 
   const [newCouponCode, setNewCouponCode] = useState('');
-  const [newCouponPct, setNewCouponPct] = useState(15);
+  const [newCouponPct, setNewCouponPct] = useState<number | string>(15);
   const [newCouponDesc, setNewCouponDesc] = useState('');
 
   // ============================================================================
@@ -2793,9 +2794,19 @@ export default function App() {
                       <label className="text-xs font-bold text-emerald-300">অফার প্রাইস (৳ BDT) *</label>
                       <input
                         type="number"
-                        required
-                        value={courseDraft.price}
-                        onChange={(e) => setCourseDraft((p) => ({ ...p, price: Number(e.target.value) }))}
+                        placeholder="যেমন: 1490"
+                        value={courseDraft.price ?? ''}
+                        onFocus={(e) => {
+                          if (e.target.value === '0') {
+                            setCourseDraft((p) => ({ ...p, price: '' }));
+                          } else {
+                            e.target.select();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCourseDraft((p) => ({ ...p, price: val === '' ? '' : Number(val) }));
+                        }}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-emerald-500/40 text-sm font-extrabold text-emerald-400"
                       />
                     </div>
@@ -2804,11 +2815,19 @@ export default function App() {
                       <label className="text-xs font-bold text-slate-300">রেগুলার প্রাইস (৳ স্ট্রাইকথ্রু)</label>
                       <input
                         type="number"
-                        required
-                        value={courseDraft.originalPrice}
-                        onChange={(e) =>
-                          setCourseDraft((p) => ({ ...p, originalPrice: Number(e.target.value) }))
-                        }
+                        placeholder="যেমন: 2000"
+                        value={courseDraft.originalPrice ?? ''}
+                        onFocus={(e) => {
+                          if (e.target.value === '0') {
+                            setCourseDraft((p) => ({ ...p, originalPrice: '' }));
+                          } else {
+                            e.target.select();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setCourseDraft((p) => ({ ...p, originalPrice: val === '' ? '' : Number(val) }));
+                        }}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-sm text-slate-300"
                       />
                     </div>
@@ -3410,9 +3429,19 @@ export default function App() {
                       <label className="text-xs font-bold text-emerald-300">অফার মূল্য (৳ BDT) *</label>
                       <input
                         type="number"
-                        required
-                        value={productDraft.price}
-                        onChange={(e) => setProductDraft((p) => ({ ...p, price: Number(e.target.value) }))}
+                        placeholder="যেমন: 199"
+                        value={productDraft.price ?? ''}
+                        onFocus={(e) => {
+                          if (e.target.value === '0') {
+                            setProductDraft((p) => ({ ...p, price: '' }));
+                          } else {
+                            e.target.select();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setProductDraft((p) => ({ ...p, price: val === '' ? '' : Number(val) }));
+                        }}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-emerald-500/40 text-sm font-extrabold text-emerald-400"
                       />
                     </div>
@@ -3421,10 +3450,19 @@ export default function App() {
                       <label className="text-xs font-bold text-slate-300">রেগুলার মূল্য (৳ স্ট্রাইকথ্রু)</label>
                       <input
                         type="number"
-                        value={productDraft.originalPrice}
-                        onChange={(e) =>
-                          setProductDraft((p) => ({ ...p, originalPrice: Number(e.target.value) }))
-                        }
+                        placeholder="যেমন: 699"
+                        value={productDraft.originalPrice ?? ''}
+                        onFocus={(e) => {
+                          if (e.target.value === '0') {
+                            setProductDraft((p) => ({ ...p, originalPrice: '' }));
+                          } else {
+                            e.target.select();
+                          }
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setProductDraft((p) => ({ ...p, originalPrice: val === '' ? '' : Number(val) }));
+                        }}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#06080f] border border-white/15 text-sm text-slate-300"
                       />
                     </div>
@@ -5584,8 +5622,18 @@ export default function App() {
                   />
                   <input
                     type="number"
-                    value={newCouponPct}
-                    onChange={(e) => setNewCouponPct(Number(e.target.value))}
+                    value={newCouponPct ?? ''}
+                    onFocus={(e) => {
+                      if (e.target.value === '0') {
+                        setNewCouponPct('');
+                      } else {
+                        e.target.select();
+                      }
+                    }}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setNewCouponPct(val === '' ? '' : Number(val));
+                    }}
                     placeholder="ছাড় % (যেমন: 30)"
                     className="px-3.5 py-2 rounded-xl bg-[#06080f] border border-white/15 text-xs text-emerald-300 font-bold"
                   />
@@ -5602,7 +5650,7 @@ export default function App() {
                       setCoupons((prev) => [
                         {
                           code: newCouponCode,
-                          discountPct: Math.min(100, Math.max(1, newCouponPct)),
+                          discountPct: Math.min(100, Math.max(1, Number(newCouponPct) || 15)),
                           usageCount: 0,
                           active: true,
                           descriptionBn: newCouponDesc || 'স্পেশাল ডিসকাউন্ট'
